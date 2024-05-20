@@ -76,8 +76,8 @@ public class ClientThread extends Thread {
                         startGame();
                         joinGame(in);
 
-//                        gameServer.setCurrentState(GameState.PLAYER1_TURN);
-                       // playerTurn = GameState.PLAYER1_TURN; //punem randul playerului 1
+                        //gameServer.setCurrentState(GameState.PLAYER1_TURN);
+                        // playerTurn = GameState.PLAYER1_TURN; //punem randul playerului 1
 
                     }else {
                         sendMessage("Game isn't created.");

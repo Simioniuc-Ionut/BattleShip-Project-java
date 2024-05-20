@@ -63,27 +63,29 @@ public class GameServer {
     }
 
     public synchronized void handleMove(int playerId, String move) {
-//        int row = move.charAt(0) - 'A';
-//        int col = Integer.parseInt(move.substring(1)) - 1;
-//
-//        char[][] board = playerId == 1 ? serverBoardPlayer2 : serverBoardPlayer1;
-//
-//        if (board[row][col] == 'S') {
-//            board[row][col] = 'X';
-//            System.out.println("Player " + playerId + " hit at position: " + move);
-//            ClientThread player = playerId == 1 ? waitingPlayers.getFirst() : waitingPlayers.getLast();
-//            player.notifyHit(move);
-//            player.getOpponent().notifyHit(move);
-//        } else {
-//            board[row][col] = 'O';
-//            System.out.println("Player " + playerId + " missed at position: " + move);
-//            ClientThread player = playerId == 1 ? waitingPlayers.getFirst() : waitingPlayers.getLast();
-//            player.notifyMiss(move);
-//            player.getOpponent().notifyMiss(move);
-//        }
-//
-//        displayServerBoard();
+        int row = move.charAt(0) - 'A'; //convertesc prima litera pt a obtina linia
+        int col = Integer.parseInt(move.substring(1)) - 1; //convertesc a 2 a litera pt a obtine coloana
+
+
+        char[][] board = playerId == 1 ? serverBoardPlayer2 : serverBoardPlayer1; //vad care board trebuie actualizat
+
+        if (board[row][col] == 'S') {
+            board[row][col] = 'X';
+            System.out.println("Player " + playerId + " hit at position: " + move);
+            ClientThread player = playerId == 1 ? waitingPlayers.getFirst() : waitingPlayers.getLast();
+            player.notifyHit(move);
+            player.getOpponent().notifyHit(move);
+        } else {
+            board[row][col] = 'O';
+            System.out.println("Player " + playerId + " missed at position: " + move);
+            ClientThread player = playerId == 1 ? waitingPlayers.getFirst() : waitingPlayers.getLast();
+            player.notifyMiss(move);
+            player.getOpponent().notifyMiss(move);
+        }
+
+        displayServerBoard();
     }
+
 
 
     public synchronized void addWaitingPlayer(ClientThread player) {
@@ -109,7 +111,6 @@ public class GameServer {
             }
         }
     }
-
     private void placeShipOnBoard(char[][] board, int[] rows, int[] cols) {
         for (int i = 0; i < rows.length; i++) {
             if (i == 0 || i == rows.length - 1) {
