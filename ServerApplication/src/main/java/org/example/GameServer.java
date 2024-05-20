@@ -28,13 +28,16 @@ public class GameServer {
     private char[][] serverBoardPlayer2;
 
     private List<Thread> clientThreads;
-    private volatile boolean isStarted = false;
+
 
     private AtomicInteger numberOfPlayers ;
 
     private GameState currentState;
     private boolean player1IsReady;
     private boolean player2IsReady;
+
+    private int player1TotalShips;
+    private int player2TotalShips;
 
     public GameServer(int port) {
         this.port = port;
@@ -52,6 +55,10 @@ public class GameServer {
         this.serverBoardPlayer2 = new char[BOARD_SIZE][BOARD_SIZE];
         initializeBoard(serverBoardPlayer1);
         initializeBoard(serverBoardPlayer2);
+
+        //setam sizeul la 1 pt a testa mai usor
+        player1TotalShips = 1;
+        player2TotalShips = 1;
     }
 
     private void initializeBoard(char[][] board) {
@@ -62,6 +69,22 @@ public class GameServer {
         }
     }
 
+    private boolean checkShipAlive( char[][] board,int lineMove,int columnMove) {
+
+
+        if (board[lineMove][columnMove - 1] == 'X' || board[lineMove][columnMove - 1] == '.') {
+            if (board[lineMove][columnMove + 1] == 'X' || board[lineMove][columnMove + 1] == '.') {
+                if (board[lineMove - 1][columnMove] == 'X' || board[lineMove - 1][columnMove] == '.') {
+                    if (board[lineMove + 1][columnMove] == 'X' || board[lineMove + 1][columnMove] == '.') {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+
     public synchronized void handleMove(int playerId, String move) {
         int row = move.charAt(0) - 'A'; //convertesc prima litera pt a obtina linia
         int col = Integer.parseInt(move.substring(1)) - 1; //convertesc a 2 a litera pt a obtine coloana
@@ -69,18 +92,37 @@ public class GameServer {
 
         char[][] board = playerId == 1 ? serverBoardPlayer2 : serverBoardPlayer1; //vad care board trebuie actualizat
 
-        if (board[row][col] == 'S') {
+        if (board[row][col] == '#' || board[row][col] == 'o') {
             board[row][col] = 'X';
             System.out.println("Player " + playerId + " hit at position: " + move);
             ClientThread player = playerId == 1 ? waitingPlayers.getFirst() : waitingPlayers.getLast();
             player.notifyHit(move);
-            player.getOpponent().notifyHit(move);
+            //player.getOpponent().notifyHit(move);
+            if(checkShipAlive(board,row,col)){
+                if(playerId == 1){
+                    player1TotalShips--;
+                    if(player1TotalShips == 0){
+                        player.notifyGameOver();
+                        //player.getOpponent().notifyGameOver();
+                        currentState = GameState.GAME_OVER;
+                    }
+                }else{
+                    player2TotalShips--;
+                    if(player2TotalShips == 0){
+                        player.notifyGameOver();
+                        //player.getOpponent().notifyGameOver();
+                        currentState = GameState.GAME_OVER;
+                    }
+                }
+            }
         } else {
-            board[row][col] = 'O';
+            board[row][col] = '?';
             System.out.println("Player " + playerId + " missed at position: " + move);
             ClientThread player = playerId == 1 ? waitingPlayers.getFirst() : waitingPlayers.getLast();
+
+            //notificam miscarile
             player.notifyMiss(move);
-            player.getOpponent().notifyMiss(move);
+            //player.getOpponent().notifyMiss(move);
         }
 
         displayServerBoard();
@@ -93,7 +135,7 @@ public class GameServer {
         if (waitingPlayers.size() == 2) {
             ClientThread player1 = waitingPlayers.removeFirst();
             ClientThread player2 = waitingPlayers.removeFirst();
-//            player1.setOpponent(player2);
+//             player1.setOpponent(player2);
 //            player2.setOpponent(player1);
             player1.startGame();
         }
@@ -149,7 +191,7 @@ public class GameServer {
     }
 
 
-    private void displayServerBoard() {
+    public void displayServerBoard() {
         System.out.println("Server Board Player 1:");
         displayBoard(serverBoardPlayer1);
         System.out.println("Server Board Player 2:");
