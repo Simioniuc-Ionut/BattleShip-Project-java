@@ -174,18 +174,5 @@ public class ClientThread extends Thread {
         }
     }
 
-    //    private String getErrorMessage(int errorCode) {
-//        switch (errorCode) {
-//            case -1:
-//                return "Error: Incorrect number of positions. Expected 5 positions.";
-//            case -2:
-//                return "Error: Invalid position format. Use format 'A1', 'B2', etc.";
-//            case -3:
-//                return "Error: All positions must be empty.";
-//            case -4:
-//                return "Error: Invalid position format. Must be consecutive.";
-//            default:
-//                return "Unknown error.";
-//        }
-//    }
+
 }
