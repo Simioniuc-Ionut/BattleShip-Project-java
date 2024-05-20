@@ -12,7 +12,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-
+//import lombok.Getter;
+//
+//@Getter
+//@Setter
 public class GameServer {
     //constante
     public static final int BOARD_SIZE = 10;
@@ -27,11 +30,22 @@ public class GameServer {
     private List<Thread> clientThreads;
     private volatile boolean isStarted = false;
 
+    private AtomicInteger numberOfPlayers ;
+
+    private GameState currentState;
+    private boolean player1IsReady;
+    private boolean player2IsReady;
+
     public GameServer(int port) {
         this.port = port;
         this.isRunning = false;
 
         clientThreads = new ArrayList<>();
+        numberOfPlayers = new AtomicInteger(0);
+
+        currentState = GameState.GAME_NOT_CREATED;
+        player1IsReady=false;
+        player2IsReady=false;
 
         waitingPlayers = new LinkedList<>();
         this.serverBoardPlayer1 = new char[BOARD_SIZE][BOARD_SIZE];
@@ -48,13 +62,37 @@ public class GameServer {
         }
     }
 
+    public synchronized void handleMove(int playerId, String move) {
+//        int row = move.charAt(0) - 'A';
+//        int col = Integer.parseInt(move.substring(1)) - 1;
+//
+//        char[][] board = playerId == 1 ? serverBoardPlayer2 : serverBoardPlayer1;
+//
+//        if (board[row][col] == 'S') {
+//            board[row][col] = 'X';
+//            System.out.println("Player " + playerId + " hit at position: " + move);
+//            ClientThread player = playerId == 1 ? waitingPlayers.getFirst() : waitingPlayers.getLast();
+//            player.notifyHit(move);
+//            player.getOpponent().notifyHit(move);
+//        } else {
+//            board[row][col] = 'O';
+//            System.out.println("Player " + playerId + " missed at position: " + move);
+//            ClientThread player = playerId == 1 ? waitingPlayers.getFirst() : waitingPlayers.getLast();
+//            player.notifyMiss(move);
+//            player.getOpponent().notifyMiss(move);
+//        }
+//
+//        displayServerBoard();
+    }
+
+
     public synchronized void addWaitingPlayer(ClientThread player) {
         waitingPlayers.add(player);
         if (waitingPlayers.size() == 2) {
             ClientThread player1 = waitingPlayers.removeFirst();
             ClientThread player2 = waitingPlayers.removeFirst();
-            player1.setOpponent(player2);
-            player2.setOpponent(player1);
+//            player1.setOpponent(player2);
+//            player2.setOpponent(player1);
             player1.startGame();
         }
     }
@@ -109,28 +147,6 @@ public class GameServer {
         return 0;
     }
 
-    public synchronized void handleMove(int playerId, String move) {
-        int row = move.charAt(0) - 'A';
-        int col = Integer.parseInt(move.substring(1)) - 1;
-
-        char[][] board = playerId == 1 ? serverBoardPlayer2 : serverBoardPlayer1;
-
-        if (board[row][col] == 'S') {
-            board[row][col] = 'X';
-            System.out.println("Player " + playerId + " hit at position: " + move);
-            ClientThread player = playerId == 1 ? waitingPlayers.getFirst() : waitingPlayers.getLast();
-            player.notifyHit(move);
-            player.getOpponent().notifyHit(move);
-        } else {
-            board[row][col] = 'O';
-            System.out.println("Player " + playerId + " missed at position: " + move);
-            ClientThread player = playerId == 1 ? waitingPlayers.getFirst() : waitingPlayers.getLast();
-            player.notifyMiss(move);
-            player.getOpponent().notifyMiss(move);
-        }
-
-        displayServerBoard();
-    }
 
     private void displayServerBoard() {
         System.out.println("Server Board Player 1:");
@@ -162,7 +178,9 @@ public class GameServer {
                         PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
                         out.println("Connection Completed");
 
+                        numberOfPlayers.incrementAndGet();
                         Thread client = new ClientThread(clientSocket, this);
+
                         client.start();
                         clientThreads.add(client);
 
@@ -174,7 +192,6 @@ public class GameServer {
                         PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
                         out.println("-10");//Server is Full
                         clientSocket.close();
-
                     }
 
 
@@ -221,6 +238,35 @@ public class GameServer {
 
     public void playerLeft(Thread t){
         clientThreads.remove(t);
+        numberOfPlayers.decrementAndGet();
+    }
+
+    public AtomicInteger getNumberOfPlayers() {
+        return numberOfPlayers;
+    }
+
+    public GameState getCurrentState() {
+        return currentState;
+    }
+
+    public void setCurrentState(GameState currentState) {
+        this.currentState = currentState;
+    }
+
+    public boolean isPlayer2IsReady() {
+        return player2IsReady;
+    }
+
+    public boolean isPlayer1IsReady() {
+        return player1IsReady;
+    }
+
+    public void setPlayer2IsReady(boolean player2IsReady) {
+        this.player2IsReady = player2IsReady;
+    }
+
+    public void setPlayer1IsReady(boolean player1IsReady) {
+        this.player1IsReady = player1IsReady;
     }
 
     public static void main(String[] args) {

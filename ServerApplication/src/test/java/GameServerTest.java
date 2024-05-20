@@ -11,7 +11,7 @@ public class GameServerTest {
 
     @BeforeEach
     public void setup() {
-        gameServer = new GameServer(12345);
+    gameServer = new GameServer(12345);
     }
 
     @Test
