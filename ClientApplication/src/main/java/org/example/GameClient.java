@@ -72,11 +72,5 @@ public class GameClient {
         });
     }
 
-    public static void main(String[] args) {
-        String serverAddress = "localhost";
-        int serverPort = 12345; // Schimbă acest port cu portul serverului
 
-        GameClient client = new GameClient(serverAddress, serverPort);
-        client.start();
-    }
 }
