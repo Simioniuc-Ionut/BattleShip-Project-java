@@ -1,6 +1,6 @@
 package org.example;
 
-import org.example.Exception.GameException;
+import org.example.exception.GameException;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -70,15 +70,55 @@ public class GameServer {
     }
 
     private boolean checkShipAlive( char[][] board,int lineMove,int columnMove) {
-
-
-        if (board[lineMove][columnMove - 1] == 'X' || board[lineMove][columnMove - 1] == '.') {
+        //verific daca Nava scufundata nu este pe marginea matricii
+        if((lineMove!=0)&&(lineMove!=9)&&(columnMove!=0)&&(columnMove!=9)){
+            if (board[lineMove][columnMove - 1] == 'X' || board[lineMove][columnMove - 1] == '.') {
+                if (board[lineMove][columnMove + 1] == 'X' || board[lineMove][columnMove + 1] == '.') {
+                    if (board[lineMove - 1][columnMove] == 'X' || board[lineMove - 1][columnMove] == '.') {
+                        if (board[lineMove + 1][columnMove] == 'X' || board[lineMove + 1][columnMove] == '.') {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        //cazurile cand este pe marginea matricii:
+        else if(lineMove==0){
+            if (board[lineMove][columnMove - 1] == 'X' || board[lineMove][columnMove - 1] == '.') {
+                if (board[lineMove][columnMove + 1] == 'X' || board[lineMove][columnMove + 1] == '.') {
+                    if (board[lineMove + 1][columnMove] == 'X' || board[lineMove + 1][columnMove] == '.') {
+                        return true;
+                    }
+                }
+            }
+        }
+        else if(lineMove==9){
+            if (board[lineMove][columnMove - 1] == 'X' || board[lineMove][columnMove - 1] == '.') {
+                if (board[lineMove][columnMove + 1] == 'X' || board[lineMove][columnMove + 1] == '.') {
+                    if (board[lineMove - 1][columnMove] == 'X' || board[lineMove - 1][columnMove] == '.') {
+                        return true;
+                    }
+                }
+            }
+        }
+        else if(columnMove==0){
             if (board[lineMove][columnMove + 1] == 'X' || board[lineMove][columnMove + 1] == '.') {
                 if (board[lineMove - 1][columnMove] == 'X' || board[lineMove - 1][columnMove] == '.') {
                     if (board[lineMove + 1][columnMove] == 'X' || board[lineMove + 1][columnMove] == '.') {
                         return true;
                     }
                 }
+            }
+
+        }
+        else if(columnMove==9){
+            if (board[lineMove][columnMove - 1] == 'X' || board[lineMove][columnMove - 1] == '.') {
+                if (board[lineMove - 1][columnMove] == 'X' || board[lineMove - 1][columnMove] == '.') {
+                    if (board[lineMove + 1][columnMove] == 'X' || board[lineMove + 1][columnMove] == '.') {
+                        return true;
+                    }
+                }
+
             }
         }
         return false;
@@ -92,15 +132,17 @@ public class GameServer {
 
         char[][] board = playerId == 1 ? serverBoardPlayer2 : serverBoardPlayer1; //vad care board trebuie actualizat
 
-        if (board[row][col] == '#' || board[row][col] == 'o') {
+        if (board[row][col] == '#' || board[row][col] == 'o') {//verific daca este plasata o nava pe pozitia data
             board[row][col] = 'X';
             System.out.println("Player " + playerId + " hit at position: " + move);
             ClientThread player = playerId == 1 ? waitingPlayers.getFirst() : waitingPlayers.getLast();
             player.notifyHit(move);
             //player.getOpponent().notifyHit(move);
-            if(checkShipAlive(board,row,col)){
+//            System.out.println(row+"  "+col);
+            if(checkShipAlive(board,row,col)){//verific daca a SCUFUNDAT o nava
                 if(playerId == 1){
                     player1TotalShips--;
+                    System.out.println(player1TotalShips);
                     if(player1TotalShips == 0){
                         player.notifyGameOver();
                         //player.getOpponent().notifyGameOver();

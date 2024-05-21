@@ -1,15 +1,16 @@
 package org.example;
 
-import org.example.Exception.GameException;
+import org.example.exception.GameException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.SocketException;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 public class ClientThread extends Thread {
     //constante
@@ -30,6 +31,13 @@ public class ClientThread extends Thread {
     private boolean shipsPlaced;
     private boolean moveSubmitted;
 
+    private long remainingTimePlayer1 = 30; // timpul initializat pentru player1 (60sec)
+    private long remainingTimePlayer2 = 30; // timpul initializat pentru player2 (60sec)
+    private Object lock = new Object();//pt sincronizarea time player1 si player2
+    private ScheduledExecutorService timerPlayer1;
+    private ScheduledExecutorService timerPlayer2;
+    private ScheduledFuture<?> timerTaskPlayer1;
+    private ScheduledFuture<?> timerTaskPlayer2;
 
     //private AtomicInteger state;
 
@@ -84,11 +92,15 @@ public class ClientThread extends Thread {
                         sendMessage("Game isn't created.");
                     }
                 } else if(gameServer.getCurrentState() == GameState.GAME_READY_TO_MOVE/*inputLine.startsWith("submit move")*/){
+                    System.out.println("Player turn " + playerTurn);
 
                         if(playerId == playerTurn.getStateCode()) {
+
                             submitMove(inputLine);
                             System.out.println("Player " + playerId + " moved " + inputLine);
-                            switchTurn();
+
+                            switchTurn();//schimb turul
+
                         }else{
                             sendMessage("It's not your turn.");
                         }
@@ -193,6 +205,68 @@ public class ClientThread extends Thread {
             }
         }
     }
+
+    private void startGameTimerPlayer1() {
+        timerPlayer1 = Executors.newSingleThreadScheduledExecutor();
+        timerTaskPlayer1 = timerPlayer1.scheduleAtFixedRate(() -> {
+            synchronized (lock) {
+                remainingTimePlayer1--;
+                System.out.println("Remaining time for Player 1: " + remainingTimePlayer1 + " seconds");
+                if (remainingTimePlayer1 <= 0) {
+                    sendMessage("Game over. Your time ran out.");
+                    opponent.sendMessage("Game over. You win because your opponent's time ran out.");
+                    stopGameTimerPlayer1();
+                }
+            }
+        }, 0, 1, TimeUnit.SECONDS);
+    }
+
+    private void startGameTimerPlayer2() {
+        timerPlayer2 = Executors.newSingleThreadScheduledExecutor();
+        timerTaskPlayer2 = timerPlayer2.scheduleAtFixedRate(() -> {
+            synchronized (lock) {
+                remainingTimePlayer2--;
+                System.out.println("Remaining time for Player 2: " + remainingTimePlayer2 + " seconds");
+                if (remainingTimePlayer2 <= 0) {
+                    sendMessage("Game over. Your time ran out.");
+                    opponent.sendMessage("Game over. You win because your opponent's time ran out.");
+                    stopGameTimerPlayer2();
+                }
+            }
+        }, 0, 1, TimeUnit.SECONDS);
+    }
+
+    private void stopGameTimerPlayer1() {
+        if (timerTaskPlayer1 != null) {
+            timerTaskPlayer1.cancel(true);
+        }
+        if (timerPlayer1 != null) {
+            timerPlayer1.shutdown();
+        }
+    }
+
+    private void stopGameTimerPlayer2() {
+        if (timerTaskPlayer2 != null) {
+            timerTaskPlayer2.cancel(true);
+        }
+        if (timerPlayer2 != null) {
+            timerPlayer2.shutdown();
+        }
+    }
+
+    private void switchTurn() {
+        if (playerTurn == GameState.PLAYER1_TURN) {
+
+            stopGameTimerPlayer1();
+            playerTurn = GameState.PLAYER2_TURN;
+            startGameTimerPlayer2();
+        } else {
+            stopGameTimerPlayer2();
+            playerTurn = GameState.PLAYER1_TURN;
+            startGameTimerPlayer1();
+        }
+    }
+
     private void makePlayerReady(){
         if(playerId == 1)  {
             gameServer.setPlayer1IsReady(true);
@@ -221,14 +295,7 @@ public class ClientThread extends Thread {
             e.printStackTrace();
         }
     }
-    private void switchTurn() {
-        if(playerTurn == GameState.PLAYER1_TURN) {
-            playerTurn = GameState.PLAYER2_TURN;
-        }else {
 
-            playerTurn = GameState.PLAYER1_TURN;
-        }
-    }
     private void sendMessage(String message) {
         if (out != null) {
             out.println(message);
