@@ -1,22 +1,22 @@
-package org.example.model.exception;
+package org.example;
 
-import org.example.model.exception.shipsModels.Ships;
+import lombok.Setter;
+import org.example.exception.GameException;
+import org.example.shipsModels.PatrolBoat;
+import org.example.shipsModels.Ships;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-//import lombok.Getter;
-//
-//@Getter
-//@Setter
+import lombok.Getter;
+
+@Getter
+@Setter
 public class GameServer {
     //constante
     public static final int BOARD_SIZE = 10;
@@ -24,11 +24,11 @@ public class GameServer {
     private volatile boolean isRunning;
     private ServerSocket serverSocket;
 
-    private LinkedList<ClientThread> waitingPlayers;
+    //private LinkedList<ClientThread> waitingPlayers;
     private char[][] serverBoardPlayer1;
     private char[][] serverBoardPlayer2;
 
-    private List<Thread> clientThreads;
+    private Map<Integer,ClientThread> clientThreads;
 
     private AtomicInteger numberOfPlayers ;
 
@@ -46,21 +46,18 @@ public class GameServer {
         this.port = port;
         this.isRunning = false;
 
-        clientThreads = new ArrayList<>();
+        clientThreads = new HashMap<>();
         numberOfPlayers = new AtomicInteger(0);
 
         currentState = GameState.GAME_NOT_CREATED;
         player1IsReady=false;
         player2IsReady=false;
 
-        waitingPlayers = new LinkedList<>();
+        //waitingPlayers = new LinkedList<>();
         this.serverBoardPlayer1 = new char[BOARD_SIZE][BOARD_SIZE];
         this.serverBoardPlayer2 = new char[BOARD_SIZE][BOARD_SIZE];
         initializeBoard(serverBoardPlayer1);
         initializeBoard(serverBoardPlayer2);
-
-        //setam sizeul la 1 pt a testa mai usor
-
 
         player1Ships = new ArrayList<>();
         player2Ships = new ArrayList<>();
@@ -77,7 +74,6 @@ public class GameServer {
 
 
 
-
     public synchronized void handleMove(int playerId, String move) {
 
         int rowMove = move.charAt(0) - 'A';
@@ -85,23 +81,16 @@ public class GameServer {
 
 
         char[][] board = playerId == 1 ? serverBoardPlayer2 : serverBoardPlayer1;
-        ClientThread player = playerId == 1 ? waitingPlayers.getFirst() : waitingPlayers.getLast();
+        ClientThread player = clientThreads.get(playerId);
 
         if (board[rowMove][colMove] == '5' || board[rowMove][colMove] == '4' || board[rowMove][colMove] == '3' || board[rowMove][colMove] == '2' || board[rowMove][colMove] == '1') {
             char shipTypeFromBoard = board[rowMove][colMove];
             board[rowMove][colMove] = 'X';
 
             //We chose the list of ships of the opponent
-            List<Ships> ships ;
-            if(playerId == 1){
-                System.out.println("Am instantiati playershil2 cu player1");
-                ships = player2Ships;}
-                else{
-                System.out.println("Am instantiati playershil1 cu player2");
-                    ships = player1Ships;
-                }
+            List<Ships> ships = playerId == 1 ? player2Ships : player1Ships;
 
-            System.out.println("||||||| ships SIZE ||| " + ships.size() + " For playerID " + playerId + " ships " + ships);
+          //  System.out.println("||||||| ships SIZE ||| " + ships.size() + " For playerID " + playerId + " ships " + ships);
             Iterator<Ships> iterator = ships.iterator();
 
             //we iterate throught the list of ships and we decrease the size of the ship that was hit .
@@ -111,23 +100,24 @@ public class GameServer {
 
                 Ships ship = iterator.next();
                 //debug
-                System.out.println("ship char code " +  ship.getShipCodeInChar() + " board code " + shipTypeFromBoard + " ship size" + ship.getShipSize());
+                //System.out.println("ship char code " +  ship.getShipCodeInChar() + " board code " + shipTypeFromBoard + " ship size" + ship.getShipSize());
 
                 if (ship.getShipCodeInChar() == shipTypeFromBoard) {
                     ship.decreaseShipSize();
                     //debug
-                    System.out.println("||||||| AICI " + ship.getShipSize());
+                    //System.out.println("||||||| AICI " + ship.getShipSize());
                     player.notifyHit(move);
                     if (ship.getShipSize() == 0) {
                         iterator.remove();
                         //debug
-                        System.out.println("Player id : " + playerId + " SHIP SIZE " + ship.getShipSize() +" fro, if ship size == " + ships.size());
+                        //System.out.println("Player id : " + playerId + " SHIP SIZE " + ship.getShipSize() +" fro, if ship size == " + ships.size());
 
                         if (ships.isEmpty()) {
                             System.out.println("ships is empty  : player id is " + playerId);
 
                             player.notifyGameOver();
                             currentState = GameState.GAME_OVER;
+                            resetGame();
                         }
                     }
                 }
@@ -138,21 +128,25 @@ public class GameServer {
             System.out.println("Player " + playerId + " missed at position: " + move);
             player.notifyMiss(move);
         }
-        Ships ship = Ships.PATROL_BOAT_LENGTH;
-        System.out.println("BARCA NOUA : size " + ship.getShipSize());
+        Ships ship = new PatrolBoat();
+        System.out.println("BARCA NOU " + ship.getShipSize());
         displayServerBoard();
     }
 
+    private void resetGame() {
+        System.out.println("Server is reseted");
+        currentState = GameState.GAME_NOT_CREATED;
+        player1IsReady=false;
+        player2IsReady=false;
 
-    public synchronized void addWaitingPlayer(ClientThread player) {
-        waitingPlayers.add(player);
-        if (waitingPlayers.size() == 2) {
-            ClientThread player1 = waitingPlayers.removeFirst();
-            ClientThread player2 = waitingPlayers.removeFirst();
-//             player1.setOpponent(player2);
-//            player2.setOpponent(player1);
-            player1.startGame();
-        }
+        //waitingPlayers = new LinkedList<>();
+        this.serverBoardPlayer1 = new char[BOARD_SIZE][BOARD_SIZE];
+        this.serverBoardPlayer2 = new char[BOARD_SIZE][BOARD_SIZE];
+        initializeBoard(serverBoardPlayer1);
+        initializeBoard(serverBoardPlayer2);
+
+        player1Ships = new ArrayList<>();
+        player2Ships = new ArrayList<>();
     }
 
 
@@ -163,7 +157,13 @@ public class GameServer {
         int[] shipLengthRows = new int[ship.getShipSize()];
         int[] shipLengthCols = new int[ship.getShipSize()];
 
-        //validateShipPositions(board, shipLengthRows, shipLengthCols,ship,positions);
+        //validare pos : san nu fie ex : A11 sau X10;
+        for (String position : positions) {
+            if (position.charAt(0) < 'A' || position.charAt(0) > 'J' || Integer.parseInt(position.substring(1)) < 1 || Integer.parseInt(position.substring(1)) > 10) {
+                throw new GameException(GameException.ErrorCode.INVALID_POSITION_FORMAT);
+            }
+        }
+
 
         //Verify if the length of pos = with the length of the ship . ex: A1 A2 A3 , ship.length = 3;
         if (positions.length != ship.getShipSize()) {
@@ -231,13 +231,13 @@ public class GameServer {
                         System.out.println("New client connected");
                         PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
                         out.println("Connection Completed");
-
                         numberOfPlayers.incrementAndGet();
-                        Thread client = new ClientThread(clientSocket, this);
+
+                        ClientThread client = new ClientThread(clientSocket, this,numberOfPlayers.get());
+                        clientThreads.put(numberOfPlayers.get(),client);
+
 
                         client.start();
-                        clientThreads.add(client);
-
 
                     }else{
                         Socket clientSocket = serverSocket.accept();
@@ -247,8 +247,6 @@ public class GameServer {
                         out.println("-10");//Server is Full
                         clientSocket.close();
                     }
-
-
 
                 } catch (SocketException e) {
                     if (isRunning) {
@@ -299,38 +297,38 @@ public class GameServer {
         }
     }
 
-    public void playerLeft(Thread t){
-        clientThreads.remove(t);
+    public void playerLeft(ClientThread t){
+        clientThreads.remove(t.getPlayerId());
         numberOfPlayers.decrementAndGet();
     }
 
-    public AtomicInteger getNumberOfPlayers() {
-        return numberOfPlayers;
-    }
-
-    public GameState getCurrentState() {
-        return currentState;
-    }
-
-    public void setCurrentState(GameState currentState) {
-        this.currentState = currentState;
-    }
-
-    public boolean isPlayer2IsReady() {
-        return player2IsReady;
-    }
-
-    public boolean isPlayer1IsReady() {
-        return player1IsReady;
-    }
-
-    public void setPlayer2IsReady(boolean player2IsReady) {
-        this.player2IsReady = player2IsReady;
-    }
-
-    public void setPlayer1IsReady(boolean player1IsReady) {
-        this.player1IsReady = player1IsReady;
-    }
+//    public AtomicInteger getNumberOfPlayers() {
+//        return numberOfPlayers;
+//    }
+//
+//    public GameState getCurrentState() {
+//        return currentState;
+//    }
+//
+//    public void setCurrentState(GameState currentState) {
+//        this.currentState = currentState;
+//    }
+//
+//    public boolean isPlayer2IsReady() {
+//        return player2IsReady;
+//    }
+//
+//    public boolean isPlayer1IsReady() {
+//        return player1IsReady;
+//    }
+//
+//    public void setPlayer2IsReady(boolean player2IsReady) {
+//        this.player2IsReady = player2IsReady;
+//    }
+//
+//    public void setPlayer1IsReady(boolean player1IsReady) {
+//        this.player1IsReady = player1IsReady;
+//    }
 
     public static void main(String[] args) {
         int serverPort = 12345;
@@ -338,4 +336,11 @@ public class GameServer {
         server.start();
     }
 
+    public void setClientThreads(int i, ClientThread mockClient) {
+        clientThreads.put(i,mockClient);
+    }
+
+    public ClientThread getPlayer(int i) {
+        return clientThreads.get(i);
+    }
 }

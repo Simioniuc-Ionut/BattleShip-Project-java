@@ -1,6 +1,8 @@
-package org.example.model.exception;
+package org.example;
 
-import org.example.model.exception.shipsModels.Ships;
+import lombok.Setter;
+import org.example.exception.GameException;
+import org.example.shipsModels.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,14 +14,17 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import lombok.Getter;
+@Getter
+@Setter
+
 public class ClientThread extends Thread {
     //constante
-    public static final int CARRIER_LENGTH = 5;
-    public static final int BATTLESHIP_LENGTH = 4;
-    public static final int DESTROYER_LENGTH = 3;
-    public static final int SUBMARINE_LENGTH = 3;
-    //public static final int PATROL_BOAT_LENGTH = 2;
-    public static final Ships PATROL_BOAT_LENGTH = Ships.PATROL_BOAT_LENGTH;
+    public   Ships CARRIER_LENGTH = new Carrier();
+    public  Ships BATTLESHIP_LENGTH = new Battleship();
+    public  Ships DESTROYER_LENGTH = new Destroyer();
+    public  Ships SUBMARINE_LENGTH = new Submarine();
+    public  Ships PATROL_BOAT_LENGTH = new PatrolBoat();
 
 
     private final Socket clientSocket;
@@ -30,7 +35,7 @@ public class ClientThread extends Thread {
     private static GameState playerTurn;
     private int playerId;
     private boolean shipsPlaced;
-    private boolean moveSubmitted;
+
 
 
     //timer
@@ -46,13 +51,13 @@ public class ClientThread extends Thread {
     //private AtomicInteger state;
 
 
-    public ClientThread(Socket clientSocket, GameServer gameServer) {
+    public ClientThread(Socket clientSocket, GameServer gameServer,Integer playerId) {
         this.clientSocket = clientSocket;
         this.gameServer = gameServer;
-        this.playerId = gameServer.getNumberOfPlayers().get(); //l am refacut/
+        this.playerId = playerId;
 
         this.shipsPlaced = false;
-        this.moveSubmitted = false;
+    ;
     }
     @Override
     public void run() {
@@ -73,7 +78,7 @@ public class ClientThread extends Thread {
                     gameServer.stop();
                     break;
                 } else if(inputLine.equalsIgnoreCase("c") && gameServer.getCurrentState() == GameState.GAME_NOT_CREATED){
-                    gameServer.addWaitingPlayer(this);
+
                     gameServer.setCurrentState(GameState.WAITING_FOR_PLAYER);
                     //starea de incepere a jocului
 
@@ -89,15 +94,12 @@ public class ClientThread extends Thread {
                         startGame();
                         joinGame(in);
 
-                        //gameServer.setCurrentState(GameState.PLAYER1_TURN);
-                        // playerTurn = GameState.PLAYER1_TURN; //punem randul playerului 1
 
                     }else {
                         sendMessage("Game isn't created.");
                     }
                 } else if(gameServer.getCurrentState() == GameState.GAME_READY_TO_MOVE/*inputLine.startsWith("submit move")*/){
                     System.out.println("Player turn " + playerTurn);
-
                         if(playerId == playerTurn.getStateCode()) {
 
                             submitMove(inputLine);
@@ -111,6 +113,7 @@ public class ClientThread extends Thread {
                 } else if(gameServer.getCurrentState() == GameState.GAME_OVER) {
                     //jocul s a terminat.
                        gameIsFinished();
+                       gameReset();
                 }else {
                     out.println("Server received the request: " + inputLine);
                 }
@@ -128,12 +131,14 @@ public class ClientThread extends Thread {
 
         waititngPlayersForJoining();
 
+        setOpponent();
+
         gameServer.setCurrentState(GameState.GAME_READY_TO_MOVE);
         //trebuiesc modificate
-        //placeShip(in, "Carrier", CARRIER_LENGTH);
-       // placeShip(in, "Battleship", BATTLESHIP_LENGTH);
-       // placeShip(in, "Destroyer", DESTROYER_LENGTH);
-        //placeShip(in, "Submarine", SUBMARINE_LENGTH);
+        //placeShip(in, CARRIER_LENGTH);
+       // placeShip(in, BATTLESHIP_LENGTH);
+       // placeShip(in, DESTROYER_LENGTH);
+        //placeShip(in, SUBMARINE_LENGTH);
         placeShip(in, PATROL_BOAT_LENGTH);
         shipsPlaced = true;
 
@@ -166,7 +171,7 @@ public class ClientThread extends Thread {
             String move = inputLine.trim();
             gameServer.handleMove(playerId, move);
             sendMessage("Move submitted: " + move + ". Waiting for opponent's move.");
-            //opponent.sendMessage("Opponent moved: " + move + ". Your turn.");
+            opponent.sendMessage("Opponent moved: " + move + ". Your turn.");
         }
     }
     private boolean isReadyToMove(){
@@ -178,30 +183,12 @@ public class ClientThread extends Thread {
         }
     }
     private synchronized void checkReadyToStart() {
-//        if (shipsPlaced && opponent != null && opponent.shipsPlaced) {
-//            sendMessage("Both players have placed their ships. Player 1 starts. Type 'submit move <position>' to play.");
-//            if (playerId == 1) {
-//                sendMessage("Your turn.");
-//                opponent.sendMessage("Waiting for Player 1 to move.");
-//            } else {
-//                sendMessage("Waiting for Player 1 to move.");
-//                opponent.sendMessage("Your turn.");
-//            }
-//        } else if (opponent != null && !opponent.shipsPlaced) {
-//            sendMessage("Waiting for opponent to place ships...");
-//        }
         if(gameServer.isPlayer1IsReady() && gameServer.isPlayer2IsReady()) {
             sendMessage(" PlaBoth players have placed their ships.yer 1 starts.");
             //opponent.sendMessage("PlaBoth players have placed their ships.yer 1 starts.");
             gameServer.setCurrentState(GameState.GAME_READY_TO_MOVE);
             playerTurn = GameState.PLAYER1_TURN;
-//            if (playerId == 1) {
-//                sendMessage("Your turn.");
-//                opponent.sendMessage("Waiting for Player 1 to move.");
-//            } else {
-//                sendMessage("Waiting for Player 1 to move.");
-//                opponent.sendMessage("Your turn.");
-//            }
+
 
         }else{
             sendMessage("Waiting for opponent to place ships...");
@@ -219,9 +206,10 @@ public class ClientThread extends Thread {
                     remainingTimePlayer1--;
                    // System.out.println("Remaining time for Player 1: " + remainingTimePlayer1 + " seconds");
                 }
-                if (remainingTimePlayer1 <= 0) {
+                if (remainingTimePlayer1 == 0) {
                     sendMessage("Game over. Your time ran out.");
                     opponent.sendMessage("Game over. You win because your opponent's time ran out.");
+                    remainingTimePlayer1--;
                     //stopGameTimerPlayer1();
                 }
             }
@@ -239,10 +227,10 @@ public class ClientThread extends Thread {
                     remainingTimePlayer2--;
                   //  System.out.println("Remaining time for Player 2: " + remainingTimePlayer2 + " seconds");
                 }
-                if (remainingTimePlayer2 <= 0) {
+                if (remainingTimePlayer2 == 0) {
                     sendMessage("Game over. Your time ran out.");
-                    opponent.sendMessage("Game over. You win because your opponent's time ran out.");
                     //stopGameTimerPlayer2();
+                    remainingTimePlayer2--;
                 }
             }
         }, 0, 1, TimeUnit.SECONDS);
@@ -321,31 +309,35 @@ public class ClientThread extends Thread {
     public void notifyMiss(String move) {
         sendMessage("You missed at position: " + move);
     }
-//    public void setOpponent(ClientThread opponent) {
-//        this.opponent = opponent;
-//        if (opponent != null) {
-//            this.playerId = 1;
-//            opponent.setPlayerId(2);
-//        }
+    public void setOpponent() {
+        if(playerId == 1) {
+            int player2 = playerId + 1;
+            this.opponent = gameServer.getPlayer(player2);
+
+        }
+        else {
+            int player1 = playerId - 1;
+            this.opponent = gameServer.getPlayer(player1);
+        }
+    }
+
+//    public void setPlayerId(int id) {
+//        this.playerId = id;
 //    }
-
-    public void setPlayerId(int id) {
-        this.playerId = id;
-    }
-
-    public ClientThread getOpponent() {
-        return opponent;
-    }
+//
+//    public ClientThread getOpponent() {
+//        return opponent;
+//    }
 
     public void startGame() {
         sendMessage("1-Both players connected. Type 'join game' to start.");
-//        if (opponent != null) {
-//            opponent.sendMessage("2-Both players connected. Type 'join game' to start.");
-//        }
+        if (opponent != null) {
+            opponent.sendMessage("2-Both players connected. Type 'join game' to start.");
+        }
 
     }
 
-    private void gameIsFinished(){
+    public void gameIsFinished(){
         System.out.println("func : gameIsFinished() was accessed");
         if(playerTurn == GameState.PLAYER1_TURN){
             gameServer.displayServerBoard();
@@ -356,9 +348,22 @@ public class ClientThread extends Thread {
         }
     }
     public void notifyGameOver() {
-        sendMessage("Game over. You won!");
-//        if (opponent != null) {
-//            opponent.sendMessage("Game over. You lost!");
-//        }
+           sendMessage("Game over. You won!");
+            opponent.sendMessage("Game over. You lost!");
+
     }
+
+    private void gameReset() {
+        remainingTimePlayer1 = 30;
+        remainingTimePlayer2 = 30;
+        playerTurn = GameState.PLAYER1_TURN;
+        sendMessage("Game has reseted");
+           CARRIER_LENGTH = new Carrier();
+           BATTLESHIP_LENGTH = new Battleship();
+           DESTROYER_LENGTH = new Destroyer();
+           SUBMARINE_LENGTH = new Submarine();
+           this.PATROL_BOAT_LENGTH = new PatrolBoat();
+
+    }
+
 }
