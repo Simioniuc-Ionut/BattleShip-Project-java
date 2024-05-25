@@ -1,6 +1,6 @@
-package org.example;
+package org.example.model.exception;
 
-import org.example.exception.GameException;
+import org.example.model.exception.shipsModels.Ships;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,7 +18,8 @@ public class ClientThread extends Thread {
     public static final int BATTLESHIP_LENGTH = 4;
     public static final int DESTROYER_LENGTH = 3;
     public static final int SUBMARINE_LENGTH = 3;
-    public static final int PATROL_BOAT_LENGTH = 2;
+    //public static final int PATROL_BOAT_LENGTH = 2;
+    public static final Ships PATROL_BOAT_LENGTH = Ships.PATROL_BOAT_LENGTH;
 
 
     private final Socket clientSocket;
@@ -36,6 +37,7 @@ public class ClientThread extends Thread {
     private long remainingTimePlayer1 = 30; // timpul initializat pentru player1 (60sec)
     private long remainingTimePlayer2 = 30; // timpul initializat pentru player2 (60sec)
     private final Object lock = new Object();//pt sincronizarea time player1 si player2
+
     private ScheduledExecutorService timerPlayer1;
     private ScheduledExecutorService timerPlayer2;
     private ScheduledFuture<?> timerTaskPlayer1;
@@ -70,7 +72,7 @@ public class ClientThread extends Thread {
                     out.println("Server stopped");
                     gameServer.stop();
                     break;
-                } else if(inputLine.equalsIgnoreCase("create game") && gameServer.getCurrentState() == GameState.GAME_NOT_CREATED){
+                } else if(inputLine.equalsIgnoreCase("c") && gameServer.getCurrentState() == GameState.GAME_NOT_CREATED){
                     gameServer.addWaitingPlayer(this);
                     gameServer.setCurrentState(GameState.WAITING_FOR_PLAYER);
                     //starea de incepere a jocului
@@ -81,7 +83,7 @@ public class ClientThread extends Thread {
 //                        sendMessage("Waiting for another player to join ...");
 //                    }
 
-                } else if(inputLine.equalsIgnoreCase("join game")){
+                } else if(inputLine.equalsIgnoreCase("j")){
                     if(gameServer.getCurrentState() == GameState.WAITING_FOR_PLAYER) {
 
                         startGame();
@@ -127,11 +129,12 @@ public class ClientThread extends Thread {
         waititngPlayersForJoining();
 
         gameServer.setCurrentState(GameState.GAME_READY_TO_MOVE);
+        //trebuiesc modificate
         //placeShip(in, "Carrier", CARRIER_LENGTH);
        // placeShip(in, "Battleship", BATTLESHIP_LENGTH);
        // placeShip(in, "Destroyer", DESTROYER_LENGTH);
         //placeShip(in, "Submarine", SUBMARINE_LENGTH);
-        placeShip(in, "Patrol Boat", PATROL_BOAT_LENGTH);
+        placeShip(in, PATROL_BOAT_LENGTH);
         shipsPlaced = true;
 
         //setam daca playerul este ready
@@ -139,14 +142,14 @@ public class ClientThread extends Thread {
 
         checkReadyToStart();
     }
-    private void placeShip(BufferedReader in, String shipName, int length) throws IOException{
-        sendMessage("Place your " + shipName + " (length = " + length + "): ");
+    private void placeShip(BufferedReader in,Ships ship) throws IOException{
+        sendMessage("Place your " + ship.getShipName() + " (length = " + ship.getShipSize() + "): ");
         int placed;
         do {
             try {
 
                 String inputLine = in.readLine();
-                placed = gameServer.placeShip(playerId, inputLine, length);
+                placed = gameServer.validateShipPosition(playerId, inputLine, ship);
 
             } catch (GameException e ){
                 placed = -1; // ca sa ramana in while
@@ -214,7 +217,7 @@ public class ClientThread extends Thread {
             synchronized (lock) {
                 if(playerTurn == GameState.PLAYER1_TURN) {
                     remainingTimePlayer1--;
-                    System.out.println("Remaining time for Player 1: " + remainingTimePlayer1 + " seconds");
+                   // System.out.println("Remaining time for Player 1: " + remainingTimePlayer1 + " seconds");
                 }
                 if (remainingTimePlayer1 <= 0) {
                     sendMessage("Game over. Your time ran out.");
@@ -234,7 +237,7 @@ public class ClientThread extends Thread {
             synchronized (lock) {
                 if(playerTurn == GameState.PLAYER2_TURN) {//OPRESC timerul daca nu e randul lui
                     remainingTimePlayer2--;
-                    System.out.println("Remaining time for Player 2: " + remainingTimePlayer2 + " seconds");
+                  //  System.out.println("Remaining time for Player 2: " + remainingTimePlayer2 + " seconds");
                 }
                 if (remainingTimePlayer2 <= 0) {
                     sendMessage("Game over. Your time ran out.");
@@ -245,29 +248,6 @@ public class ClientThread extends Thread {
         }, 0, 1, TimeUnit.SECONDS);
 //        waitingThread();
 //        stopGameTimerPlayer1();
-    }
-
-    private  void stopGameTimerPlayer1() {
-        System.out.println("stopGameTimer | Player 1 time ended " + playerTurn);
-        if (timerTaskPlayer1 != null) {
-            System.out.println("NU E NULL");
-            timerTaskPlayer1.cancel(true);
-        }
-        if (timerPlayer1 != null) {
-            timerPlayer1.shutdown();
-        }
-    }
-
-    private  void stopGameTimerPlayer2() {
-        System.out.println("stopGameTimer | Player 2 time ended " + playerTurn);
-
-        if (timerTaskPlayer2 != null) {
-            System.out.println("NU E NULL");
-            timerTaskPlayer2.cancel(true);
-        }
-        if (timerPlayer2 != null) {
-            timerPlayer2.shutdown();
-        }
     }
 
     private synchronized void switchTurn() {
@@ -348,12 +328,15 @@ public class ClientThread extends Thread {
 //            opponent.setPlayerId(2);
 //        }
 //    }
+
     public void setPlayerId(int id) {
         this.playerId = id;
     }
+
     public ClientThread getOpponent() {
         return opponent;
     }
+
     public void startGame() {
         sendMessage("1-Both players connected. Type 'join game' to start.");
 //        if (opponent != null) {
@@ -363,6 +346,7 @@ public class ClientThread extends Thread {
     }
 
     private void gameIsFinished(){
+        System.out.println("func : gameIsFinished() was accessed");
         if(playerTurn == GameState.PLAYER1_TURN){
             gameServer.displayServerBoard();
             gameServer.setCurrentState(GameState.GAME_NOT_CREATED);

@@ -1,5 +1,5 @@
-import org.example.exception.GameException;
-import org.example.GameServer;
+import org.example.model.exception.GameException;
+import org.example.model.exception.GameServer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

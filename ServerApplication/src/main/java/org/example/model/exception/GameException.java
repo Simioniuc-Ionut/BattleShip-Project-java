@@ -1,4 +1,4 @@
-package org.example.exception;
+package org.example.model.exception;
 
 public class GameException extends Exception {
     private ErrorCode errorCode;
