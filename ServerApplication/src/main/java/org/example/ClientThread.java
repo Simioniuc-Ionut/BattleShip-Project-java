@@ -31,9 +31,11 @@ public class ClientThread extends Thread {
     private boolean shipsPlaced;
     private boolean moveSubmitted;
 
+
+    //timer
     private long remainingTimePlayer1 = 30; // timpul initializat pentru player1 (60sec)
     private long remainingTimePlayer2 = 30; // timpul initializat pentru player2 (60sec)
-    private Object lock = new Object();//pt sincronizarea time player1 si player2
+    private final Object lock = new Object();//pt sincronizarea time player1 si player2
     private ScheduledExecutorService timerPlayer1;
     private ScheduledExecutorService timerPlayer2;
     private ScheduledFuture<?> timerTaskPlayer1;
@@ -206,38 +208,49 @@ public class ClientThread extends Thread {
         }
     }
 
-    private void startGameTimerPlayer1() {
+    private  void startGameTimerPlayer1() {
         timerPlayer1 = Executors.newSingleThreadScheduledExecutor();
         timerTaskPlayer1 = timerPlayer1.scheduleAtFixedRate(() -> {
             synchronized (lock) {
-                remainingTimePlayer1--;
-                System.out.println("Remaining time for Player 1: " + remainingTimePlayer1 + " seconds");
+                if(playerTurn == GameState.PLAYER1_TURN) {
+                    remainingTimePlayer1--;
+                    System.out.println("Remaining time for Player 1: " + remainingTimePlayer1 + " seconds");
+                }
                 if (remainingTimePlayer1 <= 0) {
                     sendMessage("Game over. Your time ran out.");
                     opponent.sendMessage("Game over. You win because your opponent's time ran out.");
-                    stopGameTimerPlayer1();
+                    //stopGameTimerPlayer1();
                 }
             }
         }, 0, 1, TimeUnit.SECONDS);
+
+//        waitingThread();
+//        stopGameTimerPlayer1();
     }
 
-    private void startGameTimerPlayer2() {
+    private  void startGameTimerPlayer2() {
         timerPlayer2 = Executors.newSingleThreadScheduledExecutor();
         timerTaskPlayer2 = timerPlayer2.scheduleAtFixedRate(() -> {
             synchronized (lock) {
-                remainingTimePlayer2--;
-                System.out.println("Remaining time for Player 2: " + remainingTimePlayer2 + " seconds");
+                if(playerTurn == GameState.PLAYER2_TURN) {//OPRESC timerul daca nu e randul lui
+                    remainingTimePlayer2--;
+                    System.out.println("Remaining time for Player 2: " + remainingTimePlayer2 + " seconds");
+                }
                 if (remainingTimePlayer2 <= 0) {
                     sendMessage("Game over. Your time ran out.");
                     opponent.sendMessage("Game over. You win because your opponent's time ran out.");
-                    stopGameTimerPlayer2();
+                    //stopGameTimerPlayer2();
                 }
             }
         }, 0, 1, TimeUnit.SECONDS);
+//        waitingThread();
+//        stopGameTimerPlayer1();
     }
 
-    private void stopGameTimerPlayer1() {
+    private  void stopGameTimerPlayer1() {
+        System.out.println("stopGameTimer | Player 1 time ended " + playerTurn);
         if (timerTaskPlayer1 != null) {
+            System.out.println("NU E NULL");
             timerTaskPlayer1.cancel(true);
         }
         if (timerPlayer1 != null) {
@@ -245,8 +258,11 @@ public class ClientThread extends Thread {
         }
     }
 
-    private void stopGameTimerPlayer2() {
+    private  void stopGameTimerPlayer2() {
+        System.out.println("stopGameTimer | Player 2 time ended " + playerTurn);
+
         if (timerTaskPlayer2 != null) {
+            System.out.println("NU E NULL");
             timerTaskPlayer2.cancel(true);
         }
         if (timerPlayer2 != null) {
@@ -254,14 +270,15 @@ public class ClientThread extends Thread {
         }
     }
 
-    private void switchTurn() {
+    private synchronized void switchTurn() {
         if (playerTurn == GameState.PLAYER1_TURN) {
-
-            stopGameTimerPlayer1();
+            System.out.println("switchTurn | Player 1 turn ended " + playerTurn);
+            //stopGameTimerPlayer1();
             playerTurn = GameState.PLAYER2_TURN;
             startGameTimerPlayer2();
         } else {
-            stopGameTimerPlayer2();
+            System.out.println("switchTurn | Player 2 turn ended " + playerTurn);
+            //stopGameTimerPlayer2();
             playerTurn = GameState.PLAYER1_TURN;
             startGameTimerPlayer1();
         }

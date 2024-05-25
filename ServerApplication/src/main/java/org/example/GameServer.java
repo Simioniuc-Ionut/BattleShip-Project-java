@@ -1,5 +1,6 @@
 package org.example;
 
+import lombok.Setter;
 import org.example.exception.GameException;
 
 import java.io.IOException;
@@ -12,10 +13,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-//import lombok.Getter;
-//
-//@Getter
-//@Setter
+import lombok.Getter;
+
+@Getter
+@Setter
 public class GameServer {
     //constante
     public static final int BOARD_SIZE = 10;
@@ -326,33 +327,33 @@ public class GameServer {
         numberOfPlayers.decrementAndGet();
     }
 
-    public AtomicInteger getNumberOfPlayers() {
-        return numberOfPlayers;
-    }
-
-    public GameState getCurrentState() {
-        return currentState;
-    }
-
-    public void setCurrentState(GameState currentState) {
-        this.currentState = currentState;
-    }
-
-    public boolean isPlayer2IsReady() {
-        return player2IsReady;
-    }
-
-    public boolean isPlayer1IsReady() {
-        return player1IsReady;
-    }
-
-    public void setPlayer2IsReady(boolean player2IsReady) {
-        this.player2IsReady = player2IsReady;
-    }
-
-    public void setPlayer1IsReady(boolean player1IsReady) {
-        this.player1IsReady = player1IsReady;
-    }
+//    public AtomicInteger getNumberOfPlayers() {
+//        return numberOfPlayers;
+//    }
+//
+//    public GameState getCurrentState() {
+//        return currentState;
+//    }
+//
+//    public void setCurrentState(GameState currentState) {
+//        this.currentState = currentState;
+//    }
+//
+//    public boolean isPlayer2IsReady() {
+//        return player2IsReady;
+//    }
+//
+//    public boolean isPlayer1IsReady() {
+//        return player1IsReady;
+//    }
+//
+//    public void setPlayer2IsReady(boolean player2IsReady) {
+//        this.player2IsReady = player2IsReady;
+//    }
+//
+//    public void setPlayer1IsReady(boolean player1IsReady) {
+//        this.player1IsReady = player1IsReady;
+//    }
 
     public static void main(String[] args) {
         int serverPort = 12345;
