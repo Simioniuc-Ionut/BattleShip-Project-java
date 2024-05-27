@@ -1,7 +1,7 @@
 package org.example;
-import PrepareShips.ClientBoard;
-import PrepareShips.ControlPanelBottom;
-import PrepareShips.SettingsPlaceShip;
+import prepareShips.ClientBoard;
+import prepareShips.ControlPanelBottom;
+import prepareShips.SettingsPlaceShip;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,9 +10,10 @@ public class MainFrame extends JFrame {
     public SettingsPlaceShip settingsPlaceShip;
     ControlPanelBottom controlPanelBottom;
     ClientBoard clientBoard;
-
-    public MainFrame() {
-        super("PrepareShips");
+public GameClient client;
+    public MainFrame(GameClient client) {
+        super("prepareShips");
+        this.client = client;
         init();
     }
 

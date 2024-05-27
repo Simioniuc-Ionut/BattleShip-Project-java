@@ -1,12 +1,9 @@
-package PrepareShips;
+package prepareShips;
 import org.example.MainFrame;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.image.BufferedImage;
-import java.io.*;
 import java.util.ArrayList;
 
 public class ControlPanelBottom extends JPanel {
@@ -65,6 +62,12 @@ public class ControlPanelBottom extends JPanel {
                 clientBoard.cellColorsShips[i][j] = shipColor;
             }
         }
+
+        String message =fromRow + " " + fromCol + " " + toRow + " " + toCol; //trimit de unde sa inceapa pozitia si de unde sa se termine
+        // Trimiterea mesajului la server
+//        frame.gameClient.sendCommandToClient(message);
+        System.out.println(message);
+        frame.client.setAnswer(message);
 
         // Repictați panoul
         clientBoard.repaint();

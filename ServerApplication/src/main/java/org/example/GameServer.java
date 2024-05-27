@@ -62,6 +62,7 @@ public class GameServer {
         player1Ships = new ArrayList<>();
         player2Ships = new ArrayList<>();
 
+
     }
 
     private void initializeBoard(char[][] board) {
@@ -71,8 +72,16 @@ public class GameServer {
             }
         }
     }
-
-
+    public synchronized void startTimer(int playerId){
+        if(playerId == 1){
+            clientThreads.get(2).startTimerThread();
+            clientThreads.get(1).stopTimerThread();
+        }
+        else {
+            clientThreads.get(1).startTimerThread();
+            clientThreads.get(2).stopTimerThread();
+        }
+    }
 
     public synchronized void handleMove(int playerId, String move) {
 
@@ -130,7 +139,8 @@ public class GameServer {
         }
         Ships ship = new PatrolBoat();
         System.out.println("BARCA NOU " + ship.getShipSize());
-        displayServerBoard();
+       // displayServerBoard();
+
     }
 
     private void resetGame() {
@@ -147,6 +157,10 @@ public class GameServer {
 
         player1Ships = new ArrayList<>();
         player2Ships = new ArrayList<>();
+
+        clientThreads.get(1).gameReset();
+        clientThreads.get(2).gameReset();
+
     }
 
 
@@ -197,7 +211,7 @@ public class GameServer {
 
         //afisez doar ca sa vad eu mai bine; o sa sterg
         setShipOnBoard(playerId,board, shipLengthRows, shipLengthCols,ship);
-        displayServerBoard();
+        //displayServerBoard();
         return 0;
     }
 
@@ -226,7 +240,7 @@ public class GameServer {
 
             while (isRunning) {
                 try {
-                    if(clientThreads.size() < 2) {
+                      if(clientThreads.size() < 2) {
                         Socket clientSocket = serverSocket.accept();
                         System.out.println("New client connected");
                         PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
@@ -301,34 +315,6 @@ public class GameServer {
         clientThreads.remove(t.getPlayerId());
         numberOfPlayers.decrementAndGet();
     }
-
-//    public AtomicInteger getNumberOfPlayers() {
-//        return numberOfPlayers;
-//    }
-//
-//    public GameState getCurrentState() {
-//        return currentState;
-//    }
-//
-//    public void setCurrentState(GameState currentState) {
-//        this.currentState = currentState;
-//    }
-//
-//    public boolean isPlayer2IsReady() {
-//        return player2IsReady;
-//    }
-//
-//    public boolean isPlayer1IsReady() {
-//        return player1IsReady;
-//    }
-//
-//    public void setPlayer2IsReady(boolean player2IsReady) {
-//        this.player2IsReady = player2IsReady;
-//    }
-//
-//    public void setPlayer1IsReady(boolean player1IsReady) {
-//        this.player1IsReady = player1IsReady;
-//    }
 
     public static void main(String[] args) {
         int serverPort = 12345;

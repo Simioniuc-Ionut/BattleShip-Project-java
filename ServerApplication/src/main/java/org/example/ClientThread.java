@@ -36,17 +36,19 @@ public class ClientThread extends Thread {
     private int playerId;
     private boolean shipsPlaced;
 
-
+    private boolean playerFinishStatus;
+    private TimerThread timer;
 
     //timer
-    private long remainingTimePlayer1 = 30; // timpul initializat pentru player1 (60sec)
-    private long remainingTimePlayer2 = 30; // timpul initializat pentru player2 (60sec)
-    private final Object lock = new Object();//pt sincronizarea time player1 si player2
-
-    private ScheduledExecutorService timerPlayer1;
-    private ScheduledExecutorService timerPlayer2;
-    private ScheduledFuture<?> timerTaskPlayer1;
-    private ScheduledFuture<?> timerTaskPlayer2;
+//    private long remainingTimePlayer1 = 30; // timpul initializat pentru player1 (60sec)
+//    private long remainingTimePlayer2 = 30; // timpul initializat pentru player2 (60sec)
+//    private final Object lock = new Object();//pt sincronizarea time player1 si player2
+//
+//    private ScheduledExecutorService timerPlayer1;
+//    private ScheduledExecutorService timerPlayer2;
+//    private ScheduledFuture<?> timerTaskPlayer1;
+//    private ScheduledFuture<?> timerTaskPlayer2;
+    private int timerPlayer = 30;
 
     //private AtomicInteger state;
 
@@ -57,7 +59,22 @@ public class ClientThread extends Thread {
         this.playerId = playerId;
 
         this.shipsPlaced = false;
-    ;
+        playerFinishStatus=false;
+
+        this.timer = new TimerThread(timerPlayer,playerId);
+        timer.start();
+        //timer.startTimer();
+    }
+    public void startTimerThread(){
+        timer.startTimer();
+    }
+    public void stopTimerThread(){
+        timer.pauseTimer();
+    }
+    public void finishTimerThread(){
+        if(timer.isAlive()) {
+            timer.interrupt();
+        }
     }
     @Override
     public void run() {
@@ -86,7 +103,7 @@ public class ClientThread extends Thread {
                     gameServer.setCurrentState(GameState.WAITING_FOR_PLAYER);
                     //starea de incepere a jocului
 
-                    startGame();
+                    startGameMessage();
                     joinGame(in);
 //                    if(opponent == null){
 //                        sendMessage("Waiting for another player to join ...");
@@ -95,7 +112,7 @@ public class ClientThread extends Thread {
                 } else if(inputLine.equalsIgnoreCase("j")){
                     if(gameServer.getCurrentState() == GameState.WAITING_FOR_PLAYER) {
 
-                        startGame();
+                        startGameMessage();
                         joinGame(in);
 
 
@@ -106,16 +123,21 @@ public class ClientThread extends Thread {
                     System.out.println("Player turn " + playerTurn);
                         if(playerId == playerTurn.getStateCode()) {
 
+                            gameServer.startTimer(playerId);
+
+                            //System.out.println("Timer start valye " + this.timer.isStart());
                             submitMove(inputLine);
-                            System.out.println("Player " + playerId + " moved " + inputLine);
+                            System.out.println("Player " + playerId + " moved " + inputLine + " status timer " + this.timer.isStart() + " TIMPUL > " + timerPlayer);
 
                             switchTurn();//schimb turul
+
 
                         }else{
                             sendMessage("It's not your turn.");
                         }
-                } else if(gameServer.getCurrentState() == GameState.GAME_OVER) {
+                } else if(gameServer.getCurrentState() == GameState.GAME_OVER){
                     //jocul s a terminat.
+                    System.out.println("Sunt in game over ||| " + playerId);
                        gameIsFinished();
                        gameReset();
                 }else {
@@ -150,7 +172,13 @@ public class ClientThread extends Thread {
         makePlayerReady();
 
         checkReadyToStart();
+        gameServer.startTimer(playerId);
+        //instantiam timerul;
+//        this.timer = new TimerThread(timerPlayer,playerId);
+//        timer.start();
     }
+
+
     private void placeShip(BufferedReader in,Ships ship) throws IOException{
         sendMessage("Place your " + ship.getShipName() + " (length = " + ship.getShipSize() + "): ");
         int placed;
@@ -202,57 +230,67 @@ public class ClientThread extends Thread {
         }
     }
 
-    private  void startGameTimerPlayer1() {
-        timerPlayer1 = Executors.newSingleThreadScheduledExecutor();
-        timerTaskPlayer1 = timerPlayer1.scheduleAtFixedRate(() -> {
-            synchronized (lock) {
-                if(playerTurn == GameState.PLAYER1_TURN) {
-                    remainingTimePlayer1--;
-                   // System.out.println("Remaining time for Player 1: " + remainingTimePlayer1 + " seconds");
-                }
-                if (remainingTimePlayer1 == 0) {
-                    sendMessage("Game over. Your time ran out.");
-                    opponent.sendMessage("Game over. You win because your opponent's time ran out.");
-                    remainingTimePlayer1--;
-                    //stopGameTimerPlayer1();
-                }
-            }
-        }, 0, 1, TimeUnit.SECONDS);
+//    private  void startGameTimerPlayer1() {
+//        timerPlayer1 = Executors.newSingleThreadScheduledExecutor();
+//        timerTaskPlayer1 = timerPlayer1.scheduleAtFixedRate(() -> {
+//            synchronized (lock) {
+//                if(playerTurn == GameState.PLAYER1_TURN) {
+//                    remainingTimePlayer1--;
+//                   System.out.println("Remaining time for Player 1: " + remainingTimePlayer1 + " seconds");
+//                }
+//                if (remainingTimePlayer1 == 0) {
+//                    sendMessage("Game over. Your time ran out.");
+//                    opponent.sendMessage("Game over. You win because your opponent's time ran out.");
+//                    remainingTimePlayer1--;
+//                //stopGameTimerPlayer1();
+//                }
+//            }
+//        }, 0, 1, TimeUnit.SECONDS);
+//        //waitingThread();
+//        //stopGameTimerPlayer1();
+//    }
+//
+//    private  void startGameTimerPlayer2() {
+//        timerPlayer2 = Executors.newSingleThreadScheduledExecutor();
+//        timerTaskPlayer2 = timerPlayer2.scheduleAtFixedRate(() -> {
+//            synchronized (lock) {
+//                if(playerTurn == GameState.PLAYER2_TURN) {//OPRESC timerul daca nu e randul lui
+//                    remainingTimePlayer2--;
+//                   System.out.println("Remaining time for Player 2: " + remainingTimePlayer2 + " seconds");
+//                }
+//                if (remainingTimePlayer2 == 0) {
+//                    sendMessage("Game over. Your time ran out.");
+//                    //stopGameTimerPlayer2();
+//                    remainingTimePlayer2--;
+//                }
+//            }
+//        }, 0, 1, TimeUnit.SECONDS);
+//        //waitingThread();
+//        //stopGameTimerPlayer1();
+//    }
 
-//        waitingThread();
-//        stopGameTimerPlayer1();
-    }
-
-    private  void startGameTimerPlayer2() {
-        timerPlayer2 = Executors.newSingleThreadScheduledExecutor();
-        timerTaskPlayer2 = timerPlayer2.scheduleAtFixedRate(() -> {
-            synchronized (lock) {
-                if(playerTurn == GameState.PLAYER2_TURN) {//OPRESC timerul daca nu e randul lui
-                    remainingTimePlayer2--;
-                  //  System.out.println("Remaining time for Player 2: " + remainingTimePlayer2 + " seconds");
-                }
-                if (remainingTimePlayer2 == 0) {
-                    sendMessage("Game over. Your time ran out.");
-                    //stopGameTimerPlayer2();
-                    remainingTimePlayer2--;
-                }
-            }
-        }, 0, 1, TimeUnit.SECONDS);
-//        waitingThread();
-//        stopGameTimerPlayer1();
-    }
+//    private void switchTurn(){
+//        if(playerTurn.getStateCode() == playerId){
+//           this.timer.startTimer();
+//           sendMessage("Is your turn " + playerId);
+//
+//        }else{
+//            this.timer.pauseTimer();
+//        }
+//    }
 
     private synchronized void switchTurn() {
         if (playerTurn == GameState.PLAYER1_TURN) {
             System.out.println("switchTurn | Player 1 turn ended " + playerTurn);
             //stopGameTimerPlayer1();
             playerTurn = GameState.PLAYER2_TURN;
-            startGameTimerPlayer2();
+
+           // startGameTimerPlayer2();
         } else {
             System.out.println("switchTurn | Player 2 turn ended " + playerTurn);
             //stopGameTimerPlayer2();
             playerTurn = GameState.PLAYER1_TURN;
-            startGameTimerPlayer1();
+            //startGameTimerPlayer1();
         }
     }
 
@@ -298,8 +336,10 @@ public class ClientThread extends Thread {
 //            //gameServer.addWaitingPlayer(opponent);
 //        }
     }
+
     private void closeClientSocket() {
         try {
+            System.out.println("Socket was closed for player " + playerId);
             gameServer.playerLeft(this);
             clientSocket.close();
 
@@ -333,7 +373,7 @@ public class ClientThread extends Thread {
 //        return opponent;
 //    }
 
-    public void startGame() {
+    public void startGameMessage() {
         sendMessage("1-Both players connected. Type 'join game' to start.");
         if (opponent != null) {
             opponent.sendMessage("2-Both players connected. Type 'join game' to start.");
@@ -357,9 +397,15 @@ public class ClientThread extends Thread {
 
     }
 
-    private void gameReset() {
-        remainingTimePlayer1 = 30;
-        remainingTimePlayer2 = 30;
+    public void gameReset() {
+        //remainingTimePlayer1 = 30;
+        //remainingTimePlayer2 = 30;
+        finishTimerThread();
+        //Redeschidem timerul
+        this.timer = new TimerThread(timerPlayer,playerId);
+        timer.start();
+
+        timerPlayer =30;
         playerTurn = GameState.PLAYER1_TURN;
         sendMessage("Game has reseted");
            CARRIER_LENGTH = new Carrier();
@@ -367,6 +413,9 @@ public class ClientThread extends Thread {
            DESTROYER_LENGTH = new Destroyer();
            SUBMARINE_LENGTH = new Submarine();
            this.PATROL_BOAT_LENGTH = new PatrolBoat();
+
+        System.out.println("Am dat finish la threaduri");
+
 
     }
 

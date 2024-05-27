@@ -1,4 +1,4 @@
-package PrepareShips;
+package prepareShips;
 
 import java.awt.*;
 

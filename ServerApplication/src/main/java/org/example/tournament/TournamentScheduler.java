@@ -1,4 +1,4 @@
-package org.example;
+package org.example.tournament;
 
 import java.util.*;
 public class TournamentScheduler {

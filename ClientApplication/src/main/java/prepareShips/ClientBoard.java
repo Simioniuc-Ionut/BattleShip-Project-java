@@ -1,10 +1,9 @@
-package PrepareShips;
+package prepareShips;
 
 import org.example.MainFrame;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 
 public class ClientBoard extends JPanel {
     private final MainFrame frame;

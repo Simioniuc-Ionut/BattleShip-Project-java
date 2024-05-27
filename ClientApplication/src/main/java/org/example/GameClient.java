@@ -5,14 +5,17 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.concurrent.Semaphore;
 
 public class GameClient {
     private final String serverAddress;
     private final int serverPort;
-
+    private String answer;
+    private Semaphore semaphore = new Semaphore(0);
     public GameClient(String serverAddress, int serverPort) {
         this.serverAddress = serverAddress;
         this.serverPort = serverPort;
+        new MainFrame(this).setVisible(true);
     }
 
     public void start() {
@@ -33,11 +36,19 @@ public class GameClient {
                 Thread serverListener = createServerListenerThread(in);
                 serverListener.start();
 
-                String userInputLine;
-                while ((userInputLine = userInput.readLine()) != null) {
-                    out.println(userInputLine);
-
-                    if (userInputLine.equalsIgnoreCase("exit")) {
+//                String userInputLine;
+//                while ((userInputLine = userInput.readLine()) != null) {
+//                    out.println(userInputLine);
+//
+//                    if (userInputLine.equalsIgnoreCase("exit")) {
+//                        System.out.println("Client response: Client exit");
+//                        break;
+//                    }
+//                }
+                while (true){
+                    semaphore.acquire();
+                    out.println(answer);
+                    if (answer.equalsIgnoreCase("exit")) {
                         System.out.println("Client response: Client exit");
                         break;
                     }
@@ -51,6 +62,11 @@ public class GameClient {
         }
     }
 
+    public void setAnswer(String answer) {
+        System.out.println("Client response: " + answer);
+        this.answer = answer;
+        semaphore.release();
+    }
     private Thread createServerListenerThread(BufferedReader in) {
         return new Thread(() -> {
             try {

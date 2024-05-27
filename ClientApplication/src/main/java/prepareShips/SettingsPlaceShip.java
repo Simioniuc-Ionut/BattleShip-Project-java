@@ -1,4 +1,4 @@
-package PrepareShips;
+package prepareShips;
 
 import org.example.MainFrame;
 
@@ -18,6 +18,9 @@ public class SettingsPlaceShip extends JPanel {
     JSpinner toRow;
     JSpinner toColumn;
 
+    JPanel messagePanel = new JPanel(new BorderLayout());
+    // afisarea mesajului de la server dupa apasarea butonului
+    JLabel messageLabel = new JLabel();
 
     public SettingsPlaceShip(MainFrame frame) {
         this.frame = frame;
@@ -45,6 +48,8 @@ public class SettingsPlaceShip extends JPanel {
         // Creare un nou font
         Font newFont = new Font("default", Font.BOLD, 25);
 
+        //variabila cu date ex :A1 A2 A3 .... " STring
+        //VARIBLA o trimiti la server ,
         // Setare font pentru JLabel
         placeShipFrom.setFont(newFont);
         placeShipTo.setFont(newFont);
@@ -96,8 +101,17 @@ public class SettingsPlaceShip extends JPanel {
         add(toPanel);
 
 
-        //configure listeners for all buttons
-//        exitBtn.addActionListener(this::exitGame);
-//        createBtn.addActionListener(this::createGame);
+//mesaj de la server
+        messagePanel.setBackground(new Color(0, 0, 0, 123));//setare backgorund
+        messageLabel.setForeground(Color.WHITE); // Setează culoarea textului la alb
+        messageLabel.setHorizontalAlignment(JLabel.CENTER); // Aliniază textul la centru
+//        messagePanel.setPreferredSize(new Dimension(messagePanel.getPreferredSize().width, 10)); //nu merge
+
+
+        // Adăugarea JLabel la JPanel
+        messagePanel.add(messageLabel, BorderLayout.CENTER);
+
+        // Adăugarea JPanel la JFrame
+        add(messagePanel);
     }
 }
