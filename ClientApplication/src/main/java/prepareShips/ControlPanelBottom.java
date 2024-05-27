@@ -93,8 +93,6 @@ public class ControlPanelBottom extends JPanel {
                 }
             }
 
-            // Repictați panoul
-            clientBoard.repaint();
 
             // Trece la urmatoarea navă
             currentShipIndex++;
@@ -108,6 +106,40 @@ public class ControlPanelBottom extends JPanel {
             System.out.println("Pozitie invalida ,am intrat pe validare fals");
         }
 
+        //imi afiseaza mesajul de la server
+        String serverMessage = getMessage();
+        System.out.println("mesaj server 1" + serverMessage);
+        if (serverMessage != null) {
+            System.out.println("mesaj server " + serverMessage);
+            settingsPlaceShip.messageTextArea.setText(serverMessage);
+            // Asigurați-vă că JTextArea este opac și are culoarea de fundal corectă
+            settingsPlaceShip.messageTextArea.setOpaque(true);
+            settingsPlaceShip.messageTextArea.setBackground(new Color(0, 0, 0, 123));
+
+            // Forțează repictarea JTextArea
+            settingsPlaceShip.messageTextArea.repaint();
+
+            // Revalidate and repaint the containing JPanel
+            settingsPlaceShip.revalidate();
+            settingsPlaceShip.repaint();
+        }
+
+        // Repictați panoul
+        clientBoard.repaint();
+
+    }
+    private String getMessage() {
+        Semaphore lock = frame.client.getMessageLock();
+        synchronized (lock) {
+            try {
+                lock.acquire(); // Așteaptă până când primește notify() de la server
+                return frame.client.getMessage();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                //System.out.println("Thread intrerupt in validation from SettingsPlaceShip");
+                return "Thread intrerupt in validation from SettingsPlaceShip";
+            }
+        }
     }
 
     private boolean validationPositionOfShip() {

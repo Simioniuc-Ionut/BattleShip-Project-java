@@ -99,7 +99,7 @@ public class GameClient {
                         //putem notifica
                        lock.release();
                     }
-                    setMessage(message);
+                    setMessage(serverResponse);
                     messageLock.release();
 
                 }

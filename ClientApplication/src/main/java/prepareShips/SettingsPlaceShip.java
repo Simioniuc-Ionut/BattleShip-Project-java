@@ -96,6 +96,12 @@ public class SettingsPlaceShip extends JPanel {
         sizePanel.add(textSizeShip);
         sizePanel.setBorder(new EmptyBorder(0,0,0,100));
 
+        // Create a new panel to hold the serverResponse label and add padding to it
+        JPanel serverResponsePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        serverResponsePanel.add(serverResponse);
+        serverResponsePanel.setBorder(new EmptyBorder(0, 0, 0, 100)); // Add padding to the left
+
+
         // Setare layout pentru acest JPanel ca BoxLayout pe verticală
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -109,16 +115,12 @@ public class SettingsPlaceShip extends JPanel {
         add(Box.createVerticalStrut(4)); // Adăugați un strut vertical între panouri
         add(toPanel);
         add(Box.createVerticalStrut(80));
-        add(serverResponse);
-        serverResponse.setBorder(new EmptyBorder(0,0,0,100));
+        add(serverResponsePanel);
         add(Box.createVerticalStrut(4));
 
 
         //mesaj de la server
         messagePanel.setBorder(new EmptyBorder(0,0,0,100));// nu vreau ca jpanelul sa fie lipit de margine dar nu functioneaza
-        messagePanel.setBorder(new LineBorder(new Color(0, 0, 0, 123), 10));// ca textul sa nu fie lipit de margine
-
-        messagePanel.setBackground(new Color(0, 0, 0, 123));//setare backgorund
 
 // Crearea unui nou JTextArea
         messageTextArea = new JTextArea();
@@ -127,6 +129,7 @@ public class SettingsPlaceShip extends JPanel {
         messageTextArea.setEditable(false); //nu poate fi modificat
         messageTextArea.setForeground(Color.WHITE);
         messageTextArea.setBackground(new Color(0, 0, 0, 123));
+        messageTextArea.setBorder(new EmptyBorder(10, 10, 10, 10));
 
 // Adăugați textul primit de la server
         String text = "Response Serverdrhgrdhbbbfd bfhdtht dgnhxjyjyymjhxj ymgmgymtgynmgjmyjmgy";
@@ -143,17 +146,5 @@ public class SettingsPlaceShip extends JPanel {
 
     }
 
-    private String getMessage() {
-        Semaphore lock = frame.client.getMessageLock();
-        synchronized (lock) {
-            try {
-                lock.acquire(); // Așteaptă până când primește notify() de la server
-                return frame.client.getMessage();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                //System.out.println("Thread intrerupt in validation from SettingsPlaceShip");
-                return "Thread intrerupt in validation from SettingsPlaceShip";
-            }
-        }
-    }
+
 }
