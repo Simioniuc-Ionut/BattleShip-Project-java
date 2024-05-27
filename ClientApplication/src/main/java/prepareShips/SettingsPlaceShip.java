@@ -1,7 +1,5 @@
 package prepareShips;
 
-import org.example.MainFrame;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -17,7 +15,6 @@ public class SettingsPlaceShip extends JPanel {
     JSpinner fromColumn;
     JSpinner toRow;
     JSpinner toColumn;
-
     JPanel messagePanel = new JPanel(new BorderLayout());
     // afisarea mesajului de la server dupa apasarea butonului
     JLabel messageLabel = new JLabel();
@@ -99,6 +96,19 @@ public class SettingsPlaceShip extends JPanel {
         add(fromPanel);
         add(Box.createVerticalStrut(0)); // Adăugați un strut vertical între panouri
         add(toPanel);
+
+        //mesaj de la server
+        messagePanel.setBackground(new Color(0, 0, 0, 123));//setare backgorund
+        messageLabel.setForeground(Color.WHITE); // Setează culoarea textului la alb
+        messageLabel.setHorizontalAlignment(JLabel.CENTER); // Aliniază textul la centru
+//        messagePanel.setPreferredSize(new Dimension(messagePanel.getPreferredSize().width, 10)); //nu merge
+
+
+        // Adăugarea JLabel la JPanel
+        messagePanel.add(messageLabel, BorderLayout.CENTER);
+
+        // Adăugarea JPanel la JFrame
+        add(messagePanel);
 
 
 //mesaj de la server

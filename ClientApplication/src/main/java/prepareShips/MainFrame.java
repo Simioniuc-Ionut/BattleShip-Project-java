@@ -1,23 +1,27 @@
-package org.example;
+package prepareShips;
+import org.example.GameClient;
 import prepareShips.ClientBoard;
 import prepareShips.ControlPanelBottom;
 import prepareShips.SettingsPlaceShip;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class MainFrame extends JFrame {
     public SettingsPlaceShip settingsPlaceShip;
     ControlPanelBottom controlPanelBottom;
     ClientBoard clientBoard;
-public GameClient client;
+    public GameClient client;
+
     public MainFrame(GameClient client) {
         super("prepareShips");
         this.client = client;
-        init();
+        initPrepareShips();
     }
 
-    private void init() {
+    private void initPrepareShips() {
         setDefaultCloseOperation(EXIT_ON_CLOSE);//inchidere fereastra
 
         //componente pentru fereastra de plasare nave
@@ -34,7 +38,7 @@ public GameClient client;
         //setari vizualizare fereastra
         pack(); // Ajustează dimensiunea ferestrei la dimensiunea preferată a componentelor sale
         setSize(new Dimension(1000, 700));
-        setVisible(true);
+        setVisible(false);
     }
 
 

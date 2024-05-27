@@ -193,6 +193,7 @@ public class ClientThread extends Thread {
 
                 sendMessage(e.getMessage());
 
+
             }
         } while (placed < 0);
 

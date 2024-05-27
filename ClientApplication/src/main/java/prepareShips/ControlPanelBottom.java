@@ -1,5 +1,4 @@
 package prepareShips;
-import org.example.MainFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,6 +13,7 @@ public class ControlPanelBottom extends JPanel {
     ArrayList<Ship> shipsList = new ArrayList<>();// o lista cu cele 5 nave
     int currentShipIndex = 0;// numararea navelor, pentru a sti nava curenta
 
+
     public ControlPanelBottom(MainFrame frame, SettingsPlaceShip settingsPlaceShip, ClientBoard clientBoard) { // Modificați constructorul pentru a include ClientBoard
         this.frame = frame;
         this.settingsPlaceShip = settingsPlaceShip; // Setează SettingsPlaceShip
@@ -24,9 +24,12 @@ public class ControlPanelBottom extends JPanel {
         shipsList.add(new Ship("Submarine",3, Color.YELLOW));
         shipsList.add(new Ship("Patrol Boat",2, Color.PINK));
 
+
+
         init();
     }
     private void init() {
+        //afisare mesaj de la server
 
         //adaug butonul de adaugare nava
         add(addShipBtn);
@@ -53,6 +56,7 @@ public class ControlPanelBottom extends JPanel {
         int toRow = toRowLetter.charAt(0) - 'A';
         int toCol = (Integer) settingsPlaceShip.toColumn.getValue() - 1;
 
+// if(validare) else afisez in JPanel
         // Obtine culoarea navei curente
         Color shipColor = shipsList.get(currentShipIndex).colorShip;
 
@@ -63,11 +67,25 @@ public class ControlPanelBottom extends JPanel {
             }
         }
 
-        String message =fromRow + " " + fromCol + " " + toRow + " " + toCol; //trimit de unde sa inceapa pozitia si de unde sa se termine
-        // Trimiterea mesajului la server
-//        frame.gameClient.sendCommandToClient(message);
-        System.out.println(message);
-        frame.client.setAnswer(message);
+        //Aici creez mesajul cu taote pozitiile navei pentru a fi trimis corect catre CLIENT->SERVER
+        StringBuilder messageToClient = new StringBuilder();
+
+        if (fromRow == toRow) { // Daca randurile sunt aceleasi (ex. A1 la A5)
+            for (int i = fromCol; i <= toCol; i++) {
+                messageToClient.append((char) (fromRow + 'A'));
+                messageToClient.append(i + 1);
+                messageToClient.append(" ");
+            }
+        } else if (fromCol == toCol) { // Daca coloanele sunt aceleasi (ex. A1 la D1)
+            for (int i = fromRow; i <= toRow; i++) {
+                messageToClient.append((char) (i + 'A'));
+                messageToClient.append(fromCol + 1);
+                messageToClient.append(" ");
+            }
+        }
+
+        //trimit catre client mesajul ca sa ajunge dupa la server
+        frame.client.setAnswer(messageToClient.toString().trim());
 
         // Repictați panoul
         clientBoard.repaint();

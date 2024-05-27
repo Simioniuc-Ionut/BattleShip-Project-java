@@ -1,7 +1,5 @@
 package prepareShips;
 
-import org.example.MainFrame;
-
 import javax.swing.*;
 import java.awt.*;
 

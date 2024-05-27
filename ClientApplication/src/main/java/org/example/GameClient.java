@@ -1,5 +1,7 @@
 package org.example;
 
+import createOrJoinGame.MainFrameOne;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -15,7 +17,7 @@ public class GameClient {
     public GameClient(String serverAddress, int serverPort) {
         this.serverAddress = serverAddress;
         this.serverPort = serverPort;
-        new MainFrame(this).setVisible(true);
+        new MainFrameOne(this).setVisible(true);
     }
 
     public void start() {
