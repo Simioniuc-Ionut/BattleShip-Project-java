@@ -191,8 +191,8 @@ public class ClientThread extends Thread {
             } catch (GameException e ){
                 placed = -1; // ca sa ramana in while
 
-                sendMessage(e.getMessage());
-
+                //sendMessage(e.getMessage());
+                sendMessage("Position-Failed");
 
             }
         } while (placed < 0);
