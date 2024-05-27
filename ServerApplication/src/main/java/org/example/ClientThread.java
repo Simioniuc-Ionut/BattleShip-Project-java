@@ -77,6 +77,10 @@ public class ClientThread extends Thread {
                     out.println("Server stopped");
                     gameServer.stop();
                     break;
+                }else if(inputLine.equals("t")){
+                     gameServer.setCurrentState(GameState.GAME_TOURNAMENT);
+                      gameServer.startTournament();
+
                 } else if(inputLine.equalsIgnoreCase("c") && gameServer.getCurrentState() == GameState.GAME_NOT_CREATED){
 
                     gameServer.setCurrentState(GameState.WAITING_FOR_PLAYER);

@@ -7,7 +7,8 @@ public enum GameState{
     GAME_READY_TO_MOVE(4),
     PLAYER1_TURN(1),
     PLAYER2_TURN(2),
-    GAME_OVER(5);
+    GAME_OVER(5),
+    GAME_TOURNAMENT(6);
 
     private int stateCode;
 

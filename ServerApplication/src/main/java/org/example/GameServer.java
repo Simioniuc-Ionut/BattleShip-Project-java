@@ -343,4 +343,7 @@ public class GameServer {
     public ClientThread getPlayer(int i) {
         return clientThreads.get(i);
     }
+
+    public void startTournament() {
+    }
 }
