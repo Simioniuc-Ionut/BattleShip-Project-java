@@ -2,6 +2,7 @@ package prepareShips;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.concurrent.Semaphore;
 
 public class SettingsPlaceShip extends JPanel {
     final MainFrame frame;
@@ -123,5 +124,19 @@ public class SettingsPlaceShip extends JPanel {
 
         // Adăugarea JPanel la JFrame
         add(messagePanel);
+    }
+
+    private String getMessage() {
+        Semaphore lock = frame.client.getMessageLock();
+        synchronized (lock) {
+            try {
+                lock.acquire(); // Așteaptă până când primește notify() de la server
+                return frame.client.getMessage();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                //System.out.println("Thread intrerupt in validation from SettingsPlaceShip");
+                return "Thread intrerupt in validation from SettingsPlaceShip";
+            }
+        }
     }
 }

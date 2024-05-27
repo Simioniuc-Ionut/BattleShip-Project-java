@@ -186,13 +186,13 @@ public class ClientThread extends Thread {
             try {
 
                 String inputLine = in.readLine();
-                placed = gameServer.validateShipPosition(playerId, inputLine, ship);
+                placed   = gameServer.validateShipPosition(playerId, inputLine, ship);
 
-            } catch (GameException e ){
+                sendMessage("Cor:" + "Ship is correctly placed");
+            } catch (GameException | StringIndexOutOfBoundsException |NullPointerException e ){
                 placed = -1; // ca sa ramana in while
 
-                //sendMessage(e.getMessage());
-                sendMessage("Position-Failed");
+                sendMessage("Err:" + e.getMessage());
 
             }
         } while (placed < 0);

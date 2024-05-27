@@ -1,6 +1,8 @@
 package org.example;
 
 import createOrJoinGame.MainFrameOne;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,10 +16,22 @@ public class GameClient {
     private final int serverPort;
     private String answer;
     private Semaphore semaphore = new Semaphore(0);
+    private  Semaphore lock = new Semaphore(0);
+    @Getter
+    private boolean positionConfirmed = true;
+    @Getter
+    @Setter
+    private String message;
+    @Getter
+    private Semaphore messageLock = new Semaphore(0);
     public GameClient(String serverAddress, int serverPort) {
         this.serverAddress = serverAddress;
         this.serverPort = serverPort;
         new MainFrameOne(this).setVisible(true);
+    }
+
+    public Semaphore getLock() {
+        return lock;
     }
 
     public void start() {
@@ -75,6 +89,19 @@ public class GameClient {
                 String serverResponse;
                 while ((serverResponse = in.readLine()) != null) {
                     System.out.println("Server response: " + serverResponse);
+                    if (serverResponse.startsWith("Err:")){
+                        positionConfirmed=false;
+                        //putem notifica
+                        lock.release();
+
+                    }else if(serverResponse.startsWith("Cor:")){
+                        positionConfirmed=true;
+                        //putem notifica
+                       lock.release();
+                    }
+                    setMessage(message);
+                    messageLock.release();
+
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -89,6 +116,5 @@ public class GameClient {
             }
         });
     }
-
 
 }

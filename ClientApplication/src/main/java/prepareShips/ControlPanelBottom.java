@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.concurrent.Semaphore;
 
 public class ControlPanelBottom extends JPanel {
     final MainFrame frame;
@@ -56,16 +57,6 @@ public class ControlPanelBottom extends JPanel {
         int toRow = toRowLetter.charAt(0) - 'A';
         int toCol = (Integer) settingsPlaceShip.toColumn.getValue() - 1;
 
-// if(validare) else afisez in JPanel
-        // Obtine culoarea navei curente
-        Color shipColor = shipsList.get(currentShipIndex).colorShip;
-
-        // Seteaza culoarea celulelor pe baza culorii navei
-        for (int i = fromRow; i <= toRow; i++) {
-            for (int j = fromCol; j <= toCol; j++) {
-                clientBoard.cellColorsShips[i][j] = shipColor;
-            }
-        }
 
         //Aici creez mesajul cu taote pozitiile navei pentru a fi trimis corect catre CLIENT->SERVER
         StringBuilder messageToClient = new StringBuilder();
@@ -87,19 +78,51 @@ public class ControlPanelBottom extends JPanel {
         //trimit catre client mesajul ca sa ajunge dupa la server
         frame.client.setAnswer(messageToClient.toString().trim());
 
-        // Repictați panoul
-        clientBoard.repaint();
+        // if(validare) else afisez in JPanel
 
-        // Trece la urmatoarea navă
-        currentShipIndex++;
-        if (currentShipIndex < shipsList.size()) {
-            Ship nextShip = shipsList.get(currentShipIndex);
-            // Actualizeaza numele si lungimea afișate cu setText
-            settingsPlaceShip.textNameShip.setText(nextShip.name);
-            settingsPlaceShip.textSizeShip.setText(Integer.toString(nextShip.size));
+        if(validationPositionOfShip()) {
+
+
+            // Obtine culoarea navei curente
+            Color shipColor = shipsList.get(currentShipIndex).colorShip;
+
+            // Seteaza culoarea celulelor pe baza culorii navei
+            for (int i = fromRow; i <= toRow; i++) {
+                for (int j = fromCol; j <= toCol; j++) {
+                    clientBoard.cellColorsShips[i][j] = shipColor;
+                }
+            }
+
+            // Repictați panoul
+            clientBoard.repaint();
+
+            // Trece la urmatoarea navă
+            currentShipIndex++;
+            if (currentShipIndex < shipsList.size()) {
+                Ship nextShip = shipsList.get(currentShipIndex);
+                // Actualizeaza numele si lungimea afișate cu setText
+                settingsPlaceShip.textNameShip.setText(nextShip.name);
+                settingsPlaceShip.textSizeShip.setText(Integer.toString(nextShip.size));
+            }
+        }else {
+            System.out.println("Pozitie invalida ,am intrat pe validare fals");
         }
+
     }
 
+    private boolean validationPositionOfShip() {
+        Semaphore lock = frame.client.getLock();
+        synchronized (lock) {
+            try {
+                lock.acquire(); // Așteaptă până când primește notify() de la server
+                return frame.client.isPositionConfirmed();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                System.out.println("Thread intrerupt in validation");
+                return false;
+            }
+        }
+    }
 
 
 }

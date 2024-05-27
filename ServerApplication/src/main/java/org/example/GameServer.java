@@ -164,7 +164,7 @@ public class GameServer {
     }
 
 
-    public synchronized int validateShipPosition(int playerId, String move, Ships ship) throws GameException{
+    public synchronized int validateShipPosition(int playerId, String move, Ships ship) throws GameException,StringIndexOutOfBoundsException,NullPointerException{
         char[][] board = playerId == 1 ? serverBoardPlayer1 : serverBoardPlayer2;
         String[] positions = move.split(" ");
 
