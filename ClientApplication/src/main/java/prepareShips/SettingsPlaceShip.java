@@ -132,7 +132,8 @@ public class SettingsPlaceShip extends JPanel {
         messageTextArea.setBorder(new EmptyBorder(10, 10, 10, 10));
 
 // Adăugați textul primit de la server
-        String text = "Response Serverdrhgrdhbbbfd bfhdtht dgnhxjyjyymjhxj ymgmgymtgynmgjmyjmgy";
+        String text = getMessage();
+        System.out.println("Textul primit de la server este: " + text);
         messageTextArea.setText(text);
 
 // Adăugarea JTextArea la JPanel
