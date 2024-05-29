@@ -1,23 +1,20 @@
-package prepareShips;
+package startGame;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class ClientBoard extends JPanel {
-    private final MainFrame frame;
+public class ClientBoardBattle extends JPanel {
+    private final MainFrameBattle frame;
     int cellSize = 40; // dimensiune fiecare celula
     int startX = 40; // pozitie start pe axa x a ferestrei
     int startY = 110; // pozitie start pe axa y a ferestrei
     Color[][] cellColorsShips = new Color[10][10];// pentru a stii starea fiecarei celule din matrice
 
-    public ClientBoard(MainFrame frame) {
+    public ClientBoardBattle(MainFrameBattle frame, Color[][] initialCellColors) {
         this.frame = frame;
-        // Inițializați toate celulele cu culoarea albă
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 10; j++) {
-                cellColorsShips[i][j] = Color.WHITE;
-            }
-        }
+        //preiau tabela colorata (cu navele plasate) din MainFrame->ClientBoard
+
+        this.cellColorsShips = initialCellColors;
         init();
     }
 
@@ -29,6 +26,7 @@ public class ClientBoard extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D board = (Graphics2D) g;//convertire pentru a utiliza functionalitati mai avansate
+
 
         // Deseneaza etichetele coloanelor (1-10)
         for (int i = 1; i <= 10; i++) {
@@ -54,7 +52,6 @@ public class ClientBoard extends JPanel {
             }
         }
 
-
         // Deseneaza grila
         board.setColor(Color.BLACK); // Seteaza culoarea grilei la negru
         for (int i = 0; i <= 10; i++) {
@@ -63,9 +60,8 @@ public class ClientBoard extends JPanel {
             // Linii verticale
             board.drawLine(startX + i * cellSize, startY, startX + i * cellSize, startY + 10 * cellSize);
         }
+
     }
-
-
 
 
 }

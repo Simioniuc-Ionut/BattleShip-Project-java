@@ -1,27 +1,46 @@
-package prepareShips;
+package startGame;
+
+import prepareShips.MainFrame;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
-public class ClientBoard extends JPanel {
-    private final MainFrame frame;
+public class OpponentBoard extends JPanel {
+    private final MainFrameBattle frame;
     int cellSize = 40; // dimensiune fiecare celula
     int startX = 40; // pozitie start pe axa x a ferestrei
     int startY = 110; // pozitie start pe axa y a ferestrei
     Color[][] cellColorsShips = new Color[10][10];// pentru a stii starea fiecarei celule din matrice
 
-    public ClientBoard(MainFrame frame) {
+    public OpponentBoard(MainFrameBattle frame) {
         this.frame = frame;
         // Inițializați toate celulele cu culoarea albă
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
-                cellColorsShips[i][j] = Color.WHITE;
+                cellColorsShips[i][j] = Color.black;
             }
         }
         init();
     }
 
     final void init() {
+      //mouse listener
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                //tratare eveniment click casuta din matrice
+                int row = (e.getY() - startY) / cellSize;
+                int col = (e.getX() - startX) / cellSize;
+
+                //colorare casuta cu rosu
+                cellColorsShips[row][col] = Color.red;
+
+                //repaint pentru a actualizare
+                repaint();
+            }
+        });
 
     }
 
@@ -56,7 +75,7 @@ public class ClientBoard extends JPanel {
 
 
         // Deseneaza grila
-        board.setColor(Color.BLACK); // Seteaza culoarea grilei la negru
+        board.setColor(Color.white); // Seteaza culoarea grilei la negru
         for (int i = 0; i <= 10; i++) {
             // Linii orizontale
             board.drawLine(startX, startY + i * cellSize, startX + 10 * cellSize, startY + i * cellSize);
@@ -64,8 +83,6 @@ public class ClientBoard extends JPanel {
             board.drawLine(startX + i * cellSize, startY, startX + i * cellSize, startY + 10 * cellSize);
         }
     }
-
-
 
 
 }

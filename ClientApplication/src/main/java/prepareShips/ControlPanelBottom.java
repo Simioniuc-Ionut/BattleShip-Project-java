@@ -1,5 +1,8 @@
 package prepareShips;
 
+import org.example.GameClient;
+import startGame.MainFrameBattle;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -9,9 +12,11 @@ import java.util.concurrent.Semaphore;
 public class ControlPanelBottom extends JPanel {
     final MainFrame frame;
     JButton addShipBtn = new JButton("Add Ship");
+    JButton readyForGameBtn = new JButton("Ready");
     SettingsPlaceShip settingsPlaceShip; // Adăugați acest câmp
     ClientBoard clientBoard; // Adăugați acest câmp
     ArrayList<Ship> shipsList = new ArrayList<>();// o lista cu cele 5 nave
+    GameClient client;
     int currentShipIndex = 0;// numararea navelor, pentru a sti nava curenta
 
 
@@ -25,29 +30,36 @@ public class ControlPanelBottom extends JPanel {
         shipsList.add(new Ship("Submarine",3, Color.YELLOW));
         shipsList.add(new Ship("Patrol Boat",2, Color.PINK));
 
-
-
         init();
     }
     private void init() {
-        //afisare mesaj de la server
 
         //adaug butonul de adaugare nava
         add(addShipBtn);
-        // Creare un nou font
+        //buton dupa ce plaseaza ultima nava pt a incepe jocul
+        add(readyForGameBtn);
+        readyForGameBtn.setVisible(false);
+
+        //style buton
         Font newFont = new Font("default", Font.BOLD, 20);
         addShipBtn.setFont(newFont);
         addShipBtn.setPreferredSize(new Dimension(150, 70));
         addShipBtn.setBackground(Color.darkGray);
         addShipBtn.setForeground(Color.WHITE);//culoare text
 
-        //configure listeners for all buttons
-        addShipBtn.addActionListener(this::addShipOnBoard);
+        readyForGameBtn.setFont(newFont);
+        readyForGameBtn.setPreferredSize(new Dimension(150, 70));
+        readyForGameBtn.setBackground(Color.darkGray);
+        readyForGameBtn.setForeground(Color.WHITE);//culoare text
+
+        //configurare listeners
+        addShipBtn.addActionListener(this::listenerAddShipOnBoard);
+        readyForGameBtn.addActionListener(this::listenerReadyForGame);
 
 
     }
 
-    private void addShipOnBoard(ActionEvent e) {
+    private void listenerAddShipOnBoard(ActionEvent e) {
         // Obțineți valorile din spinner
         String fromRowLetter = (String) settingsPlaceShip.fromRow.getValue();
         int fromRow = fromRowLetter.charAt(0) - 'A'; // convertire de la litera la nr
@@ -74,57 +86,60 @@ public class ControlPanelBottom extends JPanel {
                 messageToClient.append(" ");
             }
         }
-
         //trimit catre client mesajul ca sa ajunge dupa la server
         frame.client.setAnswer(messageToClient.toString().trim());
 
-        // if(validare) else afisez in JPanel
-
+        // validare pozitie nava plasata
         if(validationPositionOfShip()) {
+                // Obtine culoarea navei curente
+                Color shipColor = shipsList.get(currentShipIndex).colorShip;
 
+                // Seteaza culoarea celulelor pe baza culorii navei
+                for (int i = fromRow; i <= toRow; i++) {
+                    for (int j = fromCol; j <= toCol; j++) {
+                        clientBoard.cellColorsShips[i][j] = shipColor;
+                    }
+                }
 
-            // Obtine culoarea navei curente
-            Color shipColor = shipsList.get(currentShipIndex).colorShip;
-
-            // Seteaza culoarea celulelor pe baza culorii navei
-            for (int i = fromRow; i <= toRow; i++) {
-                for (int j = fromCol; j <= toCol; j++) {
-                    clientBoard.cellColorsShips[i][j] = shipColor;
+                // Trece la urmatoarea navă
+                currentShipIndex++;
+                if (currentShipIndex < shipsList.size()) {
+                    Ship nextShip = shipsList.get(currentShipIndex);
+                    // Actualizeaza numele si lungimea afișate cu setText
+                    settingsPlaceShip.textNameShip.setText(nextShip.name);
+                    settingsPlaceShip.textSizeShip.setText(Integer.toString(nextShip.size));
                 }
             }
-
-
-            // Trece la urmatoarea navă
-            currentShipIndex++;
-            if (currentShipIndex < shipsList.size()) {
-                Ship nextShip = shipsList.get(currentShipIndex);
-                // Actualizeaza numele si lungimea afișate cu setText
-                settingsPlaceShip.textNameShip.setText(nextShip.name);
-                settingsPlaceShip.textSizeShip.setText(Integer.toString(nextShip.size));
+        else {
+                System.out.println("Pozitie invalida ,am intrat pe validare fals");
             }
-        }else {
-            System.out.println("Pozitie invalida ,am intrat pe validare fals");
-        }
 
         //imi afiseaza mesajul de la server
         String serverMessage = getMessage();
-        System.out.println("mesaj server 1" + serverMessage);
         if (serverMessage != null) {
-            System.out.println("mesaj server " + serverMessage);
+
+            //actualizare mesaj primit de la server
             settingsPlaceShip.messageTextArea.setText(serverMessage);
-            // Asigurați-vă că JTextArea este opac și are culoarea de fundal corectă
+
+            //style
             settingsPlaceShip.messageTextArea.setOpaque(true);
             settingsPlaceShip.messageTextArea.setBackground(new Color(0, 0, 0, 123));
 
-            // Forțează repictarea JTextArea
+            //fortare repictare JTextArea
             settingsPlaceShip.messageTextArea.repaint();
 
-            // Revalidate and repaint the containing JPanel
+            //revalidare si repaint pt JPanel
             settingsPlaceShip.revalidate();
             settingsPlaceShip.repaint();
         }
 
-        // Repictați panoul
+        //dupa ce plaseaza utlima nava va aparea butonul de ready
+        if (currentShipIndex == 2) { // trebuie SCHIMBAT la 5 dupa pt joc
+            addShipBtn.setVisible(false);//dispare btn add ship
+            readyForGameBtn.setVisible(true);
+        }
+
+        // Repictare matrice client
         clientBoard.repaint();
 
     }
@@ -155,6 +170,13 @@ public class ControlPanelBottom extends JPanel {
             }
         }
     }
+    private void listenerReadyForGame(ActionEvent e){
 
+//        String messageToClient = "c";
+//        frame.client.setAnswer(messageToClient);
+        new MainFrameBattle(client, clientBoard.cellColorsShips).setVisible(true); //apare urmatoarea fereastra
+        frame.setVisible(false);//inchide fereastra
+
+    }
 
 }

@@ -1,19 +1,20 @@
 package prepareShips;
 import org.example.GameClient;
-import prepareShips.ClientBoard;
-import prepareShips.ControlPanelBottom;
-import prepareShips.SettingsPlaceShip;
+import startGame.MainFrameBattle;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.Objects;
+
 
 public class MainFrame extends JFrame {
     public SettingsPlaceShip settingsPlaceShip;
     ControlPanelBottom controlPanelBottom;
     ClientBoard clientBoard;
+
     public GameClient client;
+    private ImageIcon img;
+    private JLabel background;
 
     public MainFrame(GameClient client) {
         super("prepareShips");
@@ -23,6 +24,11 @@ public class MainFrame extends JFrame {
 
     private void initPrepareShips() {
         setDefaultCloseOperation(EXIT_ON_CLOSE);//inchidere fereastra
+
+//        img = new ImageIcon(this.getClass().getResource("/battleship.jpg"));
+//        background = new JLabel(img);
+//        background.setSize(800,500);
+//        add(background);
 
         //componente pentru fereastra de plasare nave
         settingsPlaceShip = new SettingsPlaceShip(this);
@@ -34,12 +40,13 @@ public class MainFrame extends JFrame {
         add(controlPanelBottom, BorderLayout.SOUTH);
         add(clientBoard, BorderLayout.CENTER);
 
+        //fundal
 
         //setari vizualizare fereastra
-        pack(); // Ajustează dimensiunea ferestrei la dimensiunea preferată a componentelor sale
+        pack(); // ajusteaza dimensiunea ferestrei la dimensiunea preferată a componentelor sale
         setSize(new Dimension(1000, 700));
         setVisible(false);
-    }
 
+    }
 
 }
