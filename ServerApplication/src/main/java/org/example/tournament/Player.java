@@ -1,5 +1,6 @@
 package org.example.tournament;
 
+import lombok.Getter;
 import lombok.Setter;
 
 import java.util.HashSet;
@@ -7,6 +8,7 @@ import java.util.Set;
 
 public class Player {
     private final int id;
+    @Getter
     @Setter
     private Set<Integer> matchesRemaining;
 
@@ -16,10 +18,6 @@ public class Player {
     }
     public void addMatch(int matchId){
         this.matchesRemaining.add(matchId);
-    }
-
-    public Set<Integer> getMatchesRemaining() {
-        return this.matchesRemaining;
     }
 
     public Integer getId() {
