@@ -31,11 +31,11 @@ public class OpponentBoard extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 //tratare eveniment click casuta din matrice
-                int row = (e.getY() - startY) / cellSize;
-                int col = (e.getX() - startX) / cellSize;
+                int rowClick = (e.getY() - startY) / cellSize;
+                int colClick = (e.getX() - startX) / cellSize;
 
                 //colorare casuta cu rosu
-                cellColorsShips[row][col] = Color.red;
+                cellColorsShips[rowClick][colClick] = Color.red;
 
                 //repaint pentru a actualizare
                 repaint();
