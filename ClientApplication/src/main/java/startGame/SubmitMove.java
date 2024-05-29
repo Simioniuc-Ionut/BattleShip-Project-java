@@ -7,16 +7,20 @@ import java.awt.event.ActionEvent;
 
 public class SubmitMove extends JPanel {
     final MainFrameBattle frame;
+    OpponentBoard opponentBoard;
+    ClientBoardBattle clientBoardBattle;
     JButton submitMoveBtn = new JButton("Submit Move");
 
-    public SubmitMove(MainFrameBattle frame) {
+    public SubmitMove(MainFrameBattle frame, OpponentBoard opponentBoard, ClientBoardBattle clientBoardBattle) {
         this.frame = frame;
+        this.opponentBoard = opponentBoard;
+        this.clientBoardBattle = clientBoardBattle;
         init();
     }
 
     private void init() {
 
-       add(submitMoveBtn);
+        add(submitMoveBtn);
 
 
         //style buton
@@ -31,6 +35,31 @@ public class SubmitMove extends JPanel {
 
     }
     public void listenerAddSubmitMove(ActionEvent e){
+        // Obtine valorile din click (tinta)
+        if (opponentBoard.rowClick != null && opponentBoard.colClick != null) {
+            // Convertire
+            String submitRowLetter = String.valueOf((char) ('A' + opponentBoard.rowClick));
+            String submitColNumber = String.valueOf(opponentBoard.colClick + 1);
+
+            StringBuilder messageToClient = new StringBuilder();
+            messageToClient.append(submitRowLetter);
+            messageToClient.append(submitColNumber);
+            //trimit catre client mesajul ca sa ajunge dupa la server
+//            frame.client.setAnswer(messageToClient.toString().trim());
+
+            System.out.println("SUBMITED -> "+messageToClient);
+        }
+
+        // celula selectata dupa submit va ramane rosie
+        if (opponentBoard.lastRowClicked != null && opponentBoard.lastColClicked != null) {
+            opponentBoard.cellColorsShips[opponentBoard.lastRowClicked][opponentBoard.lastColClicked] = Color.red;
+            opponentBoard.lastRowClicked = null;
+            opponentBoard.lastColClicked = null;
+            opponentBoard.repaint();
+        }
+
+
+
 
     }
 
