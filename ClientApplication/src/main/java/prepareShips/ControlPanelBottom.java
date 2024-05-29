@@ -33,7 +33,6 @@ public class ControlPanelBottom extends JPanel {
 
         init();
     }
-    @SneakyThrows
     private void init() {
 
         //adaug butonul de adaugare nava
