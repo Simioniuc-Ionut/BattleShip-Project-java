@@ -42,7 +42,7 @@ public class TimerThread extends Thread{
         }
     }
     private  void printTime(){
-        System.out.println("Player : " + playerId + "Time remaining: "+time+" seconds");
+        //System.out.println("Player : " + playerId + "Time remaining: "+time+" seconds");
     }
 
     public boolean isStart() {

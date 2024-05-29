@@ -9,10 +9,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+import java.nio.Buffer;
+import java.util.concurrent.*;
 
 import lombok.Getter;
 @Getter
@@ -155,8 +153,7 @@ public class ClientThread extends Thread {
     private void joinGame(BufferedReader in ) throws IOException{
         sendMessage("Game started. PLace your ships.");
 
-        waititngPlayersForJoining();
-
+        waititngPlayersForJoining(); //se asteapta sa dea join,inainte sa plaseze pe mapa
         setOpponent();
 
         gameServer.setCurrentState(GameState.GAME_READY_TO_MOVE);
@@ -164,18 +161,47 @@ public class ClientThread extends Thread {
 //        placeShip(in, CARRIER_LENGTH);
 //        placeShip(in, BATTLESHIP_LENGTH);
 //        placeShip(in, DESTROYER_LENGTH);
-        placeShip(in, SUBMARINE_LENGTH);
+        //placeShip(in, SUBMARINE_LENGTH);
         placeShip(in, PATROL_BOAT_LENGTH);
         shipsPlaced = true;
 
-        //setam daca playerul este ready
-        makePlayerReady();
+        listenReadyFromClient(in);
+        waitingPlayersToFinishPlacingShips();
+
 
         checkReadyToStart();
+
         gameServer.startTimer(playerId);
         //instantiam timerul;
 //        this.timer = new TimerThread(timerPlayer,playerId);
 //        timer.start();
+    }
+
+
+
+    private void waitingPlayersToFinishPlacingShips() {
+      if(playerId == 1) {
+
+        gameServer.setPlayer1IsReadyToStartGame(true);
+          while (!gameServer.isPlayer2IsReadyToStartGame()) {
+              waitingThread();
+          }
+      }else{
+          gameServer.setPlayer2IsReadyToStartGame(true);
+          while (!gameServer.isPlayer1IsReadyToStartGame()) {
+              waitingThread();
+          }
+      }
+    }
+
+    private  void makePlayerReadyToPlaceShip(boolean b) {
+
+       // System.out.println("makePlayerReady " + b + " playerid " + playerId);
+        if(playerId == 1){
+            gameServer.setPlayer1IsReadyToPlaceShips(b);
+        }else {
+            gameServer.setPlayer2IsReadyToPlaceShips(b);
+        }
     }
 
 
@@ -215,70 +241,24 @@ public class ClientThread extends Thread {
             return true;
         }
     }
-    private synchronized void checkReadyToStart() {
-        if(gameServer.isPlayer1IsReady() && gameServer.isPlayer2IsReady()) {
-            sendMessage(" PlaBoth players have placed their ships.yer 1 starts.");
+    private  void checkReadyToStart() {
+      //  System.out.println("sunt in checlReadyToStart " + gameServer.islayer1IsReadyToPlaceShips() + " al 2 " + gameServer.isPlayer2IsReady());
+        if(gameServer.isPlayer2IsReadyToStartGame() && gameServer.isPlayer1IsReadyToStartGame()) {
+           //sendMessage(" PlaBoth players have placed their ships.yer 1 starts.");
             //opponent.sendMessage("PlaBoth players have placed their ships.yer 1 starts.");
             gameServer.setCurrentState(GameState.GAME_READY_TO_MOVE);
             playerTurn = GameState.PLAYER1_TURN;
 
+            sendTheGameCouldStart();
 
         }else{
             sendMessage("Waiting for opponent to place ships...");
             while( gameServer.getCurrentState() != GameState.GAME_READY_TO_MOVE){
                waitingThread();
             }
+            sendMessage("waiting is finished");
         }
     }
-
-//    private  void startGameTimerPlayer1() {
-//        timerPlayer1 = Executors.newSingleThreadScheduledExecutor();
-//        timerTaskPlayer1 = timerPlayer1.scheduleAtFixedRate(() -> {
-//            synchronized (lock) {
-//                if(playerTurn == GameState.PLAYER1_TURN) {
-//                    remainingTimePlayer1--;
-//                   System.out.println("Remaining time for Player 1: " + remainingTimePlayer1 + " seconds");
-//                }
-//                if (remainingTimePlayer1 == 0) {
-//                    sendMessage("Game over. Your time ran out.");
-//                    opponent.sendMessage("Game over. You win because your opponent's time ran out.");
-//                    remainingTimePlayer1--;
-//                //stopGameTimerPlayer1();
-//                }
-//            }
-//        }, 0, 1, TimeUnit.SECONDS);
-//        //waitingThread();
-//        //stopGameTimerPlayer1();
-//    }
-//
-//    private  void startGameTimerPlayer2() {
-//        timerPlayer2 = Executors.newSingleThreadScheduledExecutor();
-//        timerTaskPlayer2 = timerPlayer2.scheduleAtFixedRate(() -> {
-//            synchronized (lock) {
-//                if(playerTurn == GameState.PLAYER2_TURN) {//OPRESC timerul daca nu e randul lui
-//                    remainingTimePlayer2--;
-//                   System.out.println("Remaining time for Player 2: " + remainingTimePlayer2 + " seconds");
-//                }
-//                if (remainingTimePlayer2 == 0) {
-//                    sendMessage("Game over. Your time ran out.");
-//                    //stopGameTimerPlayer2();
-//                    remainingTimePlayer2--;
-//                }
-//            }
-//        }, 0, 1, TimeUnit.SECONDS);
-//        //waitingThread();
-//        //stopGameTimerPlayer1();
-//    }
-
-//    private void switchTurn(){
-//        if(playerTurn.getStateCode() == playerId){
-//           this.timer.startTimer();
-//           sendMessage("Is your turn " + playerId);
-//
-//        }else{
-//            this.timer.pauseTimer();
-//        }
-//    }
 
     private synchronized void switchTurn() {
         if (playerTurn == GameState.PLAYER1_TURN) {
@@ -295,22 +275,32 @@ public class ClientThread extends Thread {
         }
     }
 
-    private void makePlayerReady(){
-        if(playerId == 1)  {
-            gameServer.setPlayer1IsReady(true);
-        }else{
-            gameServer.setPlayer2IsReady(true);
+    private synchronized void listenReadyFromClient(BufferedReader in){
+
+        try {
+            String ready = in.readLine();
+            System.out.println("mesajul din listenReadyFromClient " + ready + " isReadyplayer1 " + gameServer.isPlayer1IsReadyToStartGame() + " isReadyplayer2 " + gameServer.isPlayer2IsReadyToStartGame());
+
+            if(ready.equals("READY")){
+                sendMessage("Player " + playerId + " is ready");
+
+            }else{
+                sendMessage("Player is not ready");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+
     private void waititngPlayersForJoining(){
         if (playerId == 1){
-            gameServer.setPlayer1IsReady(true);
-            while(!gameServer.isPlayer2IsReady()){
+            gameServer.setPlayer1IsReadyToPlaceShips(true);
+            while(!gameServer.isPlayer2IsReadyToPlaceShips()){
                 waitingThread();
             }
         }else{
-            gameServer.setPlayer2IsReady(true);
-            while(!gameServer.isPlayer1IsReady()){
+            gameServer.setPlayer2IsReadyToPlaceShips(true);
+            while(!gameServer.isPlayer1IsReadyToPlaceShips()){
                 waitingThread();
             }
         }
@@ -419,5 +409,7 @@ public class ClientThread extends Thread {
 
 
     }
-
+    private void sendTheGameCouldStart(){
+        sendMessage("START-MOVE");
+    }
 }

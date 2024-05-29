@@ -10,19 +10,17 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.concurrent.Semaphore;
-
+@Getter
+@Setter
 public class GameClient {
     private final String serverAddress;
     private final int serverPort;
     private String answer;
-    private Semaphore semaphore = new Semaphore(0);
-    private  Semaphore lock = new Semaphore(0);
-    @Getter
+    private Semaphore ansewerSemaphore = new Semaphore(0);
+    private  Semaphore positionIsCorrectlock = new Semaphore(0);
+    private Semaphore gameCouldStartlock = new Semaphore(0);
     private boolean positionConfirmed = true;
-    @Getter
-    @Setter
     private String message;
-    @Getter
     private Semaphore messageLock = new Semaphore(0);
     public GameClient(String serverAddress, int serverPort) {
         this.serverAddress = serverAddress;
@@ -31,7 +29,7 @@ public class GameClient {
     }
 
     public Semaphore getLock() {
-        return lock;
+        return positionIsCorrectlock;
     }
 
     public void start() {
@@ -62,7 +60,7 @@ public class GameClient {
 //                    }
 //                }
                 while (true){
-                    semaphore.acquire();
+                    ansewerSemaphore.acquire();
                     out.println(answer);
                     if (answer.equalsIgnoreCase("exit")) {
                         System.out.println("Client response: Client exit");
@@ -81,7 +79,7 @@ public class GameClient {
     public void setAnswer(String answer) {
         System.out.println("Client response: " + answer);
         this.answer = answer;
-        semaphore.release();
+        ansewerSemaphore.release();
     }
     private Thread createServerListenerThread(BufferedReader in) {
         return new Thread(() -> {
@@ -89,18 +87,12 @@ public class GameClient {
                 String serverResponse;
                 while ((serverResponse = in.readLine()) != null) {
                     System.out.println("Server response: " + serverResponse);
-                    if (serverResponse.startsWith("Err:")){
-                        positionConfirmed=false;
-                        //putem notifica
-                        lock.release();
+                    verifyIfTheGameCouldStartToMove(serverResponse);
 
-                    }else if(serverResponse.startsWith("Cor:")){
-                        positionConfirmed=true;
-                        //putem notifica
-                       lock.release();
-                    }
-                    setMessage(serverResponse);
-                    messageLock.release();
+                    verifyPositionMove(serverResponse);//primim confirmarea positiei ,daca este valida
+
+                    setMessage(serverResponse);//TRIMIT mesajul catre interfata;
+                    messageLock.release();  //las lacatul pt a putea fi citit mesajul
 
                 }
             } catch (IOException e) {
@@ -117,4 +109,22 @@ public class GameClient {
         });
     }
 
+    private void verifyIfTheGameCouldStartToMove(String serverResponse) {
+        if(serverResponse.startsWith("START-MOVE")){
+            gameCouldStartlock.release();
+        }
+    }
+
+    private void verifyPositionMove(String serverResponse){
+        if (serverResponse.startsWith("Err:")){
+            positionConfirmed=false;
+            //putem notifica
+            positionIsCorrectlock.release();
+
+        }else if(serverResponse.startsWith("Cor:")){
+            positionConfirmed=true;
+            //putem notifica
+            positionIsCorrectlock.release();
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package prepareShips;
 
+import lombok.SneakyThrows;
 import org.example.GameClient;
 import startGame.MainFrameBattle;
 
@@ -32,6 +33,7 @@ public class ControlPanelBottom extends JPanel {
 
         init();
     }
+    @SneakyThrows
     private void init() {
 
         //adaug butonul de adaugare nava
@@ -134,7 +136,7 @@ public class ControlPanelBottom extends JPanel {
         }
 
         //dupa ce plaseaza utlima nava va aparea butonul de ready
-        if (currentShipIndex == 2) { // trebuie SCHIMBAT la 5 dupa pt joc
+        if (currentShipIndex == 1) { // trebuie SCHIMBAT la 5 dupa pt joc
             addShipBtn.setVisible(false);//dispare btn add ship
             readyForGameBtn.setVisible(true);
         }
@@ -170,13 +172,30 @@ public class ControlPanelBottom extends JPanel {
             }
         }
     }
-    private void listenerReadyForGame(ActionEvent e){
+    private void listenerReadyForGame(ActionEvent e)  {
 
-//        String messageToClient = "c";
-//        frame.client.setAnswer(messageToClient);
+        System.out.println("Am apasat butronul READY");
+        String messageToClient = "READY";
+        frame.client.setAnswer(messageToClient);
+
+        waitToStart(); //asteptam sa primim de la server semnalul de start
+
         new MainFrameBattle(client, clientBoard.cellColorsShips).setVisible(true); //apare urmatoarea fereastra
         frame.setVisible(false);//inchide fereastra
 
+    }
+    private void waitToStart(){
+        System.out.println("Am intrat in waitToStart()");
+        Semaphore lock = frame.client.getGameCouldStartlock();
+        synchronized (lock) {
+            try {
+                lock.acquire(); // Așteaptă până când primește notify() de la server
+                System.out.println("Am primit semnalul de start");
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                System.out.println("Thread intrerupt in validation");
+            }
+        }
     }
 
 }

@@ -33,9 +33,10 @@ public class GameServer {
     private AtomicInteger numberOfPlayers ;
 
     private GameState currentState;
-    private boolean player1IsReady;
-    private boolean player2IsReady;
-
+    private boolean player1IsReadyToPlaceShips;
+    private boolean player2IsReadyToPlaceShips;
+    private  boolean player1IsReadyToStartGame;
+    private  boolean player2IsReadyToStartGame;
 
     private List<Ships> player1Ships;
     private List<Ships> player2Ships;
@@ -50,8 +51,10 @@ public class GameServer {
         numberOfPlayers = new AtomicInteger(0);
 
         currentState = GameState.GAME_NOT_CREATED;
-        player1IsReady=false;
-        player2IsReady=false;
+        player1IsReadyToPlaceShips=false;
+        player2IsReadyToPlaceShips=false;
+        player1IsReadyToStartGame = false;
+        player2IsReadyToStartGame = false;
 
         //waitingPlayers = new LinkedList<>();
         this.serverBoardPlayer1 = new char[BOARD_SIZE][BOARD_SIZE];
@@ -146,8 +149,10 @@ public class GameServer {
     private void resetGame() {
         System.out.println("Server is reseted");
         currentState = GameState.GAME_NOT_CREATED;
-        player1IsReady=false;
-        player2IsReady=false;
+        player1IsReadyToPlaceShips=false;
+        player2IsReadyToPlaceShips=false;
+        player1IsReadyToStartGame = false;
+        player2IsReadyToStartGame = false;
 
         //waitingPlayers = new LinkedList<>();
         this.serverBoardPlayer1 = new char[BOARD_SIZE][BOARD_SIZE];
