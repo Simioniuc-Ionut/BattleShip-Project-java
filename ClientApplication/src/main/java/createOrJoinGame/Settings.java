@@ -60,12 +60,11 @@ public class Settings extends JPanel {
         joinGameBtn.setForeground(Color.WHITE);//culoare text
 
         //configure listeners for all buttons
-        createGameBtn.addActionListener(this::addCreateGameBtn);
-        joinGameBtn.addActionListener(this::addJoinGameBtn);
+        createGameBtn.addActionListener(this::listenerAddCreateGameBtn);
+        joinGameBtn.addActionListener(this::listenerAddJoinGameBtn);
     }
 
-    private void addCreateGameBtn(ActionEvent e) {
-        setVisible(false); // Ascunde fereastra curentă
+    private void listenerAddCreateGameBtn(ActionEvent e) {
 
         String messageToClient = "c";
         frame.client.setAnswer(messageToClient);
@@ -73,8 +72,7 @@ public class Settings extends JPanel {
         frame.setVisible(false);//inchide fereastra
 
     }
-    private void addJoinGameBtn(ActionEvent e) {
-        setVisible(false); // Ascunde fereastra curentă
+    private void listenerAddJoinGameBtn(ActionEvent e) {
 
         String messageToClient = "j";
         frame.client.setAnswer(messageToClient);
