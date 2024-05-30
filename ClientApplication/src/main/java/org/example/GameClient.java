@@ -87,6 +87,7 @@ public class GameClient {
                 String serverResponse;
                 while ((serverResponse = in.readLine()) != null) {
                     System.out.println("Server response: " + serverResponse);
+
                     verifyIfTheGameCouldStartToMove(serverResponse);
 
                     verifyPositionMove(serverResponse);//primim confirmarea positiei ,daca este valida

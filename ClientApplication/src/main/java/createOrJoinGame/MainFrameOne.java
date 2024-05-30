@@ -23,6 +23,7 @@ public class MainFrameOne extends JFrame {
 
         pack();
         setSize(new Dimension(600, 200));
+        setLocationRelativeTo(null);
         setVisible(true); // Arată fereastra cu butonul
     }
 

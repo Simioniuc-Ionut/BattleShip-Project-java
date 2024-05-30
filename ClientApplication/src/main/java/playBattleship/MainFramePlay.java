@@ -24,6 +24,7 @@ public class MainFramePlay extends JFrame {
 
         pack();
         setSize(new Dimension(500, 300));
+        setLocationRelativeTo(null);
         setVisible(true); // Arată fereastra cu butonul
     }
 

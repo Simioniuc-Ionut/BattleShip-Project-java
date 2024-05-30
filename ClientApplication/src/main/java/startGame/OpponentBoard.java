@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.concurrent.Semaphore;
 
 public class OpponentBoard extends JPanel {
     private final MainFrameBattle frame;
@@ -75,27 +76,14 @@ public class OpponentBoard extends JPanel {
             board.drawString(Character.toString(writeRow), xWriteRow, yWriteRow);
         }
 
-        // Deseneaza celulele cu negru
+        // colorez fiecare celula in functie de selectarea pozitiei navei
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
-                board.setColor(Color.black);
+                board.setColor(cellColorsShips[i][j]);
                 board.fillRect(startX + j * cellSize, startY + i * cellSize, cellSize, cellSize);
             }
         }
 
-        // Deseneaza X roșu peste celulele selectate
-//        board.setColor(Color.red); // Setează culoarea la roșu pentru X
-//        board.setStroke(new BasicStroke(2)); // Setează grosimea liniei pentru X
-//        if (lastRowClicked != null && lastColClicked != null) {
-//            int x1 = startX + lastColClicked * cellSize;
-//            int y1 = startY + lastRowClicked * cellSize;
-//            int x2 = x1 + cellSize;
-//            int y2 = y1 + cellSize;
-//            // Desenați prima linie a X-ului
-//            board.drawLine(x1, y1, x2, y2);
-//            // Desenați a doua linie a X-ului
-//            board.drawLine(x1, y2, x2, y1);
-//        }
 
         // Deseneaza grila
         board.setColor(Color.white); // Seteaza culoarea grilei
