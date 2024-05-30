@@ -40,6 +40,7 @@ public class OpponentBoard extends JPanel {
                     cellColorsShips[lastRowClicked][lastColClicked] = Color.black;
                 }
 
+
                 // Actualizare noua celula selectata
                 rowClick = (e.getY() - startY) / cellSize;
                 colClick = (e.getX() - startX) / cellSize;
