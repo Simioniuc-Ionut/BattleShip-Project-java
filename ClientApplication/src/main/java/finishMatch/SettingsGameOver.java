@@ -1,8 +1,6 @@
-package gameOver;
+package finishMatch;
 
-import createOrJoinGame.MainFrameOne;
 import org.example.GameClient;
-import prepareShips.MainFrame;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,12 +1,9 @@
-package startGame;
-
-import prepareShips.MainFrame;
+package duringMatch;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.concurrent.Semaphore;
 
 public class OpponentBoard extends JPanel {
     private final MainFrameBattle frame;

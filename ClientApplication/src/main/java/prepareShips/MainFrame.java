@@ -1,10 +1,8 @@
 package prepareShips;
 import org.example.GameClient;
-import startGame.MainFrameBattle;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Objects;
 
 
 public class MainFrame extends JFrame {

@@ -1,6 +1,5 @@
-package playBattleship;
+package firstFrame;
 
-import createOrJoinGame.Settings;
 import org.example.GameClient;
 
 import javax.swing.*;

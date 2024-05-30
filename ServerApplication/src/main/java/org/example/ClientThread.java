@@ -124,7 +124,11 @@ public class ClientThread extends Thread {
                             gameServer.startTimer(playerId);
 
                             //System.out.println("Timer start valye " + this.timer.isStart());
-                            submitMove(inputLine);
+                            if(isReadyToMove()) {
+                                submitMove(inputLine);//fac mutarea
+                            }else{
+                                sendMessage("NOT_YOUR_TURN");
+                            }
                             System.out.println("Player " + playerId + " moved " + inputLine + " status timer " + this.timer.isStart() + " TIMPUL > " + timerPlayer);
 
                             switchTurn();//schimb turul
@@ -228,12 +232,10 @@ public class ClientThread extends Thread {
     }
 
     private void submitMove(String inputLine) {
-       if(isReadyToMove()){
             String move = inputLine.trim();
             gameServer.handleMove(playerId, move);
             sendMessage("Move submitted: " + move + ". Waiting for opponent's move.");
             opponent.sendMessage("Opponent moved: " + move + ". Your turn.");
-        }
     }
     private boolean isReadyToMove(){
         if ( gameServer.getCurrentState() == GameState.GAME_READY_TO_MOVE && playerId != playerTurn.getStateCode()) {

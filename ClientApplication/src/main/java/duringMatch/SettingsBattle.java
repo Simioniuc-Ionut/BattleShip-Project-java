@@ -1,4 +1,4 @@
-package startGame;
+package duringMatch;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
