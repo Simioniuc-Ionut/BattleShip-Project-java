@@ -1,7 +1,6 @@
-package startGame;
+package duringMatch;
 
 import org.example.GameClient;
-import prepareShips.ClientBoard;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

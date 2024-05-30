@@ -1,6 +1,5 @@
-package gameOver;
+package finishMatch;
 
-import createOrJoinGame.Settings;
 import org.example.GameClient;
 
 import javax.swing.*;

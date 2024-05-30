@@ -1,8 +1,6 @@
 package prepareShips;
 
-import lombok.SneakyThrows;
-import org.example.GameClient;
-import startGame.MainFrameBattle;
+import duringMatch.MainFrameBattle;
 
 import javax.swing.*;
 import java.awt.*;

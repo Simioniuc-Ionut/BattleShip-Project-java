@@ -239,7 +239,7 @@ public class ClientThread extends Thread {
     }
     private boolean isReadyToMove(){
         if ( gameServer.getCurrentState() == GameState.GAME_READY_TO_MOVE && playerId != playerTurn.getStateCode()) {
-            //sendMessage("It's not your turn or game is not ready yet.");
+            sendMessage("It's not your turn or game is not ready yet.");
             return false;
         }else {
             return true;

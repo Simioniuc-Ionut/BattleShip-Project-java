@@ -145,8 +145,9 @@ public class GameServer {
             player.notifyMiss(move);
         }
         Ships ship = new PatrolBoat();
-        System.out.println("BARCA NOU " + ship.getShipSize());
-       // displayServerBoard();
+
+        //System.out.println("BARCA NOU " + ship.getShipSize());
+        //displayServerBoard();
 
     }
 

@@ -1,9 +1,6 @@
-package startGame;
-
-import org.example.GameClient;
+package duringMatch;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.concurrent.Semaphore;
@@ -42,6 +39,59 @@ public class SubmitMove extends JPanel {
 
     }
     public void listenerAddSubmitMove(ActionEvent e){
+
+
+        //trimit pozitia catre client
+        sendPositionToClient();
+
+       if(validateYourTurnToMove()) {
+           System.out.println("A colorat");
+           // celula selectata dupa submit va ramane rosie doar daca este randul sau
+           if (opponentBoard.lastRowClicked != null && opponentBoard.lastColClicked != null) {
+               opponentBoard.cellColorsShips[opponentBoard.lastRowClicked][opponentBoard.lastColClicked] = Color.red;
+               opponentBoard.lastRowClicked = null;
+               opponentBoard.lastColClicked = null;
+               opponentBoard.repaint();
+           }
+       }else{
+           opponentBoard.cellColorsShips[opponentBoard.lastRowClicked][opponentBoard.lastColClicked] = Color.black;
+           opponentBoard.lastRowClicked = null;
+           opponentBoard.lastColClicked = null;
+           opponentBoard.repaint();
+       }
+
+
+
+    }
+    private String getMessage() {
+        Semaphore lock = frame.client.getMessageLock();
+        synchronized (lock) {
+            try {
+                lock.acquire(); // Așteaptă până când primește notify() de la server
+                return frame.client.getMessage();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                //System.out.println("Thread intrerupt in validation from SettingsPlaceShip");
+                return "Thread intrerupt in validation from SettingsPlaceShip";
+            }
+        }
+    }
+    private  boolean validateYourTurnToMove(){
+        Semaphore lock = frame.client.getMoveTurnLock();
+        synchronized (lock) {
+            try {
+                //Asteapta:
+                lock.acquire(); // Așteaptă până când primește notify() de la server
+                return frame.client.isYourTurnToMakeAMove();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                System.out.println("Thread intrerupt in validation");
+                return false;
+            }
+        }
+
+    }
+    private void sendPositionToClient(){
         // Obtine valorile din click (tinta)
         if (opponentBoard.rowClick != null && opponentBoard.colClick != null) {
             // Convertire
@@ -56,24 +106,11 @@ public class SubmitMove extends JPanel {
 
             System.out.println("SUBMITED -> "+messageToClient);
         }
-
-//        if(validationTurnSubmit()){
-            // celula selectata dupa submit va ramane rosie
-            if (opponentBoard.lastRowClicked != null && opponentBoard.lastColClicked != null) {
-                opponentBoard.cellColorsShips[opponentBoard.lastRowClicked][opponentBoard.lastColClicked] = Color.red;
-                opponentBoard.lastRowClicked = null;
-                opponentBoard.lastColClicked = null;
-                opponentBoard.repaint();
-            }
-//        }
-//        else {
-//            System.out.println("Am ");
-//        }
-
-
+    }
+    private void sendMessageToServer(){
         //imi afiseaza mesajul de la server
         String serverMessage = getMessage();
-        System.out.println("SERVER message in GUI Submit:"+serverMessage);
+        System.out.println("SERVER message in GUI Submit:" + serverMessage);
         if (serverMessage != null) {
 
             //actualizare mesaj primit de la server
@@ -90,35 +127,5 @@ public class SubmitMove extends JPanel {
             settingsBattle.revalidate();
             settingsBattle.repaint();
         }
-
     }
-//    private boolean validationTurnSubmit() {
-//        Semaphore lock = frame.client.getLock();
-//        synchronized (lock) {
-//            try {
-//                lock.acquire(); // Așteaptă până când primește notify() de la server
-//                return frame.client.isPositionConfirmed();
-//            } catch (InterruptedException e) {
-//                Thread.currentThread().interrupt();
-//                System.out.println("Thread intrerupt in validation");
-//                return false;
-//            }
-//        }
-//    }
-    private String getMessage() {
-        Semaphore lock = frame.client.getMessageLock();
-        synchronized (lock) {
-            try {
-                lock.acquire(); // Așteaptă până când primește notify() de la server
-                return frame.client.getMessage();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                //System.out.println("Thread intrerupt in validation from SettingsPlaceShip");
-                return "Thread intrerupt in validation from SettingsPlaceShip";
-            }
-        }
-    }
-
-
-
 }
