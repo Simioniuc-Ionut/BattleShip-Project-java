@@ -74,6 +74,7 @@ public class ClientThread extends Thread {
             timer.interrupt();
         }
     }
+
     @Override
     public void run() {
         try (
@@ -88,24 +89,17 @@ public class ClientThread extends Thread {
             while ((inputLine = in.readLine()) != null) {
                 System.out.println("Server received: " + inputLine);
 
-                if (inputLine.equals("stop") || inputLine.equals("exit")) {
+                if (inputLine.equals("stop") || inputLine.equals("exit"))
+                {
                     out.println("Server stopped");
                     gameServer.stop();
                     break;
-                }else if(inputLine.equals("t")){
-                     gameServer.setCurrentState(GameState.GAME_TOURNAMENT);
-                      gameServer.startTournament();
-
                 } else if(inputLine.equalsIgnoreCase("c") && gameServer.getCurrentState() == GameState.GAME_NOT_CREATED){
 
                     gameServer.setCurrentState(GameState.WAITING_FOR_PLAYER);
                     //starea de incepere a jocului
-
                     startGameMessage();
                     joinGame(in);
-//                    if(opponent == null){
-//                        sendMessage("Waiting for another player to join ...");
-//                    }
 
                 } else if(inputLine.equalsIgnoreCase("j")){
                     if(gameServer.getCurrentState() == GameState.WAITING_FOR_PLAYER) {
@@ -123,25 +117,21 @@ public class ClientThread extends Thread {
 
                             gameServer.startTimer(playerId);
 
-                            //System.out.println("Timer start valye " + this.timer.isStart());
-                            if(isReadyToMove()) {
-                                submitMove(inputLine);//fac mutarea
-                            }else{
-                                sendMessage("NOT_YOUR_TURN");
-                            }
+                            submitMove(inputLine);//fac mutarea
+
                             System.out.println("Player " + playerId + " moved " + inputLine + " status timer " + this.timer.isStart() + " TIMPUL > " + timerPlayer);
 
                             switchTurn();//schimb turul
 
 
                         }else{
-                            sendMessage("It's not your turn.");
+                            sendMessage("NOT_YOUR_TURN: " + inputLine);
                         }
                 } else if(gameServer.getCurrentState() == GameState.GAME_OVER){
                     //jocul s a terminat.
                     System.out.println("Sunt in game over ||| " + playerId);
-                       gameIsFinished();
-                       gameReset();
+                       //gameIsFinished();
+                     //  gameReset();
                 }else {
                     out.println("Server received the request: " + inputLine);
                 }
@@ -232,10 +222,13 @@ public class ClientThread extends Thread {
     }
 
     private void submitMove(String inputLine) {
+        if(isReadyToMove()) {
             String move = inputLine.trim();
             gameServer.handleMove(playerId, move);
-            sendMessage("Move submitted: " + move + ". Waiting for opponent's move.");
-            opponent.sendMessage("Opponent moved: " + move + ". Your turn.");
+           // sendMessage("Move submitted: " + move + ". Waiting for opponent's move.");
+            if(gameServer.getCurrentState() != GameState.GAME_OVER){
+            opponent.sendMessage("Opponent moved: " + move + ". Your turn.");}
+        }
     }
     private boolean isReadyToMove(){
         if ( gameServer.getCurrentState() == GameState.GAME_READY_TO_MOVE && playerId != playerTurn.getStateCode()) {
@@ -343,10 +336,10 @@ public class ClientThread extends Thread {
         }
     }
     public void notifyHit(String move) {
-        sendMessage("You hit at position: " + move);
+        sendMessage("You hit at position: " + move + ". Waiting for opponent's move ");
     }
     public void notifyMiss(String move) {
-        sendMessage("You missed at position: " + move);
+        sendMessage("You missed at position: " + move + ". Waiting for opponent's move");
     }
     public void setOpponent() {
         if(playerId == 1) {
@@ -402,7 +395,7 @@ public class ClientThread extends Thread {
 
         timerPlayer =30;
         playerTurn = GameState.PLAYER1_TURN;
-        sendMessage("Game has reseted");
+        //sendMessage("Game has reseted");
            CARRIER_LENGTH = new Carrier();
            BATTLESHIP_LENGTH = new Battleship();
            DESTROYER_LENGTH = new Destroyer();

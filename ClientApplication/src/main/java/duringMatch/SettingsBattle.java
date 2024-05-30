@@ -9,7 +9,7 @@ public class SettingsBattle extends JPanel {
     final MainFrameBattle frame;
     JLabel serverResponse;
     JPanel messagePanelBattle = new JPanel(new BorderLayout()); // for displaying server message
-    JTextArea messageTextAreaBattle;
+    public JTextArea messageTextAreaBattle;
 
     public SettingsBattle(MainFrameBattle frame) {
         this.frame = frame;
@@ -21,7 +21,7 @@ public class SettingsBattle extends JPanel {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         // Set preferred size to make it a small rectangle
-        Dimension preferredSize = new Dimension(290, 120);
+        Dimension preferredSize = new Dimension(290, 220);
         setPreferredSize(preferredSize);
         setMinimumSize(preferredSize);
         setMaximumSize(preferredSize);
@@ -54,8 +54,8 @@ public class SettingsBattle extends JPanel {
         messageTextAreaBattle.setForeground(Color.WHITE);
         messageTextAreaBattle.setBackground(new Color(0, 0, 0, 123));
         messageTextAreaBattle.setBorder(new EmptyBorder(10, 10, 10, 10));
-        String text = "Response from Server";
-        messageTextAreaBattle.setText(text);
+//        String text = "Response from Server";
+//        messageTextAreaBattle.setText(text);
 
         // Add JTextArea to JPanel
         messagePanelBattle.add(messageTextAreaBattle, BorderLayout.CENTER);
@@ -65,38 +65,6 @@ public class SettingsBattle extends JPanel {
         add(Box.createVerticalStrut(10));
     }
 
-    private String getMessage() {
-        Semaphore lock = frame.client.getMessageLock();
-        synchronized (lock) {
-            try {
-                lock.acquire(); // Așteaptă până când primește notify() de la server
-                return frame.client.getMessage();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                //System.out.println("Thread intrerupt in validation from SettingsPlaceShip");
-                return "Thread intrerupt in validation from SettingsPlaceShip";
-            }
-        }
-    }
-    private void sendMessageToServer(){
-        //imi afiseaza mesajul de la server
-        String serverMessage = getMessage();
-        System.out.println("SERVER message in GUI Submit:" + serverMessage);
-        if (serverMessage != null) {
 
-            //actualizare mesaj primit de la server
-            messageTextAreaBattle.setText(serverMessage);
 
-            //style
-            messageTextAreaBattle.setOpaque(true);
-            messageTextAreaBattle.setBackground(new Color(0, 0, 0, 123));
-
-            //fortare repictare JTextArea
-            messageTextAreaBattle.repaint();
-
-            //revalidare si repaint pt JPanel
-            revalidate();
-            repaint();
-        }
-    }
 }

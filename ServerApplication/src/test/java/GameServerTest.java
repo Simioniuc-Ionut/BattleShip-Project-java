@@ -58,7 +58,7 @@ public void testGamePlayWithMockClient() {
     //mockClient1.startGame();
 
     if(GameState.WAITING_FOR_PLAYER == gameServer.getCurrentState()){
-        mockClient2.startGame();
+        //mockClient2.startGame();
     }
 
     //metodele din join
@@ -72,8 +72,8 @@ public void testGamePlayWithMockClient() {
         fail("Ship placement failed with error: " + e.getMessage());
     }
     //make playres ready
-    gameServer.setPlayer1IsReady(true);
-    gameServer.setPlayer2IsReady(true);
+    gameServer.setPlayer1IsReadyToStartGame(true);
+    gameServer.setPlayer2IsReadyToStartGame(true);
 
     //ready to start function
     gameServer.setCurrentState(GameState.GAME_READY_TO_MOVE);

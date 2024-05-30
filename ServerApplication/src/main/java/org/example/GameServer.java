@@ -37,8 +37,7 @@ public class GameServer {
     private boolean player2IsReadyToPlaceShips;
     private  boolean player1IsReadyToStartGame;
     private  boolean player2IsReadyToStartGame;
-    private boolean player1MoveTurn;
-    private boolean player2MoveTurn;
+
 
     private List<Ships> player1Ships;
     private List<Ships> player2Ships;
@@ -57,8 +56,6 @@ public class GameServer {
         player2IsReadyToPlaceShips=false;
         player1IsReadyToStartGame = false;
         player2IsReadyToStartGame = false;
-        player1MoveTurn = false;
-        player2MoveTurn = false;
 
         //waitingPlayers = new LinkedList<>();
         this.serverBoardPlayer1 = new char[BOARD_SIZE][BOARD_SIZE];
@@ -133,7 +130,8 @@ public class GameServer {
 
                             player.notifyGameOver();
                             currentState = GameState.GAME_OVER;
-                            resetGame();
+                            //ar trebui sa resetez altfel
+                            //resetGame();
                         }
                     }
                 }
@@ -158,8 +156,6 @@ public class GameServer {
         player2IsReadyToPlaceShips=false;
         player1IsReadyToStartGame = false;
         player2IsReadyToStartGame = false;
-        player1MoveTurn=false;
-        player2MoveTurn=false;
 
         //waitingPlayers = new LinkedList<>();
         this.serverBoardPlayer1 = new char[BOARD_SIZE][BOARD_SIZE];
