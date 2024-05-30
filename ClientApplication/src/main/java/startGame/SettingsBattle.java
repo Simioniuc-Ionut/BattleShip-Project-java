@@ -7,8 +7,8 @@ import java.awt.*;
 public class SettingsBattle extends JPanel {
     final MainFrameBattle frame;
     JLabel serverResponse;
-    JPanel messagePanel = new JPanel(new BorderLayout()); // for displaying server message
-    JTextArea messageTextArea;
+    JPanel messagePanelBattle = new JPanel(new BorderLayout()); // for displaying server message
+    JTextArea messageTextAreaBattle;
 
     public SettingsBattle(MainFrameBattle frame) {
         this.frame = frame;
@@ -27,6 +27,7 @@ public class SettingsBattle extends JPanel {
 
         // Message from Server
         messageFromServer();
+
     }
 
 
@@ -45,20 +46,21 @@ public class SettingsBattle extends JPanel {
         add(Box.createVerticalStrut(10));
 
         // JTextArea for displaying message from server
-        messageTextArea = new JTextArea();
-        messageTextArea.setWrapStyleWord(true);
-        messageTextArea.setLineWrap(true);
-        messageTextArea.setEditable(false);
-        messageTextArea.setForeground(Color.WHITE);
-        messageTextArea.setBackground(new Color(0, 0, 0, 123));
-        messageTextArea.setBorder(new EmptyBorder(10, 10, 10, 10));
-        messageTextArea.setText("Response from Server");
+        messageTextAreaBattle = new JTextArea();
+        messageTextAreaBattle.setWrapStyleWord(true);
+        messageTextAreaBattle.setLineWrap(true);
+        messageTextAreaBattle.setEditable(false);
+        messageTextAreaBattle.setForeground(Color.WHITE);
+        messageTextAreaBattle.setBackground(new Color(0, 0, 0, 123));
+        messageTextAreaBattle.setBorder(new EmptyBorder(10, 10, 10, 10));
+        String text = "Response from Server";
+        messageTextAreaBattle.setText(text);
 
         // Add JTextArea to JPanel
-        messagePanel.add(messageTextArea, BorderLayout.CENTER);
+        messagePanelBattle.add(messageTextAreaBattle, BorderLayout.CENTER);
 
         // Add message panel to the main panel
-        add(messagePanel);
+        add(messagePanelBattle);
         add(Box.createVerticalStrut(10));
     }
 }

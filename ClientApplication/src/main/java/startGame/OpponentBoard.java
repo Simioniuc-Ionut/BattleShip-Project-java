@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.concurrent.Semaphore;
 
 public class OpponentBoard extends JPanel {
     private final MainFrameBattle frame;
@@ -13,6 +14,10 @@ public class OpponentBoard extends JPanel {
     int startX = 40; // pozitie start pe axa x a ferestrei
     int startY = 110; // pozitie start pe axa y a ferestrei
     Color[][] cellColorsShips = new Color[10][10];// pentru a stii starea fiecarei celule din matrice
+    Integer rowClick;
+    Integer colClick;
+    Integer lastRowClicked = null;
+    Integer lastColClicked = null;
 
     public OpponentBoard(MainFrameBattle frame) {
         this.frame = frame;
@@ -26,18 +31,24 @@ public class OpponentBoard extends JPanel {
     }
 
     final void init() {
-      //mouse listener
+        //mouse listener
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                //tratare eveniment click casuta din matrice
-                int rowClick = (e.getY() - startY) / cellSize;
-                int colClick = (e.getX() - startX) / cellSize;
+                if (lastRowClicked != null && lastColClicked != null) {
+                    // Resetare culoarea ultimei celule selectate
+                    cellColorsShips[lastRowClicked][lastColClicked] = Color.black;
+                }
 
-                //colorare casuta cu rosu
+                // Actualizare noua celula selectata
+                rowClick = (e.getY() - startY) / cellSize;
+                colClick = (e.getX() - startX) / cellSize;
                 cellColorsShips[rowClick][colClick] = Color.red;
 
-                //repaint pentru a actualizare
+                // Referinta noii celule selectate
+                lastRowClicked = rowClick;
+                lastColClicked = colClick;
+
                 repaint();
             }
         });
@@ -75,7 +86,7 @@ public class OpponentBoard extends JPanel {
 
 
         // Deseneaza grila
-        board.setColor(Color.white); // Seteaza culoarea grilei la negru
+        board.setColor(Color.white); // Seteaza culoarea grilei
         for (int i = 0; i <= 10; i++) {
             // Linii orizontale
             board.drawLine(startX, startY + i * cellSize, startX + 10 * cellSize, startY + i * cellSize);

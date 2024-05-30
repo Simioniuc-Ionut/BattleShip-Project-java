@@ -187,10 +187,12 @@ public class ClientThread extends Thread {
       if(playerId == 1) {
 
         gameServer.setPlayer1IsReadyToStartGame(true);
+        sendMessage("Waiting player 2");
           while (!gameServer.isPlayer2IsReadyToStartGame()) {
               waitingThread();
           }
       }else{
+          sendMessage("Waiting player 1");
           gameServer.setPlayer2IsReadyToStartGame(true);
           while (!gameServer.isPlayer1IsReadyToStartGame()) {
               waitingThread();

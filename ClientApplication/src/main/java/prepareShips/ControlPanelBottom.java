@@ -17,7 +17,6 @@ public class ControlPanelBottom extends JPanel {
     SettingsPlaceShip settingsPlaceShip; // Adăugați acest câmp
     ClientBoard clientBoard; // Adăugați acest câmp
     ArrayList<Ship> shipsList = new ArrayList<>();// o lista cu cele 5 nave
-    GameClient client;
     int currentShipIndex = 0;// numararea navelor, pentru a sti nava curenta
 
 
@@ -115,24 +114,8 @@ public class ControlPanelBottom extends JPanel {
                 System.out.println("Pozitie invalida ,am intrat pe validare fals");
             }
 
-        //imi afiseaza mesajul de la server
-        String serverMessage = getMessage();
-        if (serverMessage != null) {
-
-            //actualizare mesaj primit de la server
-            settingsPlaceShip.messageTextArea.setText(serverMessage);
-
-            //style
-            settingsPlaceShip.messageTextArea.setOpaque(true);
-            settingsPlaceShip.messageTextArea.setBackground(new Color(0, 0, 0, 123));
-
-            //fortare repictare JTextArea
-            settingsPlaceShip.messageTextArea.repaint();
-
-            //revalidare si repaint pt JPanel
-            settingsPlaceShip.revalidate();
-            settingsPlaceShip.repaint();
-        }
+        //afisare mesaj SERVER
+        displayMessageFromServer();
 
         //dupa ce plaseaza utlima nava va aparea butonul de ready
         if (currentShipIndex == 1) { // trebuie SCHIMBAT la 5 dupa pt joc
@@ -143,6 +126,21 @@ public class ControlPanelBottom extends JPanel {
         // Repictare matrice client
         clientBoard.repaint();
 
+    }
+    private void displayMessageFromServer() {
+        String serverMessage = getMessage();
+        System.out.println("SERVER message in GUI:"+serverMessage);
+        if (serverMessage != null) {
+            // Actualizarea componentei Swing trebuie facută pe firul EDT
+            SwingUtilities.invokeLater(() -> {
+                settingsPlaceShip.messageTextArea.setText(serverMessage);
+                settingsPlaceShip.messageTextArea.setOpaque(true);
+                settingsPlaceShip.messageTextArea.setBackground(new Color(0, 0, 0, 123));
+                settingsPlaceShip.messageTextArea.repaint();
+                settingsPlaceShip.revalidate();
+                settingsPlaceShip.repaint();
+            });
+        }
     }
     private String getMessage() {
         Semaphore lock = frame.client.getMessageLock();
@@ -171,15 +169,19 @@ public class ControlPanelBottom extends JPanel {
             }
         }
     }
-    private void listenerReadyForGame(ActionEvent e)  {
+    private void listenerReadyForGame(ActionEvent e) {
 
         System.out.println("Am apasat butronul READY");
         String messageToClient = "READY";
         frame.client.setAnswer(messageToClient);
 
+
+        displayMessageFromServer();
+
         waitToStart(); //asteptam sa primim de la server semnalul de start
 
-        new MainFrameBattle(client, clientBoard.cellColorsShips).setVisible(true); //apare urmatoarea fereastra
+
+        new MainFrameBattle(frame.client, clientBoard.cellColorsShips).setVisible(true); //apare urmatoarea fereastra
         frame.setVisible(false);//inchide fereastra
 
     }
@@ -188,6 +190,7 @@ public class ControlPanelBottom extends JPanel {
         Semaphore lock = frame.client.getGameCouldStartlock();
         synchronized (lock) {
             try {
+
                 lock.acquire(); // Așteaptă până când primește notify() de la server
                 System.out.println("Am primit semnalul de start");
             } catch (InterruptedException e) {

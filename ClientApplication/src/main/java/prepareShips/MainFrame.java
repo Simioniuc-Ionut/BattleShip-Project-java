@@ -45,6 +45,7 @@ public class MainFrame extends JFrame {
         //setari vizualizare fereastra
         pack(); // ajusteaza dimensiunea ferestrei la dimensiunea preferată a componentelor sale
         setSize(new Dimension(1000, 700));
+        setLocationRelativeTo(null);
         setVisible(false);
 
     }

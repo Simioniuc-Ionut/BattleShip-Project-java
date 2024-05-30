@@ -30,7 +30,7 @@ public class MainFrameBattle extends JFrame {
         opponentBoard = new OpponentBoard(this);
         settingsBattle = new SettingsBattle(this);
         timeGame = new TimeGame(this);
-        submitMove = new SubmitMove(this);
+        submitMove = new SubmitMove(this,opponentBoard,clientBoardBattle,settingsBattle);
 
 
         // grupare oe axa x
@@ -57,6 +57,7 @@ public class MainFrameBattle extends JFrame {
         // set window view settings
         pack();
         setSize(new Dimension(1400, 700));
+        setLocationRelativeTo(null);
         setVisible(true);
     }
 }
