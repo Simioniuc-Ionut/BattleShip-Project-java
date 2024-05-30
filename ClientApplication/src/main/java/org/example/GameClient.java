@@ -19,6 +19,8 @@ public class GameClient {
     private Semaphore ansewerSemaphore = new Semaphore(0);
     private  Semaphore positionIsCorrectlock = new Semaphore(0);
     private Semaphore gameCouldStartlock = new Semaphore(0);
+    private boolean isYourTurnToMakeAMove = false;
+    private Semaphore moveTurnLock = new Semaphore(0);
     private boolean positionConfirmed = true;
     private String message;
     private Semaphore messageLock = new Semaphore(0);
@@ -91,6 +93,8 @@ public class GameClient {
 
                     verifyPositionMove(serverResponse);//primim confirmarea positiei ,daca este valida
 
+                    verifyIsYourTurnToMove(serverResponse);//verificam daca este randul nostru sa mutam
+
                     setMessage(serverResponse);//TRIMIT mesajul catre interfata;
                     messageLock.release();  //las lacatul pt a putea fi citit mesajul
 
@@ -107,6 +111,17 @@ public class GameClient {
                 }
             }
         });
+    }
+
+    private void verifyIsYourTurnToMove(String serverResponse) {
+        if(serverResponse.startsWith("NOT_YOUR_TURN")){
+            System.out.println("Not your turn");
+            isYourTurnToMakeAMove=false;
+            moveTurnLock.release();
+        }else{
+            isYourTurnToMakeAMove=true;
+            moveTurnLock.release();
+        }
     }
 
     private void verifyIfTheGameCouldStartToMove(String serverResponse) {
