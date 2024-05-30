@@ -37,28 +37,57 @@ public class SubmitMove extends JPanel {
         //configurare listeners
         submitMoveBtn.addActionListener(this::listenerAddSubmitMove);
 
+        // Dezactivare butonul de submit pana cand jocul incepe
+        submitMoveBtn.setEnabled(false);
+
+        // Așteptare ca jocul sa inceapa si activare butonul de submit
+        new Thread(() -> {
+            String message = frame.client.getMessage();
+            if ("START-MOVE".equals(message)) {
+                SwingUtilities.invokeLater(() -> submitMoveBtn.setEnabled(true));
+            }
+        }).start();
+
+
     }
     public void listenerAddSubmitMove(ActionEvent e){
 
+        if (!frame.client.isGameStarted()) {
+            JOptionPane.showMessageDialog(this, "Game has not started yet!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (!frame.client.isYourTurnToMakeAMove()) {
+            JOptionPane.showMessageDialog(this, "It's not your turn!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
         //trimit pozitia catre client
         sendPositionToClient();
 
-       if(validateYourTurnToMove()) {
-           System.out.println("A colorat");
-           // celula selectata dupa submit va ramane rosie doar daca este randul sau
-           if (opponentBoard.lastRowClicked != null && opponentBoard.lastColClicked != null) {
-               opponentBoard.cellColorsShips[opponentBoard.lastRowClicked][opponentBoard.lastColClicked] = Color.red;
-               opponentBoard.lastRowClicked = null;
-               opponentBoard.lastColClicked = null;
-               opponentBoard.repaint();
-           }
-       }else{
-           opponentBoard.cellColorsShips[opponentBoard.lastRowClicked][opponentBoard.lastColClicked] = Color.black;
-           opponentBoard.lastRowClicked = null;
-           opponentBoard.lastColClicked = null;
-           opponentBoard.repaint();
-       }
+        sendMessageToServer();
+
+        if (validateYourTurnToMove()) {
+            System.out.println("A colorat");
+            // Celula selectată după submit va rămâne roșie doar dacă este rândul jucătorului
+            if (opponentBoard.lastRowClicked != null && opponentBoard.lastColClicked != null) {
+                // Marcam celula ca permanentă
+                opponentBoard.permanentCells.add(opponentBoard.lastRowClicked + "," + opponentBoard.lastColClicked);
+
+                opponentBoard.cellColorsShips[opponentBoard.lastRowClicked][opponentBoard.lastColClicked] = Color.red;
+                opponentBoard.lastRowClicked = null;
+                opponentBoard.lastColClicked = null;
+                opponentBoard.repaint();
+            }
+        } else {
+            // Dacă nu este rândul jucătorului, celula selectată devine neagră
+            if (opponentBoard.lastRowClicked != null && opponentBoard.lastColClicked != null) {
+                opponentBoard.cellColorsShips[opponentBoard.lastRowClicked][opponentBoard.lastColClicked] = Color.black;
+                opponentBoard.lastRowClicked = null;
+                opponentBoard.lastColClicked = null;
+                opponentBoard.repaint();
+            }
+        }
 
 
 
@@ -77,6 +106,7 @@ public class SubmitMove extends JPanel {
         }
     }
     private  boolean validateYourTurnToMove(){
+        System.out.println("Aici validez TINTA");
         Semaphore lock = frame.client.getMoveTurnLock();
         synchronized (lock) {
             try {

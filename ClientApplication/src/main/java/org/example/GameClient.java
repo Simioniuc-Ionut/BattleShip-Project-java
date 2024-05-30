@@ -24,6 +24,9 @@ public class GameClient {
     private boolean positionConfirmed = true;
     private String message;
     private Semaphore messageLock = new Semaphore(0);
+
+    private boolean gameStartedForPlay = false; // Flag pentru a indica dacă jocul a început
+
     public GameClient(String serverAddress, int serverPort) {
         this.serverAddress = serverAddress;
         this.serverPort = serverPort;
@@ -127,9 +130,15 @@ public class GameClient {
 
     private void verifyIfTheGameCouldStartToMove(String serverResponse) {
         if(serverResponse.startsWith("START-MOVE")){
+            gameStartedForPlay = true;
             gameCouldStartlock.release();
         }
     }
+    //pt interfata
+    public boolean isGameStarted() {
+        return gameStartedForPlay;
+    }
+
 
     private void verifyPositionMove(String serverResponse){
         if (serverResponse.startsWith("Err:")){

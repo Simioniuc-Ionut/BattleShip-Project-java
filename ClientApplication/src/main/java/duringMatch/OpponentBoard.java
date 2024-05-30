@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.HashSet;
+import java.util.Set;
 
 public class OpponentBoard extends JPanel {
     private final MainFrameBattle frame;
@@ -15,6 +17,8 @@ public class OpponentBoard extends JPanel {
     Integer colClick;
     Integer lastRowClicked = null;
     Integer lastColClicked = null;
+    //adaug haset ca sa pastrez celulele tintite sa fie colorate permanent
+    Set<String> permanentCells = new HashSet<>();;
 
     public OpponentBoard(MainFrameBattle frame) {
         this.frame = frame;
@@ -32,15 +36,23 @@ public class OpponentBoard extends JPanel {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+
+                int row = (e.getY() - startY) / cellSize;
+                int col = (e.getX() - startX) / cellSize;
+
+                // Verific daca celula este deja permanenta
+                if (permanentCells.contains(row + "," + col)) {
+                    return;
+                }
+
                 if (lastRowClicked != null && lastColClicked != null) {
                     // Resetare culoarea ultimei celule selectate
                     cellColorsShips[lastRowClicked][lastColClicked] = Color.black;
                 }
 
-
                 // Actualizare noua celula selectata
-                rowClick = (e.getY() - startY) / cellSize;
-                colClick = (e.getX() - startX) / cellSize;
+                rowClick = row;
+                colClick = col;
                 cellColorsShips[rowClick][colClick] = Color.red;
 
                 // Referinta noii celule selectate

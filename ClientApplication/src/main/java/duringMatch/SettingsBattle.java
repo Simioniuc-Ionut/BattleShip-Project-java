@@ -3,6 +3,7 @@ package duringMatch;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.util.concurrent.Semaphore;
 
 public class SettingsBattle extends JPanel {
     final MainFrameBattle frame;
@@ -62,5 +63,40 @@ public class SettingsBattle extends JPanel {
         // Add message panel to the main panel
         add(messagePanelBattle);
         add(Box.createVerticalStrut(10));
+    }
+
+    private String getMessage() {
+        Semaphore lock = frame.client.getMessageLock();
+        synchronized (lock) {
+            try {
+                lock.acquire(); // Așteaptă până când primește notify() de la server
+                return frame.client.getMessage();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                //System.out.println("Thread intrerupt in validation from SettingsPlaceShip");
+                return "Thread intrerupt in validation from SettingsPlaceShip";
+            }
+        }
+    }
+    private void sendMessageToServer(){
+        //imi afiseaza mesajul de la server
+        String serverMessage = getMessage();
+        System.out.println("SERVER message in GUI Submit:" + serverMessage);
+        if (serverMessage != null) {
+
+            //actualizare mesaj primit de la server
+            messageTextAreaBattle.setText(serverMessage);
+
+            //style
+            messageTextAreaBattle.setOpaque(true);
+            messageTextAreaBattle.setBackground(new Color(0, 0, 0, 123));
+
+            //fortare repictare JTextArea
+            messageTextAreaBattle.repaint();
+
+            //revalidare si repaint pt JPanel
+            revalidate();
+            repaint();
+        }
     }
 }
