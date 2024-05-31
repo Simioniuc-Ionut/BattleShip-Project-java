@@ -5,7 +5,7 @@ import duringMatch.MainFrameFour;
 import javax.swing.*;
 import java.awt.*;
 
-public class TimeGame extends JPanel implements TimeUpdateListener {
+public class TimeGame extends JPanel {
 
     JLabel timerLabel;
     MainFrameFour frame;
@@ -23,7 +23,7 @@ public class TimeGame extends JPanel implements TimeUpdateListener {
 
     }
 
-    @Override
+    
     public void onTimeUpdate(String time) {
         SwingUtilities.invokeLater(() -> {
             timerLabel.setText(time); // Asigurați-vă că acest cod funcționează corect

@@ -53,6 +53,7 @@ public class LeaderboardFrame extends JFrame {
         tableModel.addColumn("Wins Count");
         tableModel.addColumn("Losses Count");
         tableModel.addColumn("Matches Count");
+        tableModel.addColumn("Player Team Id");
 
         // Obținerea listei de jucători
         List<Player> players = HttpClient.getPlayersList();
@@ -65,7 +66,8 @@ public class LeaderboardFrame extends JFrame {
                     player.getMissesCount(),
                     player.getWinsCount(),
                     player.getLossesCount(),
-                    player.getMatchesCount()
+                    player.getMatchesCount(),
+                    player.getPlayerTeamId()
             });
         }
     }

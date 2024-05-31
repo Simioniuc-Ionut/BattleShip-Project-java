@@ -1,7 +1,8 @@
 package org.example;
 
-import createOrJoinGame.MainFrameOne;
-import firstFrame.MainFramePlay;
+import createOrJoinGame.MainFrameTwo;
+
+import firstFrame.MainFrameOne;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -32,7 +33,7 @@ public class GameClient {
     public GameClient(String serverAddress, int serverPort) {
         this.serverAddress = serverAddress;
         this.serverPort = serverPort;
-        new MainFramePlay(this).setVisible(true);
+        new MainFrameOne(this).setVisible(true);
 
     }
 

@@ -98,7 +98,7 @@ public class SettingsUser extends JPanel {
 
         //iau id ul unic din bd , corespunzator numelui introdus
 
-        int idFromDB = takeUniqIDFromDB();
+       takeUniqIDFromDB();
 
         //Add teamId in DB
         addTeamId();
@@ -128,7 +128,7 @@ public class SettingsUser extends JPanel {
         }
     }
 
-    public int takeUniqIDFromDB(){
+    public void takeUniqIDFromDB(){
         int idFromDB = 0;
         try {
             idFromDB = HttpClient.getPlayerId(writeUsername.getText());
@@ -138,7 +138,7 @@ public class SettingsUser extends JPanel {
         }
         frame.client.setPlayerIDFromDB(idFromDB);
        // System.out.println("Id from DB " +idFromDB);
-        return idFromDB;
+
     }
 
     public void addTeamId(){
