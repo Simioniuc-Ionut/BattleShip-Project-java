@@ -1,6 +1,6 @@
 package firstFrame;
 
-import createOrJoinGame.MainFrameOne;
+import createOrJoinGame.MainFrameTwo;
 import org.example.GameClient;
 
 import javax.swing.*;
@@ -8,7 +8,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 
 public class SettingsUser extends JPanel {
-    final MainFramePlay frame;
+    final MainFrameOne frame;
     GameClient client;
 
     JLabel title;
@@ -18,7 +18,7 @@ public class SettingsUser extends JPanel {
     JButton startGameBtn = new JButton("Start");
     JButton viewScoresBtn = new JButton("Check the leaderboard");
 
-    public SettingsUser(MainFramePlay frame, GameClient client) {
+    public SettingsUser(MainFrameOne frame, GameClient client) {
         this.frame = frame;
         this.client = client;
         init();
@@ -77,13 +77,13 @@ public class SettingsUser extends JPanel {
         viewScoresBtn.setBackground(Color.darkGray);
         viewScoresBtn.setForeground(Color.WHITE); // culoare text
 
-        // configure listeners for all buttons
+        // listeners
         startGameBtn.addActionListener(this::listenerAddStartGameBtn);
         viewScoresBtn.addActionListener(this::listenerAddViewTableBtn);
     }
 
     private void listenerAddStartGameBtn(ActionEvent e) {
-        new MainFrameOne(client).setVisible(true); // apare urmatoarea fereastra
+        new MainFrameTwo(client).setVisible(true); // apare urmatoarea fereastra
         frame.setVisible(false); // inchide fereastra
     }
 

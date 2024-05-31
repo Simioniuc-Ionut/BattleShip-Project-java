@@ -1,27 +1,24 @@
 package duringMatch;
 
-import finishMatch.MainFrameFinish;
-import org.example.GameState;
+import finishMatch.MainFrameFive;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.concurrent.Semaphore;
 
 public class SubmitMove extends JPanel {
-    final MainFrameBattle frame;
+    final MainFrameFour frame;
     OpponentBoard opponentBoard;
     ClientBoardBattle clientBoardBattle;
     SettingsBattle settingsBattle;
     JButton submitMoveBtn = new JButton("Submit Move");
-    private boolean gameOverDisplayed = false; // Flag to track if the game over window has been displayed
+    private boolean gameOverDisplayed = false; // Flag pt actiunea de a deschide gameover
 
-    public SubmitMove(MainFrameBattle frame,OpponentBoard opponentBoard, ClientBoardBattle clientBoardBattle,SettingsBattle settingsBattle) {
+    public SubmitMove(MainFrameFour frame, OpponentBoard opponentBoard, ClientBoardBattle clientBoardBattle, SettingsBattle settingsBattle) {
         this.frame = frame;
         this.opponentBoard = opponentBoard;
         this.clientBoardBattle = clientBoardBattle;
         this.settingsBattle = settingsBattle;
-
 
         init();
     }
@@ -30,7 +27,6 @@ public class SubmitMove extends JPanel {
 
         add(submitMoveBtn);
 
-
         //style buton
         Font newFont = new Font("default", Font.BOLD, 20);
         submitMoveBtn.setFont(newFont);
@@ -38,14 +34,9 @@ public class SubmitMove extends JPanel {
         submitMoveBtn.setBackground(Color.darkGray);
         submitMoveBtn.setForeground(Color.WHITE);//culoare text
 
-        //configurare listeners
         submitMoveBtn.addActionListener(this::listenerAddSubmitMove);
 
-        //SINCRONIZARE cu mesajele primite de la SERVER
-        // În clasa SubmitMove, adăugați un nou callback pentru gestionarea mesajelor de la server
-
-
-        // Modificați thread-ul care ascultă mesajele de la server pentru a apela acest callback
+        // Thread care asculta mesajele : server->client->interfata
         threadMessageFromClient();
 
 
@@ -61,12 +52,11 @@ public class SubmitMove extends JPanel {
                         handleServerMessageForPaintClientBoard(msg);
                         handleServerMessageForPaintHit(msg);
                         verifyGameOver(msg);
+                        //afisare mesaje in JPanel
                         settingsBattle.messageTextAreaBattle.setText(msg);
                         settingsBattle.messageTextAreaBattle.repaint();
                         settingsBattle.revalidate();
                         settingsBattle.repaint();
-
-
                     });
                 }
                 try {
@@ -79,13 +69,12 @@ public class SubmitMove extends JPanel {
     }
 
     public void verifyGameOver(String msg){
-
         if (msg.contains("Game over.") && !gameOverDisplayed) {
 
-            gameOverDisplayed = true; // Set the flag to true to prevent multiple windows
+            gameOverDisplayed = true; // setez falgul pt a se deschide doar cate o fereastra
             SwingUtilities.invokeLater(() -> {
-                new MainFrameFinish(frame.client).setVisible(true); // Open Game Over window
-                frame.dispose(); // Close the game window
+                new MainFrameFive(frame.client).setVisible(true);
+                frame.dispose(); // inchidere ferestre client
             });
         }
     }
@@ -93,13 +82,8 @@ public class SubmitMove extends JPanel {
             //trimit pozitia catre client
             sendPositionToClient();
 
-//            if ((validateYourTurnToMove())) {
-//                System.out.println(validateYourTurnToMove()+" ROSU");
+            //colorez celulele selectate temporar
             colorCellSelected();
-//            } else {
-//                System.out.println(validateYourTurnToMove()+" NEGRU");
-//                colorCellBlack();
-//            }
 
         }
 
@@ -114,33 +98,6 @@ public class SubmitMove extends JPanel {
                 opponentBoard.repaint();
             }
         }
-
-//        private void colorCellBlack() {
-//            if (opponentBoard.lastRowClicked != null && opponentBoard.lastColClicked != null) {
-//                opponentBoard.cellColorsShips[opponentBoard.lastRowClicked][opponentBoard.lastColClicked] = Color.black;
-//                opponentBoard.permanentCells.remove(opponentBoard.lastRowClicked + "," + opponentBoard.lastColClicked);
-//                opponentBoard.lastRowClicked = null;
-//                opponentBoard.lastColClicked = null;
-//                opponentBoard.repaint();
-//            }
-//        }
-
-    private  boolean validateYourTurnToMove(){
-        System.out.println("Aici validez TURN");
-        Semaphore lock = frame.client.getMoveTurnLock();
-        synchronized (lock) {
-            try {
-                //Asteapta:
-                lock.acquire(); // Așteaptă până când primește notify() de la server
-                return frame.client.isYourTurnToMakeAMove();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                System.out.println("Thread intrerupt in validation");
-                return false;
-            }
-        }
-
-    }
 
     private void handleServerMessageForPaintClientBoard(String message) {
         // Exemplu de mesaj: "Server response: Opponent moved: E4. Your turn."
@@ -173,38 +130,8 @@ public class SubmitMove extends JPanel {
        }
     }
 
-
-    private String getMessage() {
-        Semaphore lock = frame.client.getMessageLock();
-        synchronized (lock) {
-            try {
-                lock.acquire(); // Așteaptă până când primește notify() de la server
-                return frame.client.getMessage();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                //System.out.println("Thread intrerupt in validation from SettingsPlaceShip");
-                return "Thread intrerupt in validation from SettingsPlaceShip";
-            }
-        }
-    }
-//    private  boolean validateYourTurnToMove(){
-//        System.out.println("Aici validez TINTA");
-//        Semaphore lock = frame.client.getMoveTurnLock();
-//        synchronized (lock) {
-//            try {
-//                //Asteapta:
-//                lock.acquire(); // Așteaptă până când primește notify() de la server
-//                return frame.client.isYourTurnToMakeAMove();
-//            } catch (InterruptedException e) {
-//                Thread.currentThread().interrupt();
-//                System.out.println("Thread intrerupt in validation");
-//                return false;
-//            }
-//        }
-//
-//    }
     private void sendPositionToClient(){
-        // Obtine valorile din click (tinta)
+        // Obtine valorile din click (tinta) si trimit raspunsul cu pozitia la client->server
         if (opponentBoard.rowClick != null && opponentBoard.colClick != null) {
             // Convertire
             String submitRowLetter = String.valueOf((char) ('A' + opponentBoard.rowClick));
@@ -213,12 +140,12 @@ public class SubmitMove extends JPanel {
             StringBuilder messageToClient = new StringBuilder();
             messageToClient.append(submitRowLetter);
             messageToClient.append(submitColNumber);
+
             //trimit catre client mesajul ca sa ajunge dupa la server
             frame.client.setAnswer(messageToClient.toString().trim());
 
             System.out.println("SUBMITED -> "+messageToClient);
         }
     }
-    //fac sa primesc mesaje de la server privind starea
 
 }

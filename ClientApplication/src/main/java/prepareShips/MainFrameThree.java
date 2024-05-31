@@ -5,7 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 
 
-public class MainFrame extends JFrame {
+public class MainFrameThree extends JFrame {
     public SettingsPlaceShip settingsPlaceShip;
     ControlPanelBottom controlPanelBottom;
     ClientBoard clientBoard;
@@ -14,7 +14,7 @@ public class MainFrame extends JFrame {
     private ImageIcon img;
     private JLabel background;
 
-    public MainFrame(GameClient client) {
+    public MainFrameThree(GameClient client) {
         super("prepareShips");
         this.client = client;
         initPrepareShips();
@@ -40,8 +40,8 @@ public class MainFrame extends JFrame {
 
         //fundal
 
-        //setari vizualizare fereastra
-        pack(); // ajusteaza dimensiunea ferestrei la dimensiunea preferată a componentelor sale
+
+        pack();
         setSize(new Dimension(1000, 700));
         setLocationRelativeTo(null);
         setVisible(false);

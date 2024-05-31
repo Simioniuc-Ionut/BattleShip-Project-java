@@ -1,21 +1,21 @@
 package createOrJoinGame;
 
 import org.example.GameClient;
-import prepareShips.MainFrame;
+import prepareShips.MainFrameThree;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
 public class Settings extends JPanel {
-    final MainFrameOne frame;
+    final MainFrameTwo frame;
     GameClient client;
 
     JLabel title;
     JButton createGameBtn = new JButton("Create Game");
     JButton joinGameBtn = new JButton("Join Game");
 
-    public Settings(MainFrameOne frame,GameClient client) { // Modificați constructorul pentru a include ClientBoard
+    public Settings(MainFrameTwo frame, GameClient client) {
         this.frame = frame;
         this.client = client;
         init();
@@ -35,10 +35,10 @@ public class Settings extends JPanel {
         createGameBtn.setAlignmentX(Component.CENTER_ALIGNMENT); // Centrare
         add(createGameBtn);
 
-        // spatiu
+
         add(Box.createRigidArea(new Dimension(0, 20)));
 
-        joinGameBtn.setAlignmentX(Component.CENTER_ALIGNMENT); // Centrare
+        joinGameBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(joinGameBtn);
 
         // box filler pt spatiere sub
@@ -57,9 +57,9 @@ public class Settings extends JPanel {
         joinGameBtn.setFont(newFont);
         joinGameBtn.setPreferredSize(new Dimension(250, 70));
         joinGameBtn.setBackground(Color.darkGray);
-        joinGameBtn.setForeground(Color.WHITE);//culoare text
+        joinGameBtn.setForeground(Color.WHITE);
 
-        //configure listeners for all buttons
+        //listeners
         createGameBtn.addActionListener(this::listenerAddCreateGameBtn);
         joinGameBtn.addActionListener(this::listenerAddJoinGameBtn);
     }
@@ -68,7 +68,7 @@ public class Settings extends JPanel {
 
         String messageToClient = "c";
         frame.client.setAnswer(messageToClient);
-        new MainFrame(client).setVisible(true); //apare urmatoarea fereastra
+        new MainFrameThree(client).setVisible(true); //apare urmatoarea fereastra
         frame.setVisible(false);//inchide fereastra
 
     }
@@ -76,7 +76,7 @@ public class Settings extends JPanel {
 
         String messageToClient = "j";
         frame.client.setAnswer(messageToClient);
-        new MainFrame(client).setVisible(true); //apare urmatoarea fereastra
+        new MainFrameThree(client).setVisible(true); //apare urmatoarea fereastra
         frame.setVisible(false);//inchide fereastra
 
     }

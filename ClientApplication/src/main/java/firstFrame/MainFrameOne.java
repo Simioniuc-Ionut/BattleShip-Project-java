@@ -5,10 +5,10 @@ import org.example.GameClient;
 import javax.swing.*;
 import java.awt.*;
 
-public class MainFramePlay extends JFrame {
+public class MainFrameOne extends JFrame {
     public GameClient client;
     SettingsUser settingsUser;
-    public MainFramePlay() {
+    public MainFrameOne() {
         super("User");
 
         initUser();
@@ -24,7 +24,7 @@ public class MainFramePlay extends JFrame {
         pack();
         setSize(new Dimension(500, 300));
         setLocationRelativeTo(null);
-        setVisible(true); // Arată fereastra cu butonul
+        setVisible(true);
     }
 
 

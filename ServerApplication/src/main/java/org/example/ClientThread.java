@@ -1,5 +1,7 @@
 package org.example;
 
+
+import duringMatch.timer.TimeUpdateListener;
 import lombok.Setter;
 import org.example.exception.GameException;
 import org.example.shipsModels.*;
@@ -50,8 +52,11 @@ public class ClientThread extends Thread {
 
     //private AtomicInteger state;
 
+    TimeUpdateListener listener;
 
-    public ClientThread(Socket clientSocket, GameServer gameServer,Integer playerId) {
+
+
+    public ClientThread(Socket clientSocket, GameServer gameServer,Integer playerId,TimeUpdateListener listener) {
         this.clientSocket = clientSocket;
         this.gameServer = gameServer;
         this.playerId = playerId;
@@ -59,11 +64,14 @@ public class ClientThread extends Thread {
         this.shipsPlaced = false;
         playerFinishStatus=false;
 
-        this.timer = new TimerThread(timerPlayer,playerId);
+        this.listener = listener;
+
+        this.timer = new TimerThread(timerPlayer,playerId,listener);
         timer.start();
         //timer.startTimer();
     }
-    public void startTimerThread(){
+    public void startTimerThread()
+    {
         timer.startTimer();
     }
     public void stopTimerThread(){
@@ -127,12 +135,8 @@ public class ClientThread extends Thread {
                         }else{
                             sendMessage("NOT_YOUR_TURN: " + inputLine);
                         }
-                } else if(gameServer.getCurrentState() == GameState.GAME_OVER){
-                    //jocul s a terminat.
-                    System.out.println("Sunt in game over ||| " + playerId);
-                       //gameIsFinished();
-                     //  gameReset();
-                }else {
+              }
+                else {
                     out.println("Server received the request: " + inputLine);
                 }
             }
@@ -390,7 +394,7 @@ public class ClientThread extends Thread {
         //remainingTimePlayer2 = 30;
         finishTimerThread();
         //Redeschidem timerul
-        this.timer = new TimerThread(timerPlayer,playerId);
+        this.timer = new TimerThread(timerPlayer,playerId,listener);
         timer.start();
 
         timerPlayer =30;

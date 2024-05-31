@@ -1,12 +1,13 @@
 package duringMatch;
 
+import duringMatch.timer.TimeGame;
 import org.example.GameClient;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-public class MainFrameBattle extends JFrame {
+public class MainFrameFour extends JFrame {
     ClientBoardBattle clientBoardBattle;
     OpponentBoard opponentBoard;
     SettingsBattle settingsBattle;
@@ -15,7 +16,7 @@ public class MainFrameBattle extends JFrame {
 
     public GameClient client;
 
-    public MainFrameBattle(GameClient client, Color[][] initialCellColors) {
+    public MainFrameFour(GameClient client, Color[][] initialCellColors) {
         super("startGameBattleShip");
         this.client = client;
         initStartGameBattleShip(initialCellColors);
@@ -53,7 +54,6 @@ public class MainFrameBattle extends JFrame {
         add(mainPanel, BorderLayout.CENTER);
         add(submitMove, BorderLayout.SOUTH);
 
-        // set window view settings
         pack();
         setSize(new Dimension(1400, 700));
         setLocationRelativeTo(null);

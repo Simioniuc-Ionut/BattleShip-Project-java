@@ -4,15 +4,15 @@ import javax.swing.*;
 import java.awt.*;
 
 public class ClientBoard extends JPanel {
-    private final MainFrame frame;
+    private final MainFrameThree frame;
     int cellSize = 40; // dimensiune fiecare celula
     int startX = 40; // pozitie start pe axa x a ferestrei
     int startY = 110; // pozitie start pe axa y a ferestrei
     Color[][] cellColorsShips = new Color[10][10];// pentru a stii starea fiecarei celule din matrice
 
-    public ClientBoard(MainFrame frame) {
+    public ClientBoard(MainFrameThree frame) {
         this.frame = frame;
-        // Inițializați toate celulele cu culoarea albă
+
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
                 cellColorsShips[i][j] = Color.WHITE;
@@ -66,9 +66,6 @@ public class ClientBoard extends JPanel {
 
 
     }
-
-
-
 
 
 }

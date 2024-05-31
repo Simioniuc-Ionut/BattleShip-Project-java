@@ -1,6 +1,6 @@
 package org.example;
 
-import createOrJoinGame.MainFrameOne;
+import createOrJoinGame.MainFrameTwo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,7 +28,7 @@ public class GameClient {
     public GameClient(String serverAddress, int serverPort) {
         this.serverAddress = serverAddress;
         this.serverPort = serverPort;
-        new MainFrameOne(this).setVisible(true);
+        new MainFrameTwo(this).setVisible(true);
     }
 
     public Semaphore getLock() {
