@@ -1,5 +1,6 @@
 package finishMatch;
 
+import createOrJoinGame.MainFrameTwo;
 import org.example.GameClient;
 
 import javax.swing.*;
@@ -7,14 +8,14 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 
 public class SettingsGameOver extends JPanel {
-    final MainFrameFinish frame;
+    final MainFrameFive frame;
     GameClient client;
 
     JLabel title;
     JButton exitBtn = new JButton("Exit");
     JButton playAgainBtn = new JButton("Play Again");
 
-    public SettingsGameOver(MainFrameFinish frame,GameClient client) { // Modificați constructorul pentru a include ClientBoard
+    public SettingsGameOver(MainFrameFive frame, GameClient client) {
         this.frame = frame;
         this.client = client;
         init();
@@ -25,19 +26,17 @@ public class SettingsGameOver extends JPanel {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         title = new JLabel("Game Over");
-        title.setAlignmentX(Component.CENTER_ALIGNMENT); // Centrare
+        title.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(title);
 
-        // spatiu
         add(Box.createRigidArea(new Dimension(0, 20)));
 
-        exitBtn.setAlignmentX(Component.CENTER_ALIGNMENT); // Centrare
+        exitBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(exitBtn);
 
-        // spatiu
         add(Box.createRigidArea(new Dimension(0, 20)));
 
-        playAgainBtn.setAlignmentX(Component.CENTER_ALIGNMENT); // Centrare
+        playAgainBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(playAgainBtn);
 
         // box filler pt spatiere sub
@@ -56,26 +55,26 @@ public class SettingsGameOver extends JPanel {
         playAgainBtn.setFont(newFont);
         playAgainBtn.setPreferredSize(new Dimension(250, 70));
         playAgainBtn.setBackground(Color.darkGray);
-        playAgainBtn.setForeground(Color.WHITE);//culoare text
+        playAgainBtn.setForeground(Color.WHITE);
 
-        //configure listeners for all buttons
+        //listeners
         exitBtn.addActionListener(this::listenerAddExitBtn);
         playAgainBtn.addActionListener(this::listenerAddPlayAgainBtn);
     }
 
     private void listenerAddExitBtn(ActionEvent e) {
 
-//        String messageToClient = "exit";
-//        frame.client.setAnswer(messageToClient);
-//        frame.setVisible(false);//inchide fereastra
+        String messageToClient = "exit";
+        frame.client.setAnswer(messageToClient);
+        frame.setVisible(false);//inchide fereastra
 
     }
     private void listenerAddPlayAgainBtn(ActionEvent e) {
 
-//        String messageToClient = "";
+//        String messageToClient = "again";
 //        frame.client.setAnswer(messageToClient);
-//        new MainFrameOne(client).setVisible(true); //apare pagina de inceput
-//        frame.setVisible(false);//inchide fereastra
+        new MainFrameTwo(client).setVisible(true); //apare pagina de inceput
+        frame.setVisible(false);//inchide fereastra
 
     }
 }

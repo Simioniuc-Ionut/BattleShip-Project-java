@@ -2,12 +2,10 @@ package prepareShips;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.util.concurrent.Semaphore;
 
 public class SettingsPlaceShip extends JPanel {
-    final MainFrame frame;
+    final MainFrameThree frame;
     JLabel placeShipFrom;
     JLabel placeShipTo;
     JLabel nameShip;
@@ -22,7 +20,7 @@ public class SettingsPlaceShip extends JPanel {
     JPanel messagePanel = new JPanel(new BorderLayout());// afisarea mesajului de la server dupa apasarea butonului
     JTextArea messageTextArea;
 
-    public SettingsPlaceShip(MainFrame frame) {
+    public SettingsPlaceShip(MainFrameThree frame) {
         this.frame = frame;
         init();
     }

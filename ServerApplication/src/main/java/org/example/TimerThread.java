@@ -2,53 +2,55 @@ package org.example;
 
 public class TimerThread extends Thread {
     private int time;
-    private boolean start;
+    private boolean running;
     public boolean timeOver = false;
     private final int playerId;
 
     public TimerThread(int time, int id) {
         this.time = time;
         this.playerId = id;
+
     }
 
-    public void startTimer() {
-
-        start = true;
-        System.out.println("L am facut true " + start);
+    public synchronized void startTimer() {
+        running = true;
+        System.out.println("Timer started for player " + playerId);
     }
 
-    public void pauseTimer() {
-        start = false;
+    public synchronized void pauseTimer() {
+        running = false;
+        System.out.println("Timer paused for player " + playerId);
     }
 
     @Override
     public void run() {
         try {
-            System.out.println("Sunt in run + timp " + time);
+            System.out.println("Timer thread running for player " + playerId + " with time " + time);
             while (time > 0) {
-                //System.out.println(start);
                 Thread.sleep(1000);
-                if (start) {
-                    //System.out.println("ceva inainte ");
-                    //Thread.sleep(1000);
-                    //System.out.println("ceva dupa ");
+                if (running) {
                     time--;
-                    // System.out.println(time);
+                    System.out.println("Time remaining for player " + playerId + ": " + time);
                     printTime();
+                    System.out.println("after print");
                 }
             }
             timeOver = true;
+            System.out.println("Time over for player " + playerId);
         } catch (InterruptedException e) {
-            System.out.println("timer was interrupted" + playerId);
-            //e.printStackTrace();
+            System.out.println("Timer was interrupted for player " + playerId);
         }
     }
 
     private void printTime() {
-        //System.out.println("Player : " + playerId + "Time remaining: "+time+" seconds");
+        System.out.println("trimit TIMER" );
+      //(String.valueOf(time));
+
     }
 
-    public boolean isStart() {
-        return start;
+
+
+    public synchronized boolean isStart() {
+        return running;
     }
 }

@@ -1,6 +1,8 @@
 package org.example;
 
-
+import duringMatch.MainFrameFour;
+import duringMatch.timer.TimeGame;
+import duringMatch.timer.TimeUpdateListener;
 import lombok.Setter;
 import org.example.exception.GameException;
 import org.example.shipsModels.PatrolBoat;
@@ -43,11 +45,13 @@ public class GameServer {
     private List<Ships> player1Ships;
     private List<Ships> player2Ships;
 
+
     //ships
 
     public GameServer(int port) {
         this.port = port;
         this.isRunning = false;
+
 
         clientThreads = new HashMap<>();
         numberOfPlayers = new AtomicInteger(0);
@@ -67,7 +71,6 @@ public class GameServer {
 
         player1Ships = new ArrayList<>();
         player2Ships = new ArrayList<>();
-
 
     }
 
@@ -255,7 +258,6 @@ public class GameServer {
                         PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
                         out.println("Connection Completed");
                         numberOfPlayers.incrementAndGet();
-
 
                         ClientThread client = new ClientThread(clientSocket, this,numberOfPlayers.get());
                         clientThreads.put(numberOfPlayers.get(),client);

@@ -5,10 +5,10 @@ import org.example.GameClient;
 import javax.swing.*;
 import java.awt.*;
 
-public class MainFramePlay extends JFrame {
+public class MainFrameOne extends JFrame {
     public GameClient client;
     SettingsUser settingsUser;
-    public MainFramePlay(GameClient client) {
+    public MainFrameOne(GameClient client) {
         super("User");
         this.client=client;
         initUser();

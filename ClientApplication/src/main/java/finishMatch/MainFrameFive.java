@@ -5,10 +5,10 @@ import org.example.GameClient;
 import javax.swing.*;
 import java.awt.*;
 
-public class MainFrameFinish extends JFrame {
+public class MainFrameFive extends JFrame {
     public GameClient client;
     SettingsGameOver settingsGameOver;
-    public MainFrameFinish(GameClient client) {
+    public MainFrameFive(GameClient client) {
         super("gameOver");
         this.client = client;
         initGameOver();
@@ -24,7 +24,7 @@ public class MainFrameFinish extends JFrame {
         pack();
         setSize(new Dimension(600, 200));
         setLocationRelativeTo(null);
-        setVisible(true); // Arată fereastra cu butonul
+        setVisible(true);
     }
 
 

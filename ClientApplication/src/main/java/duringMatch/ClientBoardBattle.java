@@ -4,13 +4,13 @@ import javax.swing.*;
 import java.awt.*;
 
 public class ClientBoardBattle extends JPanel {
-    private final MainFrameBattle frame;
+    private final MainFrameFour frame;
     int cellSize = 40; // dimensiune fiecare celula
     int startX = 40; // pozitie start pe axa x a ferestrei
     int startY = 110; // pozitie start pe axa y a ferestrei
     Color[][] cellColorsShips = new Color[10][10];// pentru a stii starea fiecarei celule din matrice
     boolean[][] hitCells = new boolean[10][10];
-    public ClientBoardBattle(MainFrameBattle frame, Color[][] initialCellColors) {
+    public ClientBoardBattle(MainFrameFour frame, Color[][] initialCellColors) {
         this.frame = frame;
         //preiau tabela colorata (cu navele plasate) din MainFrame->ClientBoard
 
@@ -50,15 +50,15 @@ public class ClientBoardBattle extends JPanel {
                 int cellX = startX + j * cellSize;
                 int cellY = startY + i * cellSize;
 
-                // Desenează culoarea de fundal a celulei
+                // culoarea de fundal a celulei
                 board.setColor(cellColorsShips[i][j]);
                 board.fillRect(cellX, cellY, cellSize, cellSize);
 
-                // Verifică dacă celula este marcată ca lovită în matricea hitCells și desenează X
+                // verificare daca celula este lovita pt a desena x
                 if (hitCells[i][j]) {
-                    board.setColor(Color.RED); // Setează culoarea pentru X
-                    board.setStroke(new BasicStroke(1)); // Setează grosimea liniei pentru X
-                    // Desenează X
+                    board.setColor(Color.RED);
+                    board.setStroke(new BasicStroke(1));
+                    // Deseneaza X
                     board.drawLine(cellX, cellY, cellX + cellSize, cellY + cellSize);
                     board.drawLine(cellX + cellSize, cellY, cellX, cellY + cellSize);
                 }
@@ -81,7 +81,6 @@ public class ClientBoardBattle extends JPanel {
         int column = Integer.parseInt(position.substring(1)) - 1;
         int row = rowChar - 'A';
 
-        // Verifică dacă poziția este validă
         if(row >= 0 && row < 10 && column >= 0 && column < 10) {
 
             hitCells[row][column] = true;

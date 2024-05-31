@@ -1,8 +1,5 @@
 package org.example;
 
-import finishMatch.MainFrameFinish;
-import firstFrame.MainFramePlay;
-
 public class Main {
     public static void main(String[] args) {
 //        String serverAddress = "localhost"; // Adresa serverului

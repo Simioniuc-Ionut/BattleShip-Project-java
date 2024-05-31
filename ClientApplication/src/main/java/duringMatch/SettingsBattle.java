@@ -3,37 +3,34 @@ package duringMatch;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.util.concurrent.Semaphore;
 
 public class SettingsBattle extends JPanel {
-    final MainFrameBattle frame;
+    final MainFrameFour frame;
     JLabel serverResponse;
-    JPanel messagePanelBattle = new JPanel(new BorderLayout()); // for displaying server message
+    JPanel messagePanelBattle = new JPanel(new BorderLayout()); // pentru a afisare mesaje
     public JTextArea messageTextAreaBattle;
 
-    public SettingsBattle(MainFrameBattle frame) {
+    public SettingsBattle(MainFrameFour frame) {
         this.frame = frame;
         init();
     }
 
     private void init() {
-        // Configure the layout
+
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        // Set preferred size to make it a small rectangle
         Dimension preferredSize = new Dimension(290, 220);
         setPreferredSize(preferredSize);
         setMinimumSize(preferredSize);
         setMaximumSize(preferredSize);
 
-        // Message from Server
         messageFromServer();
 
     }
 
 
     public void messageFromServer() {
-        // Title for JPanel
+        // Title pt JPanel
         serverResponse = new JLabel("Message : ");
         Font newFont = new Font("default", Font.BOLD, 16);
         serverResponse.setFont(newFont);
@@ -41,12 +38,11 @@ public class SettingsBattle extends JPanel {
         JPanel serverResponsePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         serverResponsePanel.add(serverResponse);
 
-        // Add vertical space and server response panel
         add(Box.createVerticalStrut(10));
         add(serverResponsePanel);
         add(Box.createVerticalStrut(10));
 
-        // JTextArea for displaying message from server
+        // JTextArea pt afisarea mesajelor in JPanel
         messageTextAreaBattle = new JTextArea();
         messageTextAreaBattle.setWrapStyleWord(true);
         messageTextAreaBattle.setLineWrap(true);
@@ -57,10 +53,9 @@ public class SettingsBattle extends JPanel {
 //        String text = "Response from Server";
 //        messageTextAreaBattle.setText(text);
 
-        // Add JTextArea to JPanel
+        // Add JTextArea in JPanel
         messagePanelBattle.add(messageTextAreaBattle, BorderLayout.CENTER);
 
-        // Add message panel to the main panel
         add(messagePanelBattle);
         add(Box.createVerticalStrut(10));
     }

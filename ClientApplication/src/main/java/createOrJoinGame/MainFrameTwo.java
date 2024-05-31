@@ -5,10 +5,10 @@ import org.example.GameClient;
 import javax.swing.*;
 import java.awt.*;
 
-public class MainFrameOne extends JFrame {
+public class MainFrameTwo extends JFrame {
     public GameClient client;
     Settings settingsCreate;
-    public MainFrameOne(GameClient client) {
+    public MainFrameTwo(GameClient client) {
         super("createOrJoinGame");
         this.client = client;
         initCreateGame();
@@ -24,7 +24,7 @@ public class MainFrameOne extends JFrame {
         pack();
         setSize(new Dimension(600, 200));
         setLocationRelativeTo(null);
-        setVisible(false); // Arată fereastra cu butonul
+        setVisible(false);
     }
 
 

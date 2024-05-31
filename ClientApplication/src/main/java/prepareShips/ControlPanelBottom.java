@@ -1,7 +1,6 @@
 package prepareShips;
 
-import duringMatch.MainFrameBattle;
-import duringMatch.SettingsBattle;
+import duringMatch.MainFrameFour;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,20 +9,19 @@ import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
 public class ControlPanelBottom extends JPanel {
-    final MainFrame frame;
+    final MainFrameThree frame;
     JButton addShipBtn = new JButton("Add Ship");
     JButton readyForGameBtn = new JButton("Ready");
-    SettingsPlaceShip settingsPlaceShip; // Adăugați acest câmp
-    ClientBoard clientBoard; // Adăugați acest câmp
+    SettingsPlaceShip settingsPlaceShip;
+    ClientBoard clientBoard;
     ArrayList<Ship> shipsList = new ArrayList<>();// o lista cu cele 5 nave
-    SettingsBattle settingsBattle;
     int currentShipIndex = 0;// numararea navelor, pentru a sti nava curenta
 
 
-    public ControlPanelBottom(MainFrame frame, SettingsPlaceShip settingsPlaceShip, ClientBoard clientBoard) { // Modificați constructorul pentru a include ClientBoard
+    public ControlPanelBottom(MainFrameThree frame, SettingsPlaceShip settingsPlaceShip, ClientBoard clientBoard) { // Modificați constructorul pentru a include ClientBoard
         this.frame = frame;
-        this.settingsPlaceShip = settingsPlaceShip; // Setează SettingsPlaceShip
-        this.clientBoard = clientBoard; // Setează ClientBoard
+        this.settingsPlaceShip = settingsPlaceShip;
+        this.clientBoard = clientBoard;
         shipsList.add(new Ship("Carrier",5,Color.BLUE));
         shipsList.add(new Ship("Battleship",4, Color.CYAN));
         shipsList.add(new Ship("Destroyer",3, Color.ORANGE));
@@ -45,12 +43,12 @@ public class ControlPanelBottom extends JPanel {
         addShipBtn.setFont(newFont);
         addShipBtn.setPreferredSize(new Dimension(150, 70));
         addShipBtn.setBackground(Color.darkGray);
-        addShipBtn.setForeground(Color.WHITE);//culoare text
+        addShipBtn.setForeground(Color.WHITE);
 
         readyForGameBtn.setFont(newFont);
         readyForGameBtn.setPreferredSize(new Dimension(150, 70));
         readyForGameBtn.setBackground(Color.darkGray);
-        readyForGameBtn.setForeground(Color.WHITE);//culoare text
+        readyForGameBtn.setForeground(Color.WHITE);
 
         //configurare listeners
         addShipBtn.addActionListener(this::listenerAddShipOnBoard);
@@ -60,7 +58,7 @@ public class ControlPanelBottom extends JPanel {
     }
 
     private void listenerAddShipOnBoard(ActionEvent e) {
-        // Obțineți valorile din spinner
+        // valorile din spinner
         String fromRowLetter = (String) settingsPlaceShip.fromRow.getValue();
         int fromRow = fromRowLetter.charAt(0) - 'A'; // convertire de la litera la nr
         int fromCol = (Integer) settingsPlaceShip.fromColumn.getValue() - 1; // scad 1 pt a obtine indexul matricii 0-9
@@ -101,11 +99,11 @@ public class ControlPanelBottom extends JPanel {
                     }
                 }
 
-                // Trece la urmatoarea navă
+                // Trece la urmatoarea nava
                 currentShipIndex++;
                 if (currentShipIndex < shipsList.size()) {
                     Ship nextShip = shipsList.get(currentShipIndex);
-                    // Actualizeaza numele si lungimea afișate cu setText
+                    // Actualizeaza numele si lungimea afisate cu setText
                     settingsPlaceShip.textNameShip.setText(nextShip.name);
                     settingsPlaceShip.textSizeShip.setText(Integer.toString(nextShip.size));
                 }
@@ -132,7 +130,7 @@ public class ControlPanelBottom extends JPanel {
         System.out.println("SERVER message in GUI:"+serverMessage);
 
         if (serverMessage != null) {
-            // Actualizarea componentei Swing trebuie facută pe firul EDT
+            // Actualizarea componentei Swing
             SwingUtilities.invokeLater(() -> {
                 settingsPlaceShip.messageTextArea.setText(serverMessage);
                 settingsPlaceShip.messageTextArea.setOpaque(true);
@@ -148,10 +146,8 @@ public class ControlPanelBottom extends JPanel {
         Semaphore lock = frame.client.getMessageLock();
         synchronized (lock) {
             try {
-
-                lock.acquire(); // Așteaptă până când primește notify() de la server
+                lock.acquire(); // Așteapta pana cand primesye notify() de la server
                 return frame.client.getMessage();
-
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 //System.out.println("Thread intrerupt in validation from SettingsPlaceShip");
@@ -164,7 +160,7 @@ public class ControlPanelBottom extends JPanel {
         Semaphore lock = frame.client.getLock();
         synchronized (lock) {
             try {
-                lock.acquire(); // Așteaptă până când primește notify() de la server
+                lock.acquire();// Așteapta pana cand primesye notify() de la server
                 return frame.client.isPositionConfirmed();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
@@ -185,12 +181,12 @@ public class ControlPanelBottom extends JPanel {
         waitToStart(); //asteptam sa primim de la server semnalul de start
 
 
-        new MainFrameBattle(frame.client, clientBoard.cellColorsShips).setVisible(true); //apare urmatoarea fereastra
+        new MainFrameFour(frame.client, clientBoard.cellColorsShips).setVisible(true); //apare urmatoarea fereastra
         String serverMessage = getMessage();
         System.out.println("SERVER message in GUI:"+serverMessage);
 
         if (serverMessage != null) {
-            // Actualizarea componentei Swing trebuie facută pe firul EDT
+            // Actualizarea componentei Swing
 
             SwingUtilities.invokeLater(() -> {
                 settingsPlaceShip.messageTextArea.setText(serverMessage);
@@ -212,7 +208,7 @@ public class ControlPanelBottom extends JPanel {
         synchronized (lock) {
             try {
 
-                lock.acquire(); // Așteaptă până când primește notify() de la server
+                lock.acquire(); // Așteapta pana cand primesye notify() de la server
                 System.out.println("Am primit semnalul de start");
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();

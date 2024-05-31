@@ -1,5 +1,7 @@
 package org.example;
 
+
+import duringMatch.timer.TimeUpdateListener;
 import lombok.Setter;
 import org.example.exception.GameException;
 import org.example.shipsModels.*;
@@ -44,6 +46,7 @@ public class ClientThread extends Thread {
     //private AtomicInteger state;
 
 
+
     public ClientThread(Socket clientSocket, GameServer gameServer,Integer playerId) {
         this.clientSocket = clientSocket;
         this.gameServer = gameServer;
@@ -52,11 +55,14 @@ public class ClientThread extends Thread {
         this.shipsPlaced = false;
         playerFinishStatus=false;
 
+
+
         this.timer = new TimerThread(timerPlayer,playerId);
         timer.start();
         //timer.startTimer();
     }
-    public void startTimerThread(){
+    public void startTimerThread()
+    {
         timer.startTimer();
     }
     public void stopTimerThread(){
@@ -119,12 +125,8 @@ public class ClientThread extends Thread {
                         }else{
                             sendMessage("NOT_YOUR_TURN: " + inputLine);
                         }
-                } else if(gameServer.getCurrentState() == GameState.GAME_OVER){
-                    //jocul s a terminat.
-                    System.out.println("Sunt in game over ||| " + playerId);
-                       //gameIsFinished();
-                     //  gameReset();
-                }else {
+              }
+                else {
                     out.println("Server received the request: " + inputLine);
                 }
             }
