@@ -20,17 +20,17 @@ public class LeaderboardFrame extends JFrame {
         this.client = client;
 
         setTitle("Leaderboard");
-        setSize(300, 300);
+        setSize(600, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         tableModel = new DefaultTableModel();
-        tableModel.addColumn("Username");
-        tableModel.addColumn("Score");
         JTable table = new JTable(tableModel);
         add(new JScrollPane(table), BorderLayout.CENTER);
         updateTableWithPlayers();
         setLocationRelativeTo(null);
         //  butonului Back
         JButton backButton = new JButton("Back");
+        backButton.setBackground(Color.darkGray);
+        backButton.setForeground(Color.WHITE);
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -45,11 +45,31 @@ public class LeaderboardFrame extends JFrame {
     }
 
     private void updateTableWithPlayers() {
+        // Adăugarea tuturor coloanelor necesare în modelul tabelului
+        tableModel.addColumn("Player ID");
+        tableModel.addColumn("Player Name");
+        tableModel.addColumn("Hits Count");
+        tableModel.addColumn("Misses Count");
+        tableModel.addColumn("Wins Count");
+        tableModel.addColumn("Losses Count");
+        tableModel.addColumn("Matches Count");
+
+        // Obținerea listei de jucători
         List<Player> players = HttpClient.getPlayersList();
         for (Player player : players) {
-            tableModel.addRow(new Object[]{player.getPlayerName(), player.getWinsCount()});
+            // Adăugarea unui rând nou în tabel pentru fiecare jucător
+            tableModel.addRow(new Object[]{
+                    player.getPlayerId(),
+                    player.getPlayerName(),
+                    player.getHitsCount(),
+                    player.getMissesCount(),
+                    player.getWinsCount(),
+                    player.getLossesCount(),
+                    player.getMatchesCount()
+            });
         }
     }
+
 
 
 
