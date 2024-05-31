@@ -1,6 +1,7 @@
 package org.example.tournament;
 
 import java.util.*;
+
 public class TournamentScheduler {
     private int n; // numar de jucatori
     private int p; // numar maxim de meciuri pe zi
@@ -110,7 +111,7 @@ public class TournamentScheduler {
         }
 
         printSchedule(scheduleDays);
-       List<Integer>sequence = findWinningSequence();
+        List<Integer> sequence = findWinningSequence();
         System.out.println("winning sequence:");
         for (int player : sequence) {
             System.out.print("P" + (player + 1) + " -> ");
@@ -145,7 +146,7 @@ public class TournamentScheduler {
             int loser = Integer.parseInt(players[0]) == winner ? Integer.parseInt(players[1]) : Integer.parseInt(players[0]);
             victoryGraph.get(winner).add(loser);
         }
-        System.out.println("victory graph: " + victoryGraph +" lA INDEX aduna +1 pt a obt id ul playerului");
+        System.out.println("victory graph: " + victoryGraph + " lA INDEX aduna +1 pt a obt id ul playerului");
 
         // caut secventa
         boolean[] visited = new boolean[n];

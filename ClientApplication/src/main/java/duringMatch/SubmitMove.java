@@ -1,5 +1,7 @@
 package duringMatch;
 
+import org.example.GameState;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -11,7 +13,7 @@ public class SubmitMove extends JPanel {
     ClientBoardBattle clientBoardBattle;
     SettingsBattle settingsBattle;
     JButton submitMoveBtn = new JButton("Submit Move");
-
+    GameState gameState ;
     public SubmitMove(MainFrameBattle frame,OpponentBoard opponentBoard, ClientBoardBattle clientBoardBattle,SettingsBattle settingsBattle) {
         this.frame = frame;
         this.opponentBoard = opponentBoard;
@@ -40,11 +42,10 @@ public class SubmitMove extends JPanel {
     }
     public void listenerAddSubmitMove(ActionEvent e){
 
-
         //trimit pozitia catre client
         sendPositionToClient();
 
-       if(validateYourTurnToMove()) {
+      // if(validateYourTurnToMove()) {
            System.out.println("A colorat");
            // celula selectata dupa submit va ramane rosie doar daca este randul sau
            if (opponentBoard.lastRowClicked != null && opponentBoard.lastColClicked != null) {
@@ -53,14 +54,16 @@ public class SubmitMove extends JPanel {
                opponentBoard.lastColClicked = null;
                opponentBoard.repaint();
            }
-       }else{
-           opponentBoard.cellColorsShips[opponentBoard.lastRowClicked][opponentBoard.lastColClicked] = Color.black;
-           opponentBoard.lastRowClicked = null;
-           opponentBoard.lastColClicked = null;
-           opponentBoard.repaint();
-       }
-
-
+      // }else{
+//           System.out.println("NU TREBUIE SA FIE COLORAT");
+//           if (opponentBoard.lastRowClicked != null && opponentBoard.lastColClicked != null) {
+//               opponentBoard.cellColorsShips[opponentBoard.lastRowClicked][opponentBoard.lastColClicked] = Color.black;
+//               opponentBoard.lastRowClicked = null;
+//               opponentBoard.lastColClicked = null;
+//               opponentBoard.repaint();
+//           }
+//       }
+        messageFromServer();
 
     }
     private String getMessage() {
@@ -76,21 +79,21 @@ public class SubmitMove extends JPanel {
             }
         }
     }
-    private  boolean validateYourTurnToMove(){
-        Semaphore lock = frame.client.getMoveTurnLock();
-        synchronized (lock) {
-            try {
-                //Asteapta:
-                lock.acquire(); // Așteaptă până când primește notify() de la server
-                return frame.client.isYourTurnToMakeAMove();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                System.out.println("Thread intrerupt in validation");
-                return false;
-            }
-        }
-
-    }
+//    private  boolean validateYourTurnToMove(){
+//        Semaphore lock = frame.client.getMoveTurnLock();
+//        synchronized (lock) {
+//            try {
+//                //Asteapta:
+//                lock.acquire(); // Așteaptă până când primește notify() de la server
+//                return frame.client.isYourTurnToMakeAMove();
+//            } catch (InterruptedException e) {
+//                Thread.currentThread().interrupt();
+//                System.out.println("Thread intrerupt in validation");
+//                return false;
+//            }
+//        }
+//
+//    }
     private void sendPositionToClient(){
         // Obtine valorile din click (tinta)
         if (opponentBoard.rowClick != null && opponentBoard.colClick != null) {
@@ -107,7 +110,7 @@ public class SubmitMove extends JPanel {
             System.out.println("SUBMITED -> "+messageToClient);
         }
     }
-    private void sendMessageToServer(){
+    private void messageFromServer(){
         //imi afiseaza mesajul de la server
         String serverMessage = getMessage();
         System.out.println("SERVER message in GUI Submit:" + serverMessage);

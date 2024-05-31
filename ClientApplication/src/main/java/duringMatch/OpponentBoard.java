@@ -24,14 +24,15 @@ public class OpponentBoard extends JPanel {
                 cellColorsShips[i][j] = Color.black;
             }
         }
-        init();
+        mouseListener();
     }
 
-    final void init() {
+    final void mouseListener() {
         //mouse listener
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+
                 if (lastRowClicked != null && lastColClicked != null) {
                     // Resetare culoarea ultimei celule selectate
                     cellColorsShips[lastRowClicked][lastColClicked] = Color.black;

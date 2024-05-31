@@ -6,6 +6,7 @@ import org.example.GameClient;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import connection.HttpClient;
 
 public class SettingsUser extends JPanel {
     final MainFramePlay frame;
@@ -24,7 +25,7 @@ public class SettingsUser extends JPanel {
         init();
     }
 
-    public void init() {
+    public void init()  {
         // pozitie verticala
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -48,6 +49,7 @@ public class SettingsUser extends JPanel {
         usernamePanel.setMaximumSize(new Dimension(250, 40)); // dimensiunea
         usernamePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(usernamePanel);
+
 
         add(Box.createRigidArea(new Dimension(0, 20)));
 
@@ -83,6 +85,17 @@ public class SettingsUser extends JPanel {
     }
 
     private void listenerAddStartGameBtn(ActionEvent e) {
+        //adaug usernameul in bd
+        System.out.println("Write username is " + writeUsername.getText());
+        String jsonInputString = "{\"playerName\":\"" + writeUsername.getText() + "\"}";
+        try {
+            String response = HttpClient.sendPostRequest("http://localhost:8080/api/players/add", jsonInputString);
+            JOptionPane.showMessageDialog(frame, "Response: " + response);
+        }catch (Exception ex){
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(frame, "Failed to add player: " + ex.getMessage());
+        }
+
         new MainFrameOne(client).setVisible(true); // apare urmatoarea fereastra
         frame.setVisible(false); // inchide fereastra
     }

@@ -144,8 +144,10 @@ public class ControlPanelBottom extends JPanel {
         Semaphore lock = frame.client.getMessageLock();
         synchronized (lock) {
             try {
+
                 lock.acquire(); // Așteaptă până când primește notify() de la server
                 return frame.client.getMessage();
+
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 //System.out.println("Thread intrerupt in validation from SettingsPlaceShip");

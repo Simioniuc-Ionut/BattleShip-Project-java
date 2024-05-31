@@ -16,7 +16,8 @@ public class Player {
         this.id = id;
         this.matchesRemaining = new HashSet<>();
     }
-    public void addMatch(int matchId){
+
+    public void addMatch(int matchId) {
         this.matchesRemaining.add(matchId);
     }
 

@@ -1,22 +1,24 @@
 package org.example;
 
-public class TimerThread extends Thread{
+public class TimerThread extends Thread {
     private int time;
     private boolean start;
-    public boolean timeOver =false;
+    public boolean timeOver = false;
     private final int playerId;
 
-    public TimerThread(int time,int id) {
+    public TimerThread(int time, int id) {
         this.time = time;
         this.playerId = id;
     }
+
     public void startTimer() {
 
         start = true;
         System.out.println("L am facut true " + start);
     }
-    public void pauseTimer(){
-        start=false;
+
+    public void pauseTimer() {
+        start = false;
     }
 
     @Override
@@ -31,7 +33,7 @@ public class TimerThread extends Thread{
                     //Thread.sleep(1000);
                     //System.out.println("ceva dupa ");
                     time--;
-                   // System.out.println(time);
+                    // System.out.println(time);
                     printTime();
                 }
             }
@@ -41,7 +43,8 @@ public class TimerThread extends Thread{
             //e.printStackTrace();
         }
     }
-    private  void printTime(){
+
+    private void printTime() {
         //System.out.println("Player : " + playerId + "Time remaining: "+time+" seconds");
     }
 

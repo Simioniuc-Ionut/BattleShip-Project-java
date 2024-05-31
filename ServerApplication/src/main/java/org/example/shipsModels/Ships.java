@@ -7,27 +7,30 @@ public abstract class Ships {
 //     SUBMARINE_LENGTH (2,3),
 //     PATROL_BOAT_LENGTH (1,2);
 
-   private int shipCode;
-   private int shipSize;
+    private int shipCode;
+    private int shipSize;
 
     public Ships(int shipCode, int shipSize) {
         this.shipCode = shipCode;
         this.shipSize = shipSize;
     }
+
     public int getShipCode() {
-         return this.shipCode;
+        return this.shipCode;
     }
 
-    public char getShipCodeInChar(){
-         return Integer.toString(this.shipCode).charAt(0);
+    public char getShipCodeInChar() {
+        return Integer.toString(this.shipCode).charAt(0);
     }
-    public int getShipSize(){
-       return this.shipSize;
-    }
-    public abstract  String getShipName();
 
-    public void decreaseShipSize(){
-       this.shipSize--;
+    public int getShipSize() {
+        return this.shipSize;
+    }
+
+    public abstract String getShipName();
+
+    public void decreaseShipSize() {
+        this.shipSize--;
     }
 
 }

@@ -8,9 +8,9 @@ import java.awt.*;
 public class MainFramePlay extends JFrame {
     public GameClient client;
     SettingsUser settingsUser;
-    public MainFramePlay() {
+    public MainFramePlay(GameClient client) {
         super("User");
-
+        this.client=client;
         initUser();
     }
 

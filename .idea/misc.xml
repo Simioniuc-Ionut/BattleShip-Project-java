@@ -6,6 +6,9 @@
       <list>
         <option value="$PROJECT_DIR$/ClientApplication/pom.xml" />
         <option value="$PROJECT_DIR$/ServerApplication/pom.xml" />
+        <option value="$PROJECT_DIR$/../demo-battleship/demo-battleship/pom.xml" />
+        <option value="$PROJECT_DIR$/demo-battleship/demo-battleship/pom.xml" />
+        <option value="$PROJECT_DIR$/demo-battleship/pom.xml" />
       </list>
     </option>
   </component>
