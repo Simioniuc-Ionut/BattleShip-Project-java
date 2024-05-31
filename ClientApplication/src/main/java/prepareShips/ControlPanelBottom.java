@@ -1,6 +1,7 @@
 package prepareShips;
 
 import duringMatch.MainFrameBattle;
+import duringMatch.SettingsBattle;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,6 +16,7 @@ public class ControlPanelBottom extends JPanel {
     SettingsPlaceShip settingsPlaceShip; // Adăugați acest câmp
     ClientBoard clientBoard; // Adăugați acest câmp
     ArrayList<Ship> shipsList = new ArrayList<>();// o lista cu cele 5 nave
+    SettingsBattle settingsBattle;
     int currentShipIndex = 0;// numararea navelor, pentru a sti nava curenta
 
 
@@ -128,6 +130,7 @@ public class ControlPanelBottom extends JPanel {
     private void displayMessageFromServer() {
         String serverMessage = getMessage();
         System.out.println("SERVER message in GUI:"+serverMessage);
+
         if (serverMessage != null) {
             // Actualizarea componentei Swing trebuie facută pe firul EDT
             SwingUtilities.invokeLater(() -> {
@@ -139,6 +142,7 @@ public class ControlPanelBottom extends JPanel {
                 settingsPlaceShip.repaint();
             });
         }
+
     }
     private String getMessage() {
         Semaphore lock = frame.client.getMessageLock();
@@ -182,6 +186,23 @@ public class ControlPanelBottom extends JPanel {
 
 
         new MainFrameBattle(frame.client, clientBoard.cellColorsShips).setVisible(true); //apare urmatoarea fereastra
+        String serverMessage = getMessage();
+        System.out.println("SERVER message in GUI:"+serverMessage);
+
+        if (serverMessage != null) {
+            // Actualizarea componentei Swing trebuie facută pe firul EDT
+
+            SwingUtilities.invokeLater(() -> {
+                settingsPlaceShip.messageTextArea.setText(serverMessage);
+                settingsPlaceShip.messageTextArea.setOpaque(true);
+                settingsPlaceShip.messageTextArea.setBackground(new Color(0, 0, 0, 123));
+                settingsPlaceShip.messageTextArea.repaint();
+                settingsPlaceShip.revalidate();
+                settingsPlaceShip.repaint();
+            });
+
+        }
+
         frame.setVisible(false);//inchide fereastra
 
     }

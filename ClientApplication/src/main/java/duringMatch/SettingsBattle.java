@@ -3,12 +3,13 @@ package duringMatch;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.util.concurrent.Semaphore;
 
 public class SettingsBattle extends JPanel {
     final MainFrameBattle frame;
     JLabel serverResponse;
     JPanel messagePanelBattle = new JPanel(new BorderLayout()); // for displaying server message
-    JTextArea messageTextAreaBattle;
+    public JTextArea messageTextAreaBattle;
 
     public SettingsBattle(MainFrameBattle frame) {
         this.frame = frame;
@@ -20,7 +21,7 @@ public class SettingsBattle extends JPanel {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         // Set preferred size to make it a small rectangle
-        Dimension preferredSize = new Dimension(290, 120);
+        Dimension preferredSize = new Dimension(290, 220);
         setPreferredSize(preferredSize);
         setMinimumSize(preferredSize);
         setMaximumSize(preferredSize);
@@ -53,8 +54,8 @@ public class SettingsBattle extends JPanel {
         messageTextAreaBattle.setForeground(Color.WHITE);
         messageTextAreaBattle.setBackground(new Color(0, 0, 0, 123));
         messageTextAreaBattle.setBorder(new EmptyBorder(10, 10, 10, 10));
-        String text = "Response from Server";
-        messageTextAreaBattle.setText(text);
+//        String text = "Response from Server";
+//        messageTextAreaBattle.setText(text);
 
         // Add JTextArea to JPanel
         messagePanelBattle.add(messageTextAreaBattle, BorderLayout.CENTER);
@@ -63,4 +64,7 @@ public class SettingsBattle extends JPanel {
         add(messagePanelBattle);
         add(Box.createVerticalStrut(10));
     }
+
+
+
 }

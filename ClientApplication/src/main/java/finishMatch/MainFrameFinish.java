@@ -9,12 +9,12 @@ public class MainFrameFinish extends JFrame {
     public GameClient client;
     SettingsGameOver settingsGameOver;
     public MainFrameFinish(GameClient client) {
-        super("createOrJoinGame");
+        super("gameOver");
         this.client = client;
-        initCreateGame();
+        initGameOver();
     }
 
-    private void initCreateGame() {
+    private void initGameOver() {
         setDefaultCloseOperation(EXIT_ON_CLOSE);//inchidere fereastra
 
         settingsGameOver = new SettingsGameOver(this,client);

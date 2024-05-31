@@ -63,7 +63,10 @@ public class ClientBoard extends JPanel {
             // Linii verticale
             board.drawLine(startX + i * cellSize, startY, startX + i * cellSize, startY + 10 * cellSize);
         }
+
+
     }
+
 
 
 

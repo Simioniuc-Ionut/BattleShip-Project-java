@@ -44,33 +44,29 @@ public class ClientThread extends Thread {
     //private AtomicInteger state;
 
 
-    public ClientThread(Socket clientSocket, GameServer gameServer, Integer playerId) {
+    public ClientThread(Socket clientSocket, GameServer gameServer,Integer playerId) {
         this.clientSocket = clientSocket;
         this.gameServer = gameServer;
         this.playerId = playerId;
 
         this.shipsPlaced = false;
-        playerFinishStatus = false;
+        playerFinishStatus=false;
 
-        this.timer = new TimerThread(timerPlayer, playerId);
+        this.timer = new TimerThread(timerPlayer,playerId);
         timer.start();
         //timer.startTimer();
     }
-
-    public void startTimerThread() {
+    public void startTimerThread(){
         timer.startTimer();
     }
-
-    public void stopTimerThread() {
+    public void stopTimerThread(){
         timer.pauseTimer();
     }
-
-    public void finishTimerThread() {
-        if (timer.isAlive()) {
+    public void finishTimerThread(){
+        if(timer.isAlive()) {
             timer.interrupt();
         }
     }
-
     @Override
     public void run() {
         try (
@@ -85,65 +81,63 @@ public class ClientThread extends Thread {
             while ((inputLine = in.readLine()) != null) {
                 System.out.println("Server received: " + inputLine);
 
-                if (inputLine.equals("stop") || inputLine.equals("exit")) {
+                if (inputLine.equals("stop") || inputLine.equals("exit"))
+                {
                     out.println("Server stopped");
                     gameServer.stop();
                     break;
-                } else if (inputLine.equals("t")) {
-                    gameServer.setCurrentState(GameState.GAME_TOURNAMENT);
-
-
-                } else if (inputLine.equalsIgnoreCase("c") && gameServer.getCurrentState() == GameState.GAME_NOT_CREATED) {
+                } else if(inputLine.equalsIgnoreCase("c") && gameServer.getCurrentState() == GameState.GAME_NOT_CREATED){
 
                     gameServer.setCurrentState(GameState.WAITING_FOR_PLAYER);
                     //starea de incepere a jocului
                     startGameMessage();
                     joinGame(in);
 
-                } else if (inputLine.equalsIgnoreCase("j")) {
-                    if (gameServer.getCurrentState() == GameState.WAITING_FOR_PLAYER) {
+                } else if(inputLine.equalsIgnoreCase("j")){
+                    if(gameServer.getCurrentState() == GameState.WAITING_FOR_PLAYER) {
 
                         startGameMessage();
                         joinGame(in);
 
 
-                    } else {
+                    }else {
                         sendMessage("Game isn't created.");
                     }
-                } else if (gameServer.getCurrentState() == GameState.GAME_READY_TO_MOVE/*inputLine.startsWith("submit move")*/) {
+                } else if(gameServer.getCurrentState() == GameState.GAME_READY_TO_MOVE/*inputLine.startsWith("submit move")*/){
                     System.out.println("Player turn " + playerTurn);
+                        if(playerId == playerTurn.getStateCode()) {
 
-                    if (playerId == playerTurn.getStateCode()) {
+                            gameServer.startTimer(playerId);
 
-                        gameServer.startTimer(playerId);
+                            submitMove(inputLine);//fac mutarea
 
-                        //System.out.println("Timer start valye " + this.timer.isStart());
-                        submitMove(inputLine);//fac mutarea
-                        System.out.println("Player " + playerId + " moved " + inputLine + " status timer " + this.timer.isStart() + " TIMPUL > " + timerPlayer);
-                        switchTurn();//schimb turul
-                    } else {
-                        sendMessage("NOT_YOUR_TURN");
-                        System.out.println("Not your turn");
-                    }
-                } else if (gameServer.getCurrentState() == GameState.GAME_OVER) {
+                            System.out.println("Player " + playerId + " moved " + inputLine + " status timer " + this.timer.isStart() + " TIMPUL > " + timerPlayer);
+
+                            switchTurn();//schimb turul
+
+
+                        }else{
+                            sendMessage("NOT_YOUR_TURN: " + inputLine);
+                        }
+                } else if(gameServer.getCurrentState() == GameState.GAME_OVER){
                     //jocul s a terminat.
                     System.out.println("Sunt in game over ||| " + playerId);
-                    gameIsFinished();
-                    gameReset();
-                } else {
+                       //gameIsFinished();
+                     //  gameReset();
+                }else {
                     out.println("Server received the request: " + inputLine);
                 }
             }
         } catch (IOException e) {
             handleDisconnection(e);
-        } finally {
+        }  finally {
             closeClientSocket();
 
         }
     }
 
-    private void joinGame(BufferedReader in) throws IOException {
-        // sendMessage("Game started. PLace your ships.");
+    private void joinGame(BufferedReader in ) throws IOException{
+        sendMessage("Game started. PLace your ships.");
 
         waititngPlayersForJoining(); //se asteapta sa dea join,inainte sa plaseze pe mapa
         setOpponent();
@@ -170,36 +164,37 @@ public class ClientThread extends Thread {
     }
 
 
-    private void waitingPlayersToFinishPlacingShips() {
-        if (playerId == 1) {
 
-            gameServer.setPlayer1IsReadyToStartGame(true);
-            //sendMessage("Waiting player 2");
-            while (!gameServer.isPlayer2IsReadyToStartGame()) {
-                waitingThread();
-            }
-        } else {
-            //("Waiting player 1");
-            gameServer.setPlayer2IsReadyToStartGame(true);
-            while (!gameServer.isPlayer1IsReadyToStartGame()) {
-                waitingThread();
-            }
-        }
+    private void waitingPlayersToFinishPlacingShips() {
+      if(playerId == 1) {
+
+        gameServer.setPlayer1IsReadyToStartGame(true);
+        sendMessage("Waiting player 2");
+          while (!gameServer.isPlayer2IsReadyToStartGame()) {
+              waitingThread();
+          }
+      }else{
+          sendMessage("Waiting player 1");
+          gameServer.setPlayer2IsReadyToStartGame(true);
+          while (!gameServer.isPlayer1IsReadyToStartGame()) {
+              waitingThread();
+          }
+      }
     }
 
-    private void makePlayerReadyToPlaceShip(boolean b) {
+    private  void makePlayerReadyToPlaceShip(boolean b) {
 
-        // System.out.println("makePlayerReady " + b + " playerid " + playerId);
-        if (playerId == 1) {
+       // System.out.println("makePlayerReady " + b + " playerid " + playerId);
+        if(playerId == 1){
             gameServer.setPlayer1IsReadyToPlaceShips(b);
-        } else {
+        }else {
             gameServer.setPlayer2IsReadyToPlaceShips(b);
         }
     }
 
 
-    private void placeShip(BufferedReader in, Ships ship) throws IOException {
-        // sendMessage("Place your " + ship.getShipName() + " (length = " + ship.getShipSize() + "): ");
+    private void placeShip(BufferedReader in,Ships ship) throws IOException{
+        sendMessage("Place your " + ship.getShipName() + " (length = " + ship.getShipSize() + "): ");
         int placed;
         do {
             try {
@@ -219,19 +214,19 @@ public class ClientThread extends Thread {
     }
 
     private void submitMove(String inputLine) {
-        if (isReadyToMove()) {
+        if(isReadyToMove()) {
             String move = inputLine.trim();
             gameServer.handleMove(playerId, move);
-            //sendMessage("Move submitted: " + move + ". Waiting for opponent's move.");
-            // opponent.sendMessage("Opponent moved: " + move + ". Your turn.");
+           // sendMessage("Move submitted: " + move + ". Waiting for opponent's move.");
+            if(gameServer.getCurrentState() != GameState.GAME_OVER){
+            opponent.sendMessage("Opponent moved: " + move + ". Your turn.");}
         }
     }
-
-    private boolean isReadyToMove() {
-        if (gameServer.getCurrentState() == GameState.GAME_READY_TO_MOVE && playerId != playerTurn.getStateCode()) {
-            //sendMessage("It's not your turn or game is not ready yet.");
+    private boolean isReadyToMove(){
+        if ( gameServer.getCurrentState() == GameState.GAME_READY_TO_MOVE && playerId != playerTurn.getStateCode()) {
+            sendMessage("It's not your turn or game is not ready yet.");
             return false;
-        } else {
+        }else {
             return true;
         }
     }
@@ -261,7 +256,7 @@ public class ClientThread extends Thread {
             //stopGameTimerPlayer1();
             playerTurn = GameState.PLAYER2_TURN;
 
-            // startGameTimerPlayer2();
+           // startGameTimerPlayer2();
         } else {
             System.out.println("switchTurn | Player 2 turn ended " + playerTurn);
             //stopGameTimerPlayer2();
@@ -270,16 +265,16 @@ public class ClientThread extends Thread {
         }
     }
 
-    private synchronized void listenReadyFromClient(BufferedReader in) {
+    private synchronized void listenReadyFromClient(BufferedReader in){
 
         try {
             String ready = in.readLine();
             System.out.println("mesajul din listenReadyFromClient " + ready + " isReadyplayer1 " + gameServer.isPlayer1IsReadyToStartGame() + " isReadyplayer2 " + gameServer.isPlayer2IsReadyToStartGame());
 
-            if (ready.equals("READY")) {
+            if(ready.equals("READY")){
                 sendMessage("Player " + playerId + " is ready");
 
-            } else {
+            }else{
                 sendMessage("Player is not ready");
             }
         } catch (IOException e) {
@@ -287,21 +282,20 @@ public class ClientThread extends Thread {
         }
     }
 
-    private void waititngPlayersForJoining() {
-        if (playerId == 1) {
+    private void waititngPlayersForJoining(){
+        if (playerId == 1){
             gameServer.setPlayer1IsReadyToPlaceShips(true);
-            while (!gameServer.isPlayer2IsReadyToPlaceShips()) {
+            while(!gameServer.isPlayer2IsReadyToPlaceShips()){
                 waitingThread();
             }
-        } else {
+        }else{
             gameServer.setPlayer2IsReadyToPlaceShips(true);
-            while (!gameServer.isPlayer1IsReadyToPlaceShips()) {
+            while(!gameServer.isPlayer1IsReadyToPlaceShips()){
                 waitingThread();
             }
         }
     }
-
-    private void waitingThread() {
+    private void waitingThread(){
         try {
             Thread.sleep(1000);
             sendMessage("wait");
@@ -315,7 +309,6 @@ public class ClientThread extends Thread {
             out.println(message);
         }
     }
-
     private void handleDisconnection(IOException e) {
         System.out.println("Client disconnected abruptly: " + e.getMessage());
 //        if (opponent != null) {
@@ -335,17 +328,14 @@ public class ClientThread extends Thread {
             System.out.println("Error when closing client socket: " + e.getMessage());
         }
     }
-
     public void notifyHit(String move) {
-        sendMessage("You hit at position: " + move);
+        sendMessage("You hit at position: " + move + ". Waiting for opponent's move ");
     }
-
     public void notifyMiss(String move) {
-        sendMessage("You missed at position: " + move);
+        sendMessage("You missed at position: " + move + ". Waiting for opponent's move");
     }
-
     public void setOpponent() {
-        if (playerId == 1) {
+        if(playerId == 1) {
             int player2 = playerId + 1;
             this.opponent = gameServer.getPlayer(player2);
 
@@ -371,20 +361,19 @@ public class ClientThread extends Thread {
 
     }
 
-    public void gameIsFinished() {
+    public void gameIsFinished(){
         System.out.println("func : gameIsFinished() was accessed");
-        if (playerTurn == GameState.PLAYER1_TURN) {
+        if(playerTurn == GameState.PLAYER1_TURN){
             gameServer.displayServerBoard();
             gameServer.setCurrentState(GameState.GAME_NOT_CREATED);
-        } else {
+        }else{
             gameServer.displayServerBoard();
             gameServer.setCurrentState(GameState.GAME_NOT_CREATED);
         }
     }
-
     public void notifyGameOver() {
-        sendMessage("Game over. You won!");
-        opponent.sendMessage("Game over. You lost!");
+           sendMessage("Game over. You won!");
+            opponent.sendMessage("Game over. You lost!");
 
     }
 
@@ -393,24 +382,23 @@ public class ClientThread extends Thread {
         //remainingTimePlayer2 = 30;
         finishTimerThread();
         //Redeschidem timerul
-        this.timer = new TimerThread(timerPlayer, playerId);
+        this.timer = new TimerThread(timerPlayer,playerId);
         timer.start();
 
-        timerPlayer = 30;
+        timerPlayer =30;
         playerTurn = GameState.PLAYER1_TURN;
-        sendMessage("Game has reseted");
-        CARRIER_LENGTH = new Carrier();
-        BATTLESHIP_LENGTH = new Battleship();
-        DESTROYER_LENGTH = new Destroyer();
-        SUBMARINE_LENGTH = new Submarine();
-        this.PATROL_BOAT_LENGTH = new PatrolBoat();
+        //sendMessage("Game has reseted");
+           CARRIER_LENGTH = new Carrier();
+           BATTLESHIP_LENGTH = new Battleship();
+           DESTROYER_LENGTH = new Destroyer();
+           SUBMARINE_LENGTH = new Submarine();
+           this.PATROL_BOAT_LENGTH = new PatrolBoat();
 
         System.out.println("Am dat finish la threaduri");
 
 
     }
-
-    private void sendTheGameCouldStart() {
+    private void sendTheGameCouldStart(){
         sendMessage("START-MOVE");
     }
 }

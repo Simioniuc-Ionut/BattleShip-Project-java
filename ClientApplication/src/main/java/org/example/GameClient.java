@@ -1,7 +1,6 @@
 package org.example;
 
 import createOrJoinGame.MainFrameOne;
-import firstFrame.MainFramePlay;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,16 +16,17 @@ public class GameClient {
     private final String serverAddress;
     private final int serverPort;
     private String answer;
-    private String message;
-
     private Semaphore ansewerSemaphore = new Semaphore(0);
-    private Semaphore positionIsCorrectlock = new Semaphore(0);
+    private  Semaphore positionIsCorrectlock = new Semaphore(0);
     private Semaphore gameCouldStartlock = new Semaphore(0);
     private Semaphore messageLock = new Semaphore(0);
 
    // private Semaphore moveTurnLock = new Semaphore(0);
 
     private boolean positionConfirmed = true;
+    private String message;
+    private Semaphore messageLock = new Semaphore(0);
+
     private boolean isYourTurnToMakeAMove = false;
 
     public GameClient(String serverAddress, int serverPort) {
@@ -46,7 +46,6 @@ public class GameClient {
                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
-
         ) {
             // Verifică mesajul de stare inițial
             String StatusResponse = in.readLine();
@@ -90,21 +89,20 @@ public class GameClient {
         this.answer = answer;
         ansewerSemaphore.release();
     }
-
     private Thread createServerListenerThread(BufferedReader in) {
         return new Thread(() -> {
             try {
-                String serverMessageResponse;
-                while ((serverMessageResponse = in.readLine()) != null) {
-                    System.out.println("Server response: " + serverMessageResponse);
+                String serverResponse;
+                while ((serverResponse = in.readLine()) != null) {
+                    System.out.println("Server response: " + serverResponse);
 
-                    verifyIfTheGameCouldStartToMove(serverMessageResponse);
+                    verifyIfTheGameCouldStartToMove(serverResponse);
 
-                    verifyPositionMove(serverMessageResponse);//primim confirmarea positiei ,daca este valida
+                    verifyPositionMove(serverResponse);//primim confirmarea positiei ,daca este valida
 
-                    //verifyIsYourTurnToMove(serverResponse);//verificam daca este randul nostru sa mutam
+                    verifyIsYourTurnToMove(serverResponse);//verificam daca este randul nostru sa mutam
 
-                    setMessage(serverMessageResponse);//TRIMIT mesajul catre interfata;
+                    setMessage(serverResponse);//TRIMIT mesajul catre interfata;
                     messageLock.release();  //las lacatul pt a putea fi citit mesajul
 
                 }
@@ -121,16 +119,17 @@ public class GameClient {
             }
         });
     }
-//    private void verifyIsYourTurnToMove(String serverResponse) {
-//        if(serverResponse.startsWith("NOT_YOUR_TURN")){
-//            System.out.println("Not your turn");
-//            isYourTurnToMakeAMove=false;
-//            moveTurnLock.release();
-//        }else{
-//            isYourTurnToMakeAMove=true;
-//            moveTurnLock.release();
-//        }
-//    }
+
+    private void verifyIsYourTurnToMove(String serverResponse) {
+        if(serverResponse.startsWith("NOT_YOUR_TURN")){
+            System.out.println("Not your turn");
+            isYourTurnToMakeAMove=false;
+            moveTurnLock.release();
+        }else{
+            isYourTurnToMakeAMove=true;
+            moveTurnLock.release();
+        }
+    }
 
     private void verifyIfTheGameCouldStartToMove(String serverResponse) {
         if(serverResponse.startsWith("START-MOVE")){
