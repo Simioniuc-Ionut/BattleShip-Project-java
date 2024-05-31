@@ -1,5 +1,7 @@
 package org.example;
 
+import duringMatch.MainFrameFour;
+import duringMatch.timer.TimeGame;
 import duringMatch.timer.TimeUpdateListener;
 import lombok.Setter;
 import org.example.exception.GameException;
@@ -43,7 +45,6 @@ public class GameServer {
     private List<Ships> player1Ships;
     private List<Ships> player2Ships;
 
-    TimeUpdateListener listenerTimer;
 
     //ships
 
@@ -60,8 +61,7 @@ public class GameServer {
         player2IsReadyToPlaceShips=false;
         player1IsReadyToStartGame = false;
         player2IsReadyToStartGame = false;
-        player1MoveTurn = false;
-        player2MoveTurn = false;
+
 
         //waitingPlayers = new LinkedList<>();
         this.serverBoardPlayer1 = new char[BOARD_SIZE][BOARD_SIZE];
@@ -259,7 +259,7 @@ public class GameServer {
                         out.println("Connection Completed");
                         numberOfPlayers.incrementAndGet();
 
-                        ClientThread client = new ClientThread(clientSocket, this,numberOfPlayers.get(),listenerTimer);
+                        ClientThread client = new ClientThread(clientSocket, this,numberOfPlayers.get());
                         clientThreads.put(numberOfPlayers.get(),client);
 
 

@@ -1,15 +1,17 @@
 package firstFrame;
 
-import createOrJoinGame.MainFrameOne;
+import createOrJoinGame.MainFrameTwo;
+import leaderboard.LeaderboardFrame;
 import org.example.GameClient;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import connection.HttpClient;
 
 public class SettingsUser extends JPanel {
-    final MainFramePlay frame;
+    final MainFrameOne frame;
     GameClient client;
 
     JLabel title;
@@ -19,7 +21,7 @@ public class SettingsUser extends JPanel {
     JButton startGameBtn = new JButton("Start");
     JButton viewScoresBtn = new JButton("Check the leaderboard");
 
-    public SettingsUser(MainFramePlay frame, GameClient client) {
+    public SettingsUser(MainFrameOne frame, GameClient client) {
         this.frame = frame;
         this.client = client;
         init();
@@ -45,8 +47,12 @@ public class SettingsUser extends JPanel {
         JPanel usernamePanel = new JPanel();
         usernamePanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         writeUsername.setPreferredSize(new Dimension(200, 30));
+        writeUsername.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
         usernamePanel.add(writeUsername);
-        usernamePanel.setMaximumSize(new Dimension(250, 40)); // dimensiunea
+        usernamePanel.setPreferredSize(new Dimension(300, 40));
+
+       // usernamePanel.setMaximumSize(new Dimension(250, 40)); // dimensiunea
         usernamePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(usernamePanel);
 
@@ -96,12 +102,12 @@ public class SettingsUser extends JPanel {
             JOptionPane.showMessageDialog(frame, "Failed to add player: " + ex.getMessage());
         }
 
-        new MainFrameOne(client).setVisible(true); // apare urmatoarea fereastra
+        new MainFrameTwo(client).setVisible(true); // apare urmatoarea fereastra
         frame.setVisible(false); // inchide fereastra
     }
 
     private void listenerAddViewTableBtn(ActionEvent e) {
-        // new MainFrame(client).setVisible(true); // apare urmatoarea fereastra
-        // frame.setVisible(false); // inchide fereastra
+        new LeaderboardFrame(frame.client).setVisible(true);// apare urmatoarea fereastra
+        frame.setVisible(false); // inchide fereastra
     }
 }

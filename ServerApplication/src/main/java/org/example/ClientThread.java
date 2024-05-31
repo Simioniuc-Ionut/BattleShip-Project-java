@@ -45,11 +45,9 @@ public class ClientThread extends Thread {
 
     //private AtomicInteger state;
 
-    TimeUpdateListener listener;
 
 
-
-    public ClientThread(Socket clientSocket, GameServer gameServer,Integer playerId,TimeUpdateListener listener) {
+    public ClientThread(Socket clientSocket, GameServer gameServer,Integer playerId) {
         this.clientSocket = clientSocket;
         this.gameServer = gameServer;
         this.playerId = playerId;
@@ -57,9 +55,9 @@ public class ClientThread extends Thread {
         this.shipsPlaced = false;
         playerFinishStatus=false;
 
-        this.listener = listener;
 
-        this.timer = new TimerThread(timerPlayer,playerId,listener);
+
+        this.timer = new TimerThread(timerPlayer,playerId);
         timer.start();
         //timer.startTimer();
     }
@@ -386,7 +384,7 @@ public class ClientThread extends Thread {
         //remainingTimePlayer2 = 30;
         finishTimerThread();
         //Redeschidem timerul
-        this.timer = new TimerThread(timerPlayer,playerId,listener);
+        this.timer = new TimerThread(timerPlayer,playerId);
         timer.start();
 
         timerPlayer =30;

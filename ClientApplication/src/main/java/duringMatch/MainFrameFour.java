@@ -19,7 +19,11 @@ public class MainFrameFour extends JFrame {
     public MainFrameFour(GameClient client, Color[][] initialCellColors) {
         super("startGameBattleShip");
         this.client = client;
+        this.timeGame = new TimeGame(this);
         initStartGameBattleShip(initialCellColors);
+    }
+    public TimeGame getTimeGamePanel() {
+        return timeGame;
     }
 
     private void initStartGameBattleShip(Color[][] initialCellColors) {

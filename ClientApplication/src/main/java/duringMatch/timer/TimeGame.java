@@ -25,8 +25,11 @@ public class TimeGame extends JPanel implements TimeUpdateListener {
 
     @Override
     public void onTimeUpdate(String time) {
-        System.out.println("timer incep");
-        SwingUtilities.invokeLater(() -> timerLabel.setText(time));
+        SwingUtilities.invokeLater(() -> {
+            timerLabel.setText(time); // Asigurați-vă că acest cod funcționează corect
+            System.out.println("Timer updated to: " + time); // Adăugați acest mesaj pentru depanare
+        });
     }
+
 
 }

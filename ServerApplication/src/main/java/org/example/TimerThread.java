@@ -1,18 +1,15 @@
 package org.example;
 
-import duringMatch.timer.TimeUpdateListener;
-
 public class TimerThread extends Thread {
     private int time;
     private boolean running;
     public boolean timeOver = false;
     private final int playerId;
-    private final TimeUpdateListener listener;
 
-    public TimerThread(int time, int id, TimeUpdateListener listener) {
+    public TimerThread(int time, int id) {
         this.time = time;
         this.playerId = id;
-        this.listener = listener;
+
     }
 
     public synchronized void startTimer() {
@@ -35,6 +32,7 @@ public class TimerThread extends Thread {
                     time--;
                     System.out.println("Time remaining for player " + playerId + ": " + time);
                     printTime();
+                    System.out.println("after print");
                 }
             }
             timeOver = true;
@@ -45,11 +43,12 @@ public class TimerThread extends Thread {
     }
 
     private void printTime() {
-        System.out.println("trimit TIMER");
-        if (listener != null) {
-            listener.onTimeUpdate(String.valueOf(time));
-        }
+        System.out.println("trimit TIMER" );
+      //(String.valueOf(time));
+
     }
+
+
 
     public synchronized boolean isStart() {
         return running;

@@ -1,6 +1,8 @@
 package org.example;
 
-import createOrJoinGame.MainFrameOne;
+
+import createOrJoinGame.MainFrameTwo;
+import firstFrame.MainFrameOne;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,21 +21,17 @@ public class GameClient {
     private Semaphore ansewerSemaphore = new Semaphore(0);
     private  Semaphore positionIsCorrectlock = new Semaphore(0);
     private Semaphore gameCouldStartlock = new Semaphore(0);
-    private Semaphore messageLock = new Semaphore(0);
-
-   // private Semaphore moveTurnLock = new Semaphore(0);
-
+    private boolean isYourTurnToMakeAMove = false;
+    private Semaphore moveTurnLock = new Semaphore(0);
     private boolean positionConfirmed = true;
     private String message;
     private Semaphore messageLock = new Semaphore(0);
 
-    private boolean isYourTurnToMakeAMove = false;
-
     public GameClient(String serverAddress, int serverPort) {
         this.serverAddress = serverAddress;
         this.serverPort = serverPort;
-        new MainFramePlay(this).setVisible(true);
-
+        new MainFrameOne(this).setVisible(true);
+//        new MainFrameTwo(this).setVisible(true);
     }
 
     public Semaphore getLock() {
