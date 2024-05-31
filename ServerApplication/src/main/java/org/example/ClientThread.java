@@ -76,7 +76,7 @@ public class ClientThread extends Thread {
             this.out = out;
             String inputLine;
 
-            out.println("Player id " + playerId);
+            out.println("ID: " + playerId); //trimit idiul
 
             while ((inputLine = in.readLine()) != null) {
                 System.out.println("Server received: " + inputLine);

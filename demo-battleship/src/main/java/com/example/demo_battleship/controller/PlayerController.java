@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 public class PlayerController {
     @Autowired
     private PlayerService playerService;
+
     @GetMapping("/list")
     public Iterable<Player> listPlayers() {
         return playerService.listPlayers();
@@ -20,9 +21,18 @@ public class PlayerController {
         return playerService.addPlayer(player);
     }
 
+    @GetMapping("/take_Id/{playerName}")
+    public int takeId(@PathVariable String playerName) {
+        return playerService.takeId(playerName);
+    }
 
     @GetMapping("/{username}")
     public Player getPlayerByUsername(@PathVariable String username) {
         return playerService.getPlayerByUsername(username);
+    }
+    @PostMapping("/addTeamId/{playerId}/{teamId}")
+    public void addTeamId(@PathVariable Integer playerId,@PathVariable Integer teamId) {
+
+        playerService.addTeamId(playerId,teamId);
     }
 }

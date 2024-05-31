@@ -1,9 +1,9 @@
 package com.example.demo_battleship.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+
+@NoArgsConstructor
 
 @Getter
 @Setter
@@ -12,7 +12,7 @@ import lombok.Setter;
 public class Player {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long playerId;
+    private int playerId;
     private String playerName;
    //private String passwordHash;
     private int hitsCount;
@@ -20,5 +20,12 @@ public class Player {
     private int winsCount;
     private int lossesCount;
     private int matchesCount;
+    private int playerTeamId;
+
+    public Player(String player2) {
+        this.playerName=player2;
+    }
+
+
     // Getters and setters
 }

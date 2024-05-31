@@ -1,5 +1,6 @@
 package org.example;
 
+
 import lombok.Setter;
 import org.example.exception.GameException;
 import org.example.shipsModels.PatrolBoat;
@@ -56,8 +57,7 @@ public class GameServer {
         player2IsReadyToPlaceShips=false;
         player1IsReadyToStartGame = false;
         player2IsReadyToStartGame = false;
-        player1MoveTurn = false;
-        player2MoveTurn = false;
+
 
         //waitingPlayers = new LinkedList<>();
         this.serverBoardPlayer1 = new char[BOARD_SIZE][BOARD_SIZE];
@@ -255,6 +255,7 @@ public class GameServer {
                         PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
                         out.println("Connection Completed");
                         numberOfPlayers.incrementAndGet();
+
 
                         ClientThread client = new ClientThread(clientSocket, this,numberOfPlayers.get());
                         clientThreads.put(numberOfPlayers.get(),client);

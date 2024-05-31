@@ -6,7 +6,9 @@ import org.example.GameClient;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import connection.HttpClient;
+import org.example.connection.HttpClient;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class SettingsUser extends JPanel {
     final MainFramePlay frame;
@@ -84,17 +86,16 @@ public class SettingsUser extends JPanel {
         viewScoresBtn.addActionListener(this::listenerAddViewTableBtn);
     }
 
-    private void listenerAddStartGameBtn(ActionEvent e) {
+    private void listenerAddStartGameBtn(ActionEvent e)  {
         //adaug usernameul in bd
-        System.out.println("Write username is " + writeUsername.getText());
-        String jsonInputString = "{\"playerName\":\"" + writeUsername.getText() + "\"}";
-        try {
-            String response = HttpClient.sendPostRequest("http://localhost:8080/api/players/add", jsonInputString);
-            JOptionPane.showMessageDialog(frame, "Response: " + response);
-        }catch (Exception ex){
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(frame, "Failed to add player: " + ex.getMessage());
-        }
+        addUsernameInDB();
+
+        //iau id ul unic din bd , corespunzator numelui introdus
+
+        int idFromDB = takeUniqIDFromDB();
+
+        //Add teamId in DB
+        addTeamId();
 
         new MainFrameOne(client).setVisible(true); // apare urmatoarea fereastra
         frame.setVisible(false); // inchide fereastra
@@ -103,5 +104,67 @@ public class SettingsUser extends JPanel {
     private void listenerAddViewTableBtn(ActionEvent e) {
         // new MainFrame(client).setVisible(true); // apare urmatoarea fereastra
         // frame.setVisible(false); // inchide fereastra
+    }
+
+    public void addUsernameInDB(){
+       // System.out.println("Write username is " + writeUsername.getText());
+        String jsonInputString = "{\"playerName\":\"" + writeUsername.getText() + "\"}";
+
+        try {
+            String response = HttpClient.sendPostRequest("http://localhost:8080/api/players/add", jsonInputString);
+            JOptionPane.showMessageDialog(frame, "Response: " + response);
+            //iau id ul unic din bd , corespunzator numelui introdus
+
+        }catch (Exception ex){
+
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(frame, "Player already exist ");
+        }
+    }
+
+    public int takeUniqIDFromDB(){
+        int idFromDB = 0;
+        try {
+            idFromDB = HttpClient.getPlayerId(writeUsername.getText());
+        } catch (Exception ex) {
+
+            JOptionPane.showMessageDialog(frame, "Player dosent exist in db  " + ex.getMessage());
+        }
+        frame.client.setPlayerIDFromDB(idFromDB);
+       // System.out.println("Id from DB " +idFromDB);
+        return idFromDB;
+    }
+
+    public void addTeamId(){
+        Integer playerTeamId = frame.client.getPlayerID();
+        Integer playerDBId = frame.client.getPlayerIDFromDB();
+
+
+        // Construim un obiect JSON care conține playerId și teamId
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("playerId", playerDBId);
+            jsonObject.put("playerTeamId", playerTeamId);
+        } catch (JSONException ex) {
+            System.out.println("Erro to jsonObject put values " + ex.getMessage());
+            throw new RuntimeException(ex);
+        }
+
+
+        // Convertim obiectul JSON într-un șir de caractere JSON
+        String jsonInputString1 = jsonObject.toString();
+
+        // Construim URL-ul pentru a trimite cererea
+        String urlString = "http://localhost:8080/api/players/addTeamId/" + playerDBId + "/" + playerTeamId;
+
+        // Trimitem cererea către server folosind metoda sendPostRequest
+        try {
+            String response = HttpClient.sendPostRequest(urlString, jsonInputString1);
+            System.out.println("Response: " + response);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+
+            System.out.println("Failed to send request: " + ex.getMessage());
+        }
     }
 }

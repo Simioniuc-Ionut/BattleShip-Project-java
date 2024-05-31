@@ -1,6 +1,7 @@
 package org.example;
 
 import createOrJoinGame.MainFrameOne;
+import firstFrame.MainFramePlay;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,17 +18,16 @@ public class GameClient {
     private final int serverPort;
     private String answer;
     private Semaphore ansewerSemaphore = new Semaphore(0);
-    private  Semaphore positionIsCorrectlock = new Semaphore(0);
-    private Semaphore gameCouldStartlock = new Semaphore(0);
-    private Semaphore messageLock = new Semaphore(0);
-
-   // private Semaphore moveTurnLock = new Semaphore(0);
-
+        private  Semaphore positionIsCorrectlock = new Semaphore(0);
+        private Semaphore gameCouldStartlock = new Semaphore(0);
+    private boolean isYourTurnToMakeAMove = false;
+    private Semaphore moveTurnLock = new Semaphore(0);
     private boolean positionConfirmed = true;
     private String message;
     private Semaphore messageLock = new Semaphore(0);
+    private int playerID;
+    private int playerIDFromDB;
 
-    private boolean isYourTurnToMakeAMove = false;
 
     public GameClient(String serverAddress, int serverPort) {
         this.serverAddress = serverAddress;
@@ -67,6 +67,7 @@ public class GameClient {
 //                        break;
 //                    }
 //                }
+
                 while (true){
                     ansewerSemaphore.acquire();
                     out.println(answer);
@@ -96,6 +97,8 @@ public class GameClient {
                 while ((serverResponse = in.readLine()) != null) {
                     System.out.println("Server response: " + serverResponse);
 
+                    takeIDOfPlayer(serverResponse);
+
                     verifyIfTheGameCouldStartToMove(serverResponse);
 
                     verifyPositionMove(serverResponse);//primim confirmarea positiei ,daca este valida
@@ -118,6 +121,14 @@ public class GameClient {
                 }
             }
         });
+    }
+
+    private void takeIDOfPlayer(String serverResponse) {
+        if(serverResponse.startsWith("ID: ")){
+            String[] split = serverResponse.split(": ");
+            playerID = Integer.parseInt(split[1]);//pun idiul
+            System.out.println("ID din GameClient " + playerID);
+        }
     }
 
     private void verifyIsYourTurnToMove(String serverResponse) {
