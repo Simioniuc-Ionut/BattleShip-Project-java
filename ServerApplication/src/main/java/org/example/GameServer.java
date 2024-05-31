@@ -60,6 +60,8 @@ public class GameServer {
         player2IsReadyToPlaceShips=false;
         player1IsReadyToStartGame = false;
         player2IsReadyToStartGame = false;
+        player1MoveTurn = false;
+        player2MoveTurn = false;
 
         //waitingPlayers = new LinkedList<>();
         this.serverBoardPlayer1 = new char[BOARD_SIZE][BOARD_SIZE];
@@ -133,8 +135,7 @@ public class GameServer {
 
                             player.notifyGameOver();
                             currentState = GameState.GAME_OVER;
-                            //ar trebui sa resetez altfel
-                            //resetGame();
+                            resetGame();
                         }
                     }
                 }

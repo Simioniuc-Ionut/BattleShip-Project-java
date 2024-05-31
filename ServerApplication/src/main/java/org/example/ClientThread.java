@@ -15,16 +15,17 @@ import java.nio.Buffer;
 import java.util.concurrent.*;
 
 import lombok.Getter;
+
 @Getter
 @Setter
 
 public class ClientThread extends Thread {
     //constante
-    public   Ships CARRIER_LENGTH = new Carrier();
-    public  Ships BATTLESHIP_LENGTH = new Battleship();
-    public  Ships DESTROYER_LENGTH = new Destroyer();
-    public  Ships SUBMARINE_LENGTH = new Submarine();
-    public  Ships PATROL_BOAT_LENGTH = new PatrolBoat();
+    public Ships CARRIER_LENGTH = new Carrier();
+    public Ships BATTLESHIP_LENGTH = new Battleship();
+    public Ships DESTROYER_LENGTH = new Destroyer();
+    public Ships SUBMARINE_LENGTH = new Submarine();
+    public Ships PATROL_BOAT_LENGTH = new PatrolBoat();
 
 
     private final Socket clientSocket;
@@ -40,14 +41,6 @@ public class ClientThread extends Thread {
     private TimerThread timer;
 
     //timer
-//    private long remainingTimePlayer1 = 30; // timpul initializat pentru player1 (60sec)
-//    private long remainingTimePlayer2 = 30; // timpul initializat pentru player2 (60sec)
-//    private final Object lock = new Object();//pt sincronizarea time player1 si player2
-//
-//    private ScheduledExecutorService timerPlayer1;
-//    private ScheduledExecutorService timerPlayer2;
-//    private ScheduledFuture<?> timerTaskPlayer1;
-//    private ScheduledFuture<?> timerTaskPlayer2;
     private int timerPlayer = 30;
 
     //private AtomicInteger state;
@@ -82,7 +75,6 @@ public class ClientThread extends Thread {
             timer.interrupt();
         }
     }
-
     @Override
     public void run() {
         try (
@@ -212,10 +204,10 @@ public class ClientThread extends Thread {
             try {
 
                 String inputLine = in.readLine();
-                placed   = gameServer.validateShipPosition(playerId, inputLine, ship);
+                placed = gameServer.validateShipPosition(playerId, inputLine, ship);
 
                 sendMessage("Cor:" + "Ship is correctly placed");
-            } catch (GameException | StringIndexOutOfBoundsException |NullPointerException e ){
+            } catch (GameException | StringIndexOutOfBoundsException | NullPointerException e) {
                 placed = -1; // ca sa ramana in while
 
                 sendMessage("Err:" + e.getMessage());
@@ -242,22 +234,23 @@ public class ClientThread extends Thread {
             return true;
         }
     }
-    private  void checkReadyToStart() {
-      //  System.out.println("sunt in checlReadyToStart " + gameServer.islayer1IsReadyToPlaceShips() + " al 2 " + gameServer.isPlayer2IsReady());
-        if(gameServer.isPlayer2IsReadyToStartGame() && gameServer.isPlayer1IsReadyToStartGame()) {
-           //sendMessage(" PlaBoth players have placed their ships.yer 1 starts.");
+
+    private void checkReadyToStart() {
+        //  System.out.println("sunt in checlReadyToStart " + gameServer.islayer1IsReadyToPlaceShips() + " al 2 " + gameServer.isPlayer2IsReady());
+        if (gameServer.isPlayer2IsReadyToStartGame() && gameServer.isPlayer1IsReadyToStartGame()) {
+            //sendMessage(" PlaBoth players have placed their ships.yer 1 starts.");
             //opponent.sendMessage("PlaBoth players have placed their ships.yer 1 starts.");
             gameServer.setCurrentState(GameState.GAME_READY_TO_MOVE);
             playerTurn = GameState.PLAYER1_TURN;
 
             sendTheGameCouldStart();
 
-        }else{
-            sendMessage("Waiting for opponent to place ships...");
-            while( gameServer.getCurrentState() != GameState.GAME_READY_TO_MOVE){
-               waitingThread();
+        } else {
+            // sendMessage("Waiting for opponent to place ships...");
+            while (gameServer.getCurrentState() != GameState.GAME_READY_TO_MOVE) {
+                waitingThread();
             }
-            sendMessage("waiting is finished");
+            //sendMessage("waiting is finished");
         }
     }
 
@@ -350,8 +343,7 @@ public class ClientThread extends Thread {
             int player2 = playerId + 1;
             this.opponent = gameServer.getPlayer(player2);
 
-        }
-        else {
+        } else {
             int player1 = playerId - 1;
             this.opponent = gameServer.getPlayer(player1);
         }
