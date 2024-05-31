@@ -3,6 +3,7 @@ package leaderboard;
 import com.example.demo_battleship.model.Player;
 import firstFrame.MainFrameOne;
 import org.example.GameClient;
+import org.example.connection.HttpClient;
 
 import javax.swing.*;
 import java.awt.*;
@@ -56,7 +57,7 @@ public class LeaderboardFrame extends JFrame {
         tableModel.addColumn("Player Team Id");
 
         // Obținerea listei de jucători
-        List<Player> players = HttpClient.getPlayersList();
+            List<Player> players = (List<Player>) HttpClient.getPlayersList();
         for (Player player : players) {
             // Adăugarea unui rând nou în tabel pentru fiecare jucător
             tableModel.addRow(new Object[]{

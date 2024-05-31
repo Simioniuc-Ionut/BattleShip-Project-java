@@ -142,7 +142,7 @@ public class SettingsUser extends JPanel {
     }
 
     public void addTeamId(){
-        Integer playerTeamId = frame.client.getPlayerID();
+        Integer playerTeamId = frame.client.getPlayerTeamId();
         Integer playerDBId = frame.client.getPlayerIDFromDB();
 
 

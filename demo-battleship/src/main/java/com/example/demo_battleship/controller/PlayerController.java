@@ -5,6 +5,8 @@ import com.example.demo_battleship.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/players")
 public class PlayerController {
@@ -12,7 +14,7 @@ public class PlayerController {
     private PlayerService playerService;
 
     @GetMapping("/list")
-    public Iterable<Player> listPlayers() {
+    public List<Player> listPlayers() {
         return playerService.listPlayers();
     }
 

@@ -321,7 +321,7 @@ public class GameServer {
     }
 
     public void playerLeft(ClientThread t){
-        clientThreads.remove(t.getPlayerId());
+        clientThreads.remove(t.getPlayerTeamId());
         numberOfPlayers.decrementAndGet();
     }
 

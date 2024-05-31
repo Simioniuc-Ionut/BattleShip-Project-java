@@ -5,6 +5,8 @@ import com.example.demo_battleship.repository.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PlayerService {
     @Autowired
@@ -49,7 +51,7 @@ public class PlayerService {
         }
     }
 
-    public Iterable<Player> listPlayers() {
+    public List<Player> listPlayers() {
         return playerRepository.findAll();
     }
 }
