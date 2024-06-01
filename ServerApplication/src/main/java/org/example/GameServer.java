@@ -107,6 +107,7 @@ public class GameServer {
         ClientThread player = clientThreads.get(playerId);
 
         if (board[rowMove][colMove] == '5' || board[rowMove][colMove] == '4' || board[rowMove][colMove] == '3' || board[rowMove][colMove] == '2' || board[rowMove][colMove] == '1') {
+            //you hit
             char shipTypeFromBoard = board[rowMove][colMove];
             board[rowMove][colMove] = 'X';
 
@@ -130,6 +131,8 @@ public class GameServer {
                     //debug
                     //System.out.println("||||||| AICI " + ship.getShipSize());
                     player.notifyHit(move);
+                    updateHitCount(player);
+
                     if (ship.getShipSize() == 0) {
                         iterator.remove();
                         //debug
@@ -141,7 +144,10 @@ public class GameServer {
                             makeGameOver(player);
                         }
                     }
+                }else{
+                    //ratezi ?
                 }
+
             }
             System.out.println("Player " + playerId + " hit at position: " + move);
         } else {
@@ -333,9 +339,9 @@ public class GameServer {
         numberOfPlayers.decrementAndGet();
 
         //dupa ce se deconectaza playerul ,ii stergem teamid ul din db
-        System.out.println("Sunt in playerLeft ,team id :" + t.getPlayerTeamId());
+       // System.out.println("Sunt in playerLeft ,team id :" + t.getPlayerTeamId());
         deleteTeamIdFromDb(t);
-        System.out.println("reset : team id :" + t.getPlayerTeamId());
+      //  System.out.println("reset : team id :" + t.getPlayerTeamId());
     }
 
     public static void main(String[] args) {
@@ -359,6 +365,7 @@ public class GameServer {
         resetGame();
 
     }
+    //partea de relationare cu bd
     public void deleteTeamIdFromDb(ClientThread player){
         JSONObject jsonObject = new JSONObject();
         Integer playerTeamId = player.getPlayerTeamId();
@@ -384,4 +391,29 @@ public class GameServer {
             System.out.println("Failed to send request: " + ex.getMessage() + " in deleteTeamIdFrommDb from GameServer");
         }
     }
+    public void updateHitCount(ClientThread player){
+        JSONObject jsonObject = new JSONObject();
+        Integer playerTeamId = player.getPlayerTeamId();
+
+        try {
+            jsonObject.put("playerTeamId", playerTeamId);
+        } catch (JSONException ex) {
+            System.out.println("Erro to jsonObject put values " + ex.getMessage());
+            throw new RuntimeException(ex);
+        }
+        String jsonInputString = jsonObject.toString();
+        // Construim URL-ul pentru a trimite cererea
+        String urlString = "http://localhost:8080/api/players/update/hitCounts/" + playerTeamId;
+        try {
+            String response = HttpClient.sendPostRequest(urlString, jsonInputString);
+            System.out.println("Response: " + response);
+
+        }catch (Exception ex){
+
+            ex.printStackTrace();
+            System.out.println("Failed to send request: " + ex.getMessage() + " in deleteTeamIdFrommDb from GameServer");
+        }
+
+    }
+
 }

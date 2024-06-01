@@ -69,4 +69,26 @@ public class PlayerService {
             throw new IllegalArgumentException("Player with id " + player.getPlayerId() + " does not exist");
         }
     }
+
+    public void increment(Integer playerTeamId,String Hit){
+        Player player = playerRepository.findByPlayerTeamId(playerTeamId);
+
+        if(player != null){
+
+            if(Hit.equals("HIT")) {
+                //incrementez hiturile
+                player.incrementHitsShots();
+            }else if(Hit.equals("MISS")){
+                player.incrementMissesShots();
+            }else if
+
+            // Salvează modificările în baza de date
+            playerRepository.save(player);
+            //System.out.println("Player teamId updated successfully for playerId: " + player.getPlayerId());
+        } else {
+            // Tratează cazul în care nu există jucătorul cu playerId-ul dat
+            throw new IllegalArgumentException("Player with id " + player.getPlayerId() + " does not exist");
+        }
+
+    }
 }
