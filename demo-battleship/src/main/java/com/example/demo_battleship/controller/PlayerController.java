@@ -28,7 +28,7 @@ public class PlayerController {
         return playerService.takeId(playerName);
     }
 
-    @GetMapping("/{username}")
+    @PostMapping("getPlayerByUsername/{username}")
     public Player getPlayerByUsername(@PathVariable String username) {
         return playerService.getPlayerByUsername(username);
     }
@@ -36,5 +36,10 @@ public class PlayerController {
     public void addTeamId(@PathVariable Integer playerId,@PathVariable Integer teamId) {
 
         playerService.addTeamId(playerId,teamId);
+    }
+    @PostMapping("/delete/playerTeamId/{playerTeamId}")
+    public void deletePlayerTeamId(@PathVariable Integer playerTeamId){
+       // System.out.println("Received request to delete teamId for playerTeamId: " + playerTeamId);
+        playerService.deletePlayerTeamId(playerTeamId);
     }
 }

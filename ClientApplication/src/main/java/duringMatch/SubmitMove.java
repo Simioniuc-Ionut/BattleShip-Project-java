@@ -72,6 +72,7 @@ public class SubmitMove extends JPanel {
         if (msg.contains("Game over.") && !gameOverDisplayed) {
 
             gameOverDisplayed = true; // setez falgul pt a se deschide doar cate o fereastra
+
             SwingUtilities.invokeLater(() -> {
                 new MainFrameFive(frame.client).setVisible(true);
                 frame.dispose(); // inchidere ferestre client

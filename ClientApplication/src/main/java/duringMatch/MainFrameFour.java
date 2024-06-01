@@ -2,10 +2,12 @@ package duringMatch;
 
 import duringMatch.timer.TimeGame;
 import org.example.GameClient;
+import org.example.TimerUpdateThread;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.net.Socket;
 
 public class MainFrameFour extends JFrame {
     ClientBoardBattle clientBoardBattle;
@@ -15,11 +17,19 @@ public class MainFrameFour extends JFrame {
     TimeGame timeGame;
 
     public GameClient client;
+    private final Socket socketTimer;
 
     public MainFrameFour(GameClient client, Color[][] initialCellColors) {
         super("startGameBattleShip");
         this.client = client;
         this.timeGame = new TimeGame(this);
+        this.socketTimer=client.getSocketTimer();
+
+        //aici creez tredul de timer
+        if(!client.isTimerThreadRunning()) {
+            new TimerUpdateThread(socketTimer, this).start();
+            client.setTimerThreadRunning(true); //deja a fost creat un thread set timer
+        }
         initStartGameBattleShip(initialCellColors);
     }
     public TimeGame getTimeGamePanel() {

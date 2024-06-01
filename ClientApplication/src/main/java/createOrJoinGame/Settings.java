@@ -6,6 +6,7 @@ import prepareShips.MainFrameThree;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.net.Socket;
 
 public class Settings extends JPanel {
     final MainFrameTwo frame;
@@ -14,7 +15,6 @@ public class Settings extends JPanel {
     JLabel title;
     JButton createGameBtn = new JButton("Create Game");
     JButton joinGameBtn = new JButton("Join Game");
-
     public Settings(MainFrameTwo frame, GameClient client) {
         this.frame = frame;
         this.client = client;

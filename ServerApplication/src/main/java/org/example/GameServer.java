@@ -1,6 +1,7 @@
 package org.example;
 
 import lombok.Setter;
+import org.example.connection.HttpClient;
 import org.example.exception.GameException;
 import org.example.shipsModels.PatrolBoat;
 import org.example.shipsModels.Ships;
@@ -14,6 +15,10 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import lombok.Getter;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import javax.swing.*;
 
 @Getter
 @Setter
@@ -21,8 +26,10 @@ public class GameServer {
     //constante
     public static final int BOARD_SIZE = 10;
     private int port;
+    private int timerPort;
     private volatile boolean isRunning;
     private ServerSocket serverSocket;
+    private ServerSocket timerServerSocket;
 
     //private LinkedList<ClientThread> waitingPlayers;
     private char[][] serverBoardPlayer1;
@@ -45,8 +52,9 @@ public class GameServer {
 
     //ships
 
-    public GameServer(int port) {
+    public GameServer(int port ,int timerPort) {
         this.port = port;
+        this.timerPort=timerPort;
         this.isRunning = false;
 
 
@@ -130,9 +138,7 @@ public class GameServer {
                         if (ships.isEmpty()) {
                             System.out.println("ships is empty  : player id is " + playerId);
 
-                            player.notifyGameOver();
-                            currentState = GameState.GAME_OVER;
-                            resetGame();
+                            makeGameOver(player);
                         }
                     }
                 }
@@ -244,6 +250,7 @@ public class GameServer {
     public void start() {
         try {
             serverSocket = new ServerSocket(port);
+            timerServerSocket = new ServerSocket(timerPort);
             isRunning = true;
             System.out.println("Server started. Waiting for clients...");
 
@@ -251,12 +258,13 @@ public class GameServer {
                 try {
                       if(clientThreads.size() < 2) {
                         Socket clientSocket = serverSocket.accept();
+                        Socket timerSocket = timerServerSocket.accept();
                         System.out.println("New client connected");
                         PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
                         out.println("Connection Completed");
                         numberOfPlayers.incrementAndGet();
 
-                        ClientThread client = new ClientThread(clientSocket, this,numberOfPlayers.get());
+                        ClientThread client = new ClientThread(clientSocket,timerSocket, this,numberOfPlayers.get());
                         clientThreads.put(numberOfPlayers.get(),client);
 
 
@@ -323,11 +331,17 @@ public class GameServer {
     public void playerLeft(ClientThread t){
         clientThreads.remove(t.getPlayerTeamId());
         numberOfPlayers.decrementAndGet();
+
+        //dupa ce se deconectaza playerul ,ii stergem teamid ul din db
+        System.out.println("Sunt in playerLeft ,team id :" + t.getPlayerTeamId());
+        deleteTeamIdFromDb(t);
+        System.out.println("reset : team id :" + t.getPlayerTeamId());
     }
 
     public static void main(String[] args) {
         int serverPort = 12345;
-        GameServer server = new GameServer(serverPort);
+        int serverTimerPort= 12346;
+        GameServer server = new GameServer(serverPort,serverTimerPort);
         server.start();
     }
 
@@ -339,6 +353,35 @@ public class GameServer {
         return clientThreads.get(i);
     }
 
-    public void startTournament() {
+    public void makeGameOver(ClientThread player) {
+        player.notifyGameOver();
+        currentState = GameState.GAME_OVER;
+        resetGame();
+
+    }
+    public void deleteTeamIdFromDb(ClientThread player){
+        JSONObject jsonObject = new JSONObject();
+        Integer playerTeamId = player.getPlayerTeamId();
+        player.setPlayerTeamId(0);
+
+        try {
+            jsonObject.put("playerTeamId", playerTeamId);
+        } catch (JSONException ex) {
+            System.out.println("Erro to jsonObject put values " + ex.getMessage());
+            throw new RuntimeException(ex);
+        }
+        String jsonInputString = jsonObject.toString();
+
+        // Construim URL-ul pentru a trimite cererea
+        String urlString = "http://localhost:8080/api/players/delete/playerTeamId/" + playerTeamId;
+        try {
+            String response = HttpClient.sendPostRequest(urlString, jsonInputString);
+            System.out.println("Response: " + response);
+
+        }catch (Exception ex){
+
+            ex.printStackTrace();
+            System.out.println("Failed to send request: " + ex.getMessage() + " in deleteTeamIdFrommDb from GameServer");
+        }
     }
 }

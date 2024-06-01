@@ -10,13 +10,15 @@ import java.awt.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.Socket;
 import java.util.List;
 
 public class LeaderboardFrame extends JFrame {
     private final DefaultTableModel tableModel;
    GameClient client;
-
     public LeaderboardFrame(GameClient client) {
+
+        //nou
 
         this.client = client;
 
@@ -37,7 +39,7 @@ public class LeaderboardFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
 
                 LeaderboardFrame.this.setVisible(false);
-                new MainFrameOne(client).setVisible(true);
+                new MainFrameOne(client,client.getSocketTimer()).setVisible(true);
             }
         });
 

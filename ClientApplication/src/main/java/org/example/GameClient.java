@@ -2,6 +2,7 @@ package org.example;
 
 import createOrJoinGame.MainFrameTwo;
 
+import duringMatch.MainFrameFour;
 import firstFrame.MainFrameOne;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,23 +18,31 @@ import java.util.concurrent.Semaphore;
 public class GameClient {
     private final String serverAddress;
     private final int serverPort;
+    private Socket socketTimer;
+    private int timerPort;
+
     private String answer;
-    private Semaphore ansewerSemaphore = new Semaphore(0);
-        private  Semaphore positionIsCorrectlock = new Semaphore(0);
-        private Semaphore gameCouldStartlock = new Semaphore(0);
-    private boolean isYourTurnToMakeAMove = false;
-    private Semaphore moveTurnLock = new Semaphore(0);
-    private boolean positionConfirmed = true;
     private String message;
+
+    private Semaphore ansewerSemaphore = new Semaphore(0);
+    private Semaphore positionIsCorrectlock = new Semaphore(0);
+    private Semaphore gameCouldStartlock = new Semaphore(0);
     private Semaphore messageLock = new Semaphore(0);
+    private Semaphore moveTurnLock = new Semaphore(0);
+
     private int playerTeamId;
     private int playerIDFromDB;
 
+    private boolean positionConfirmed = true;
+    private boolean isYourTurnToMakeAMove = false;
+    private boolean isTimerThreadRunning = false;
 
-    public GameClient(String serverAddress, int serverPort) {
+
+    public GameClient(String serverAddress, int serverPort,int timerPort) {
         this.serverAddress = serverAddress;
         this.serverPort = serverPort;
-        new MainFrameOne(this).setVisible(true);
+        this.timerPort =timerPort;
+        new MainFrameOne(this,socketTimer).setVisible(true);
 
     }
 
@@ -48,6 +57,15 @@ public class GameClient {
                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
         ) {
+
+            //nou
+            socketTimer = new Socket(serverAddress, timerPort);
+
+            //aici nu vine mainFrame care este detim MainFrameFour,gpt ul nu a luat de seama ca mai sunt alte ferestre care se deschid pana la cea cu timer.'
+            //trebuie de vazut
+            //new TimerUpdateThread(socketTimer, mainFrame).start();
+
+
             // Verifică mesajul de stare inițial
             String StatusResponse = in.readLine();
             if (StatusResponse.equals("-10")) {
@@ -86,11 +104,7 @@ public class GameClient {
         }
     }
 
-    public void setAnswer(String answer) {
-        System.out.println("Client response: " + answer);
-        this.answer = answer;
-        ansewerSemaphore.release();
-    }
+
     private Thread createServerListenerThread(BufferedReader in) {
         return new Thread(() -> {
             try {
@@ -160,5 +174,12 @@ public class GameClient {
             //putem notifica
             positionIsCorrectlock.release();
         }
+    }
+
+
+    public void setAnswer(String answer) {
+        System.out.println("Client response: " + answer);
+        this.answer = answer;
+        ansewerSemaphore.release();
     }
 }

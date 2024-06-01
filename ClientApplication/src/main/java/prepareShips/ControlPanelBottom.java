@@ -5,6 +5,7 @@ import duringMatch.MainFrameFour;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
@@ -16,8 +17,6 @@ public class ControlPanelBottom extends JPanel {
     ClientBoard clientBoard;
     ArrayList<Ship> shipsList = new ArrayList<>();// o lista cu cele 5 nave
     int currentShipIndex = 0;// numararea navelor, pentru a sti nava curenta
-
-
     public ControlPanelBottom(MainFrameThree frame, SettingsPlaceShip settingsPlaceShip, ClientBoard clientBoard) { // Modificați constructorul pentru a include ClientBoard
         this.frame = frame;
         this.settingsPlaceShip = settingsPlaceShip;

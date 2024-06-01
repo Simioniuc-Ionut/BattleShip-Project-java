@@ -3,6 +3,7 @@ import org.example.GameClient;
 
 import javax.swing.*;
 import java.awt.*;
+import java.net.Socket;
 
 
 public class MainFrameThree extends JFrame {
