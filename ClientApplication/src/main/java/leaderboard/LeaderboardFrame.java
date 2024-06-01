@@ -3,19 +3,22 @@ package leaderboard;
 import com.example.demo_battleship.model.Player;
 import firstFrame.MainFrameOne;
 import org.example.GameClient;
+import org.example.connection.HttpClient;
 
 import javax.swing.*;
 import java.awt.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.Socket;
 import java.util.List;
 
 public class LeaderboardFrame extends JFrame {
     private final DefaultTableModel tableModel;
    GameClient client;
-
     public LeaderboardFrame(GameClient client) {
+
+        //nou
 
         this.client = client;
 
@@ -36,7 +39,7 @@ public class LeaderboardFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
 
                 LeaderboardFrame.this.setVisible(false);
-                new MainFrameOne(client).setVisible(true);
+                new MainFrameOne(client,client.getSocketTimer()).setVisible(true);
             }
         });
 
@@ -56,7 +59,7 @@ public class LeaderboardFrame extends JFrame {
         tableModel.addColumn("Player Team Id");
 
         // Obținerea listei de jucători
-        List<Player> players = HttpClient.getPlayersList();
+            List<Player> players = (List<Player>) HttpClient.getPlayersList();
         for (Player player : players) {
             // Adăugarea unui rând nou în tabel pentru fiecare jucător
             tableModel.addRow(new Object[]{

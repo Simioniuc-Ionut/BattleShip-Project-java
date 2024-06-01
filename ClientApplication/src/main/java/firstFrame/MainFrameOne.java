@@ -4,13 +4,16 @@ import org.example.GameClient;
 
 import javax.swing.*;
 import java.awt.*;
+import java.net.Socket;
 
 public class MainFrameOne extends JFrame {
     public GameClient client;
+    public Socket socketTimer;
     SettingsUser settingsUser;
-    public MainFrameOne(GameClient client) {
+    public MainFrameOne(GameClient client,Socket socketTimer) {
         super("User");
         this.client=client;
+        this.socketTimer=socketTimer;
         initUser();
     }
 

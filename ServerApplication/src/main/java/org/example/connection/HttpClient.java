@@ -1,10 +1,16 @@
 package org.example.connection;
 
+
+import org.springframework.web.client.RestTemplate;
+import com.example.demo_battleship.model.Player;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 public class HttpClient {
 
@@ -49,5 +55,11 @@ public class HttpClient {
         String urlString = "http://localhost:8080/api/players/take_Id/" + playerName;
         String response = sendGetRequest(urlString);
         return Integer.parseInt(response);
+    }
+    public static Iterable<Player> getPlayersList() {
+        RestTemplate restTemplate = new RestTemplate();
+        Player[] playersArray = restTemplate.getForObject("http://localhost:8080/api/players" + "/list", Player[].class);
+        return Arrays.asList(playersArray);
+
     }
 }

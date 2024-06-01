@@ -5,6 +5,8 @@ import com.example.demo_battleship.repository.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PlayerService {
     @Autowired
@@ -36,7 +38,7 @@ public class PlayerService {
     public void addTeamId(Integer playerId, Integer teamId) {
         // Ia jucătorul din baza de date folosind playerId-ul
         Player player = playerRepository.findById(playerId).orElse(null);
-        System.out.println("ADDTEAMID " + player.getPlayerName() + " " + player.getPlayerId() );
+        System.out.println("addTeamId " + player.getPlayerName() + " " + player.getPlayerId() );
 
         if (player != null) {
             // Actualizează teamId-ul jucătorului
@@ -49,7 +51,22 @@ public class PlayerService {
         }
     }
 
-    public Iterable<Player> listPlayers() {
+    public List<Player> listPlayers() {
         return playerRepository.findAll();
+    }
+
+    public void deletePlayerTeamId(Integer playerTeamId){
+        Player player = playerRepository.findByPlayerTeamId(playerTeamId);
+        //System.out.println("PLayer team id  ,with playerId" + player.getPlayerId() + " will be deleted");
+        if(player != null){
+            // Actualizează teamId-ul jucătorului
+            player.setPlayerTeamId(0);
+            // Salvează modificările în baza de date
+            playerRepository.save(player);
+            //System.out.println("Player teamId updated successfully for playerId: " + player.getPlayerId());
+        } else {
+            // Tratează cazul în care nu există jucătorul cu playerId-ul dat
+            throw new IllegalArgumentException("Player with id " + player.getPlayerId() + " does not exist");
+        }
     }
 }

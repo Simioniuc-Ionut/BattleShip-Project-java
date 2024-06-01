@@ -7,6 +7,8 @@ import org.example.GameClient;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.net.Socket;
+
 import org.example.connection.HttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -120,7 +122,7 @@ public class SettingsUser extends JPanel {
     }
 
     public void addUsernameInDB(){
-       // System.out.println("Write username is " + writeUsername.getText());
+        System.out.println("Write username is " + writeUsername.getText());
         String jsonInputString = "{\"playerName\":\"" + writeUsername.getText() + "\"}";
 
         try {

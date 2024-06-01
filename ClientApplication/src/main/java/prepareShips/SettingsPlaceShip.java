@@ -3,6 +3,7 @@ package prepareShips;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.net.Socket;
 
 public class SettingsPlaceShip extends JPanel {
     final MainFrameThree frame;
@@ -19,7 +20,6 @@ public class SettingsPlaceShip extends JPanel {
     JLabel serverResponse;
     JPanel messagePanel = new JPanel(new BorderLayout());// afisarea mesajului de la server dupa apasarea butonului
     JTextArea messageTextArea;
-
     public SettingsPlaceShip(MainFrameThree frame) {
         this.frame = frame;
         init();
