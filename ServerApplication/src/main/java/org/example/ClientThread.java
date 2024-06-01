@@ -45,7 +45,7 @@ public class ClientThread extends Thread {
     private int secondsTimerPlayer = 5;
 
     private boolean isTimerThreadRunning=false;
-    //private AtomicInteger state;
+
 
 
 
@@ -82,11 +82,7 @@ public class ClientThread extends Thread {
     public void stopTimerThread(){
         timer.pauseTimer();
     }
-    public void finishTimerThread(){
-        if(timer.isAlive()) {
-            timer.interrupt();
-        }
-    }
+
     @Override
     public void run() {
         try (
@@ -173,7 +169,7 @@ public class ClientThread extends Thread {
 
         checkReadyToStart();
 
-        gameServer.startTimer(playerTeamId);
+        gameServer.startTimer(gameServer.getClientThreads().get(playerTeamId).getOpponent().playerTeamId);
 
     }
 
@@ -368,6 +364,8 @@ public class ClientThread extends Thread {
                 sendMessage("Game over. You won!");
                 gameServer.updateInPlayersDb(this,"WIN");
                 gameServer.updateInPlayersDb(this,"MATCH");
+
+                gameServer.updateInGameDb(this,"WINNER");
                 opponent.sendMessage("Game over. You lost!");
                 gameServer.updateInPlayersDb(opponent,"LOSE");
                 gameServer.updateInPlayersDb(opponent,"MATCH");
@@ -383,7 +381,7 @@ public class ClientThread extends Thread {
         //timer.start();
 
         minutesTimerPlayer =0;
-        secondsTimerPlayer = 5;
+        secondsTimerPlayer = 10;
 
         playerTurn = GameState.PLAYER1_TURN;
         //sendMessage("Game has reseted");

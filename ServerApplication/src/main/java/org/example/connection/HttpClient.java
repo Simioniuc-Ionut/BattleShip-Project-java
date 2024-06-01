@@ -1,7 +1,6 @@
 package org.example.connection;
 
 
-import com.example.demo_battleship.model.Game;
 import org.springframework.web.client.RestTemplate;
 import com.example.demo_battleship.model.Player;
 import java.io.BufferedReader;
@@ -57,6 +56,12 @@ public class HttpClient {
         String response = sendGetRequest(urlString);
         return Integer.parseInt(response);
     }
+    public static int getPlayerIdWithPlayerTeamId(int playerTeamId) throws Exception {
+        String urlString = "http://localhost:8080/api/players/take_id_by_playerTeamId/" + playerTeamId;
+        String response = sendGetRequest(urlString);
+        return Integer.parseInt(response);
+    }
+
     public static Iterable<Player> getPlayersList() {
         RestTemplate restTemplate = new RestTemplate();
         Player[] playersArray = restTemplate.getForObject("http://localhost:8080/api/players" + "/list", Player[].class);

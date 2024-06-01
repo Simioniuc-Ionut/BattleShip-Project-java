@@ -97,4 +97,13 @@ public class PlayerService {
         }
 
     }
+    public int getPlayerIdByPlayerTeamId(Integer playerTeamId){
+        Player player = playerRepository.findByPlayerTeamId(playerTeamId);
+        if(player!=null){
+            //l am gasit
+            return player.getPlayerId();
+        }else{
+            throw new IllegalArgumentException("PLayer with playerTeamId " + playerTeamId + " not found");
+        }
+    }
 }

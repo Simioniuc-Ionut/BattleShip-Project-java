@@ -32,7 +32,6 @@ public class OpponentBoard extends JPanel {
 
         init();
     }
-
     final void init() {
         //mouse listener
         addMouseListener(new MouseAdapter() {

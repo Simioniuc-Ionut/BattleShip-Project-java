@@ -93,7 +93,7 @@ public class TimerThread extends Thread {
     @Override
     public void run() {
         try {
-            while (minutes > 0 || seconds > 0) {
+            while ((minutes > 0 || seconds > 0) && gameServer.getCurrentState()!=GameState.GAME_OVER) {
                 Thread.sleep(1000);
                 if (running) {
 

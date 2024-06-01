@@ -1,6 +1,8 @@
 package prepareShips;
 
 import duringMatch.MainFrameFour;
+import org.example.connection.HttpClient;
+import org.json.JSONObject;
 
 import javax.swing.*;
 import java.awt.*;
@@ -154,7 +156,6 @@ public class ControlPanelBottom extends JPanel {
             }
         }
     }
-
     private boolean validationPositionOfShip() {
         Semaphore lock = frame.client.getLock();
         synchronized (lock) {
@@ -179,6 +180,10 @@ public class ControlPanelBottom extends JPanel {
 
         waitToStart(); //asteptam sa primim de la server semnalul de start
 
+        //aici sunt sigur ca s ambii playeri conectati
+        //pot crea meciul in bd
+
+        createGameInDb();
 
         new MainFrameFour(frame.client, clientBoard.cellColorsShips).setVisible(true); //apare urmatoarea fereastra
         String serverMessage = getMessage();
@@ -215,5 +220,40 @@ public class ControlPanelBottom extends JPanel {
             }
         }
     }
+    private synchronized void createGameInDb() {
+        try {
+            int playerId = frame.client.getPlayerIDFromDB();
+            boolean createNewGame = checkIfNewGameNeeded();
 
-}
+            createOrUpdateGame(playerId, createNewGame);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("Failed to create or update game: " + ex.getMessage());
+        }
+    }
+
+    private boolean checkIfNewGameNeeded() throws Exception {
+        String checkGameUrl = "http://localhost:8080/api/games/checkGameExists";
+        String existingGameResponse = HttpClient.sendGetRequest(checkGameUrl);
+        return existingGameResponse.equals("false");
+    }
+
+
+    private void createOrUpdateGame(int playerId, boolean create) throws Exception {
+        if (create) {
+            // Creăm un nou joc
+            String createGameUrl = "http://localhost:8080/api/games/create";
+            String jsonInputString = "{\"player1Id\" : " + playerId + "}";
+            String gameCreationResponse = HttpClient.sendPostRequest(createGameUrl, jsonInputString);
+            System.out.println("Game creation response: " + gameCreationResponse);
+        } else {
+            // Actualizăm jocul existent cu player2Id
+            String updateGameUrl = "http://localhost:8080/api/games/update/player2Id/" + playerId;
+            String jsonInputString = "{\"player2Id\": " + playerId + "}";
+            String gameUpdateResponse = HttpClient.sendPostRequest(updateGameUrl, jsonInputString);
+            System.out.println("Update player2Id response: " + gameUpdateResponse);
+        }
+    }
+
+
+    }

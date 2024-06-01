@@ -1,12 +1,14 @@
 package firstFrame;
 
-import mainMenu.MainFrameTwo;
+import createOrJoinGame.MainFrameTwo;
 import leaderboard.LeaderboardFrame;
 import org.example.GameClient;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.net.Socket;
 
 import org.example.connection.HttpClient;
 import org.json.JSONException;
@@ -21,6 +23,7 @@ public class SettingsUser extends JPanel {
 
     JTextField writeUsername = new JTextField(20);
     JButton startGameBtn = new JButton("Start");
+    JButton viewScoresBtn = new JButton("Check the leaderboard");
 
     public SettingsUser(MainFrameOne frame, GameClient client) {
         this.frame = frame;
@@ -51,16 +54,21 @@ public class SettingsUser extends JPanel {
         writeUsername.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
         usernamePanel.add(writeUsername);
-        usernamePanel.setPreferredSize(new Dimension(300, 35));
+        usernamePanel.setPreferredSize(new Dimension(300, 40));
 
+       // usernamePanel.setMaximumSize(new Dimension(250, 40)); // dimensiunea
         usernamePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(usernamePanel);
+
 
         add(Box.createRigidArea(new Dimension(0, 20)));
 
         startGameBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(startGameBtn);
         add(Box.createRigidArea(new Dimension(0, 20)));
+
+        viewScoresBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
+        add(viewScoresBtn);
 
         // box filler pt spatiere sub
         add(new Box.Filler(new Dimension(0, 0), new Dimension(0, Integer.MAX_VALUE), new Dimension(0, Integer.MAX_VALUE)));
@@ -118,7 +126,6 @@ public class SettingsUser extends JPanel {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(frame, "Player already exist ");
         }
-
     }
 
     public void takeUniqIDFromDB(){
@@ -165,8 +172,5 @@ public class SettingsUser extends JPanel {
 
             System.out.println("Failed to send request: " + ex.getMessage());
         }
-
-
-
     }
 }

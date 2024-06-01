@@ -1,9 +1,7 @@
 package com.example.demo_battleship.controller;
 
 import com.example.demo_battleship.model.Game;
-import com.example.demo_battleship.model.Player;
-import com.example.demo_battleship.service.GameServices;
-import com.example.demo_battleship.service.PlayerService;
+import com.example.demo_battleship.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -67,5 +65,54 @@ public class GameController {
 //    public void updateWinner(@PathVariable Integer playerId){
 //        gameService.updateWinner(playerId);
 //    }
+    private GameService gameService;
+
+    @GetMapping
+    public List<Game> getAllGames() {
+        return gameService.getAllGames();
+    }
+
+    @GetMapping("/{gameId}")
+    public ResponseEntity<Game> getGameById(@PathVariable Integer gameId) {
+        Game game = gameService.getGameById(gameId);
+        return ResponseEntity.ok(game);
+    }
+    @DeleteMapping("/{gameId}")
+    public ResponseEntity<Void> deleteGame(@PathVariable Integer gameId) {
+        gameService.deleteGame(gameId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/player/{playerId}")
+    public ResponseEntity<List<Game>> getGamesByPlayerId(@PathVariable Integer playerId) {
+        List<Game> games = gameService.getGamesByPlayerId(playerId);
+        return ResponseEntity.ok(games);
+    }
+
+
+    @GetMapping("/checkGameExists")
+    public boolean checkIfGameExists() {
+        return gameService.checkIfGameExists();
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<Game> createGame(@RequestBody Game game) {
+        Game createdGame = gameService.createGame(game.getPlayer1Id());
+        return ResponseEntity.ok(createdGame);
+    }
+
+    @PostMapping("/update/player2Id/{player2Id}")
+    public ResponseEntity<Game> updateGame(@PathVariable Integer player2Id) {
+        Game updatedGame = gameService.updateGamePlayer2Id(player2Id);
+        if (updatedGame != null) {
+            return ResponseEntity.ok(updatedGame);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    @PostMapping("/update/winnerId/{playerId}")
+    public void updateWinner(@PathVariable Integer playerId){
+        gameService.updateWinner(playerId);
+    }
 
 }

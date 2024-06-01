@@ -16,7 +16,6 @@ public class Game {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer gameId;
 
-
     @Column(name = "player1_id")
     private int player1Id;
 
@@ -31,6 +30,6 @@ public class Game {
 
     @Column(name = "in_progress")
     private boolean inProgress;
-//     Getters and setters
+    // Getters and setters
 
 }
