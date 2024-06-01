@@ -46,5 +46,21 @@ public class PlayerController {
     public void incrementHitCount(@PathVariable Integer playerTeamId){
         playerService.increment(playerTeamId,"HIT");
     }
+    @PostMapping("/update/missCounts/{playerTeamId}")
+    public void incrementMissCount(@PathVariable Integer playerTeamId){
+        playerService.increment(playerTeamId,"MISS");
+    }
+    @PostMapping("/update/wins/{playerTeamId}")
+    public void incrementWinsCount(@PathVariable Integer playerTeamId){
+        playerService.increment(playerTeamId,"WIN");
+    }
+    @PostMapping("/update/loses/{playerTeamId}")
+        public void incrementLoses(@PathVariable Integer playerTeamId){
+        playerService.increment(playerTeamId,"LOSE");
+    }
+    @PostMapping("/update/matches/{playerTeamId}")
+    public void incrementMatches(@PathVariable Integer playerTeamId){
+        playerService.increment(playerTeamId,"MATCH");
+    }
 
 }

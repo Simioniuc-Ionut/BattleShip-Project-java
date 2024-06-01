@@ -60,7 +60,7 @@ public class SubmitMove extends JPanel {
                     });
                 }
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }

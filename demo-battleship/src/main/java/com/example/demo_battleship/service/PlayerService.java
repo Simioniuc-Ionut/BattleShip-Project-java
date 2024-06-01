@@ -80,6 +80,12 @@ public class PlayerService {
                 player.incrementHitsShots();
             }else if(Hit.equals("MISS")){
                 player.incrementMissesShots();
+            }else if(Hit.equals("WIN")){
+                player.incrementWins();
+            }else if(Hit.equals("LOSE")){
+                player.incrementLosses();
+            }else if(Hit.equals("MATCH")){
+                player.incrementMatches();
             }
 
             // Salvează modificările în baza de date

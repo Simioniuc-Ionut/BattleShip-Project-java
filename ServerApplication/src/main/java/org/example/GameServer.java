@@ -131,7 +131,7 @@ public class GameServer {
                     //debug
                     //System.out.println("||||||| AICI " + ship.getShipSize());
                     player.notifyHit(move);
-                    updateHitCount(player);
+                    updateInPlayersDb(player,"HIT");
 
                     if (ship.getShipSize() == 0) {
                         iterator.remove();
@@ -154,6 +154,7 @@ public class GameServer {
             board[rowMove][colMove] = '?';
             System.out.println("Player " + playerId + " missed at position: " + move);
             player.notifyMiss(move);
+            updateInPlayersDb(player,"MIS");
         }
         Ships ship = new PatrolBoat();
 
@@ -340,7 +341,7 @@ public class GameServer {
 
         //dupa ce se deconectaza playerul ,ii stergem teamid ul din db
        // System.out.println("Sunt in playerLeft ,team id :" + t.getPlayerTeamId());
-        deleteTeamIdFromDb(t);
+        updateInPlayersDb(t,"DELETE-TEAMID");
       //  System.out.println("reset : team id :" + t.getPlayerTeamId());
     }
 
@@ -366,10 +367,10 @@ public class GameServer {
 
     }
     //partea de relationare cu bd
-    public void deleteTeamIdFromDb(ClientThread player){
+
+    public void updateInPlayersDb(ClientThread player,String command){
         JSONObject jsonObject = new JSONObject();
         Integer playerTeamId = player.getPlayerTeamId();
-        player.setPlayerTeamId(0);
 
         try {
             jsonObject.put("playerTeamId", playerTeamId);
@@ -378,7 +379,38 @@ public class GameServer {
             throw new RuntimeException(ex);
         }
         String jsonInputString = jsonObject.toString();
+        if(command.equals("HIT")){
+            hitCountMethode(playerTeamId,jsonInputString);
+        }else if(command.equals("DELETE-TEAMID")){
+            deleteTeamIdFromDbMethode(playerTeamId,jsonInputString);
+        }else if(command.equals("MISS")){
+            missCountMethode(playerTeamId,jsonInputString);
+        }else if(command.equals("WIN")){
+            winCountMethode(playerTeamId,jsonInputString);
+        }else if(command.equals("LOSE")){
+            loseCountMethode(playerTeamId,jsonInputString);
+        }else if(command.equals("MATCH")){
+            matchCountMethode(playerTeamId,jsonInputString);
+        }
 
+
+    }
+    //endpoint uri
+    public void hitCountMethode(Integer playerTeamId,String jsonInputString){
+
+        // Construim URL-ul pentru a trimite cererea
+        String urlString = "http://localhost:8080/api/players/update/hitCounts/" + playerTeamId;
+        try {
+            String response = HttpClient.sendPostRequest(urlString, jsonInputString);
+            System.out.println("Response: " + response);
+
+        }catch (Exception ex){
+
+            ex.printStackTrace();
+            System.out.println("Failed to send request: " + ex.getMessage() + " in deleteTeamIdFrommDb from GameServer");
+        }
+    }
+    public void deleteTeamIdFromDbMethode(Integer playerTeamId,String jsonInputString){
         // Construim URL-ul pentru a trimite cererea
         String urlString = "http://localhost:8080/api/players/delete/playerTeamId/" + playerTeamId;
         try {
@@ -391,19 +423,9 @@ public class GameServer {
             System.out.println("Failed to send request: " + ex.getMessage() + " in deleteTeamIdFrommDb from GameServer");
         }
     }
-    public void updateHitCount(ClientThread player){
-        JSONObject jsonObject = new JSONObject();
-        Integer playerTeamId = player.getPlayerTeamId();
-
-        try {
-            jsonObject.put("playerTeamId", playerTeamId);
-        } catch (JSONException ex) {
-            System.out.println("Erro to jsonObject put values " + ex.getMessage());
-            throw new RuntimeException(ex);
-        }
-        String jsonInputString = jsonObject.toString();
+    public void missCountMethode(Integer playerTeamId,String jsonInputString){
         // Construim URL-ul pentru a trimite cererea
-        String urlString = "http://localhost:8080/api/players/update/hitCounts/" + playerTeamId;
+        String urlString = "http://localhost:8080/api/players/update/missCounts/" + playerTeamId;
         try {
             String response = HttpClient.sendPostRequest(urlString, jsonInputString);
             System.out.println("Response: " + response);
@@ -411,9 +433,46 @@ public class GameServer {
         }catch (Exception ex){
 
             ex.printStackTrace();
-            System.out.println("Failed to send request: " + ex.getMessage() + " in deleteTeamIdFrommDb from GameServer");
+            System.out.println("Failed to send request: " + ex.getMessage() + " in missCountMethode from GameServer");
         }
-
     }
+    public void winCountMethode(Integer playerTeamId,String jsonInputString){
+        // Construim URL-ul pentru a trimite cererea
+        String urlString = "http://localhost:8080/api/players/update/wins/" + playerTeamId;
+        try {
+            String response = HttpClient.sendPostRequest(urlString, jsonInputString);
+            System.out.println("Response: " + response);
 
+        }catch (Exception ex){
+
+            ex.printStackTrace();
+            System.out.println("Failed to send request: " + ex.getMessage() + " in winCountMethode from GameServer");
+        }
+    }
+    public void loseCountMethode(Integer playerTeamId,String jsonInputString){
+        // Construim URL-ul pentru a trimite cererea
+        String urlString = "http://localhost:8080/api/players/update/loses/" + playerTeamId;
+        try {
+            String response = HttpClient.sendPostRequest(urlString, jsonInputString);
+            System.out.println("Response: " + response);
+
+        }catch (Exception ex){
+
+            ex.printStackTrace();
+            System.out.println("Failed to send request: " + ex.getMessage() + " in loseCountMethode from GameServer");
+        }
+    }
+    public void matchCountMethode(Integer playerTeamId,String jsonInputString){
+        // Construim URL-ul pentru a trimite cererea
+        String urlString = "http://localhost:8080/api/players/update/matches/" + playerTeamId;
+        try {
+            String response = HttpClient.sendPostRequest(urlString, jsonInputString);
+            System.out.println("Response: " + response);
+
+        }catch (Exception ex){
+
+            ex.printStackTrace();
+            System.out.println("Failed to send request: " + ex.getMessage() + " in matchCountMethode from GameServer");
+        }
+    }
 }
