@@ -14,25 +14,23 @@ import lombok.Setter;
 public class Game {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long gameId;
+    private Integer gameId;
 
-    @ManyToOne
-    @JoinColumn(name = "player1_id")
-    private Player player1Id;
 
-    @ManyToOne
-    @JoinColumn(name = "player2_id")
-    private Player player2Id;
+    @Column(name = "player1_id")
+    private int player1Id;
 
-    @ManyToOne
-    @JoinColumn(name = "winner_id")
-    private Player winnerId;
+    @Column(name = "player2_id")
+    private int player2Id;
 
-    private int player1Hits;
-    private int player1Misses;
-    private int player2Misses;
-    private int player2Hits;
+    @Column(name = "winner_id")
+    private int winnerId;
+
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    // Getters and setters
+    @Column(name = "in_progress")
+    private boolean inProgress;
+//     Getters and setters
+
 }

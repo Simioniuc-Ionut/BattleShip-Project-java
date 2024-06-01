@@ -21,8 +21,10 @@ public class MainFrameFive extends JFrame {
 
         add(settingsGameOver, BorderLayout.CENTER);
 
+        settingsGameOver.updatePlayerInfoLabel();
+
         pack();
-        setSize(new Dimension(600, 200));
+        setSize(new Dimension(600, 250));
         setLocationRelativeTo(null);
         setVisible(true);
     }

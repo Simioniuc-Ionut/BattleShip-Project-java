@@ -32,6 +32,9 @@ public class MainFrameFour extends JFrame {
         }
         initStartGameBattleShip(initialCellColors);
     }
+    public TimeGame getTimeGamePanel(){
+        return timeGame;
+    }
 
     private void initStartGameBattleShip(Color[][] initialCellColors) {
         setDefaultCloseOperation(EXIT_ON_CLOSE); // inchide fereastra

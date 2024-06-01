@@ -14,13 +14,17 @@ public class SettingsGameOver extends JPanel {
     JLabel title;
     JButton exitBtn = new JButton("Exit");
     JButton playAgainBtn = new JButton("Play Again");
-
+    private JLabel playerIdNameLabel;
 
     public SettingsGameOver(MainFrameFive frame, GameClient client,String gameOverMessage) {
         this.frame = frame;
         this.client = client;
 
         init(gameOverMessage);
+
+    }
+    void updatePlayerInfoLabel() {
+        playerIdNameLabel.setText("Team ID: " + frame.client.getPlayerTeamId() + " | Username: " + frame.client.getPlayerUsername());
 
     }
 
@@ -31,6 +35,12 @@ public class SettingsGameOver extends JPanel {
         title = new JLabel(gameOverMessage);
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(title);
+
+        playerIdNameLabel = new JLabel("Player id Name");
+        playerIdNameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        Font newFont = new Font("default", Font.BOLD, 20);
+        playerIdNameLabel.setFont(newFont);
+        add(playerIdNameLabel);
 
         add(Box.createRigidArea(new Dimension(0, 20)));
 
@@ -48,7 +58,6 @@ public class SettingsGameOver extends JPanel {
         Font fontTitle = new Font("default", Font.BOLD, 25);
         title.setFont(fontTitle);
 
-        Font newFont = new Font("default", Font.BOLD, 20);
 
         exitBtn.setFont(newFont);
         exitBtn.setPreferredSize(new Dimension(250, 70));

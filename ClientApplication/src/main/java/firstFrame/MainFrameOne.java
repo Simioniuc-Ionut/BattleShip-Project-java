@@ -25,7 +25,7 @@ public class MainFrameOne extends JFrame {
         add(settingsUser, BorderLayout.CENTER);
 
         pack();
-        setSize(new Dimension(500, 300));
+        setSize(new Dimension(500, 250));
         setLocationRelativeTo(null);
         setVisible(true); // Arată fereastra cu butonul
     }

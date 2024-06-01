@@ -23,7 +23,7 @@ public class MainFrameTwo extends JFrame {
         add(settingsCreate, BorderLayout.CENTER);
 
         pack();
-        setSize(new Dimension(600, 200));
+        setSize(new Dimension(600, 250));
         setLocationRelativeTo(null);
         setVisible(false);
     }

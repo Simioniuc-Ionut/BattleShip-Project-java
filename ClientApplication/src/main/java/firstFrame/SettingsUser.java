@@ -7,7 +7,6 @@ import org.example.GameClient;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.net.Socket;
 
 import org.example.connection.HttpClient;
 import org.json.JSONException;
@@ -22,7 +21,6 @@ public class SettingsUser extends JPanel {
 
     JTextField writeUsername = new JTextField(20);
     JButton startGameBtn = new JButton("Start");
-    JButton viewScoresBtn = new JButton("Check the leaderboard");
 
     public SettingsUser(MainFrameOne frame, GameClient client) {
         this.frame = frame;
@@ -53,21 +51,16 @@ public class SettingsUser extends JPanel {
         writeUsername.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
         usernamePanel.add(writeUsername);
-        usernamePanel.setPreferredSize(new Dimension(300, 40));
+        usernamePanel.setPreferredSize(new Dimension(300, 35));
 
-       // usernamePanel.setMaximumSize(new Dimension(250, 40)); // dimensiunea
         usernamePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(usernamePanel);
-
 
         add(Box.createRigidArea(new Dimension(0, 20)));
 
         startGameBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(startGameBtn);
         add(Box.createRigidArea(new Dimension(0, 20)));
-
-        viewScoresBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
-        add(viewScoresBtn);
 
         // box filler pt spatiere sub
         add(new Box.Filler(new Dimension(0, 0), new Dimension(0, Integer.MAX_VALUE), new Dimension(0, Integer.MAX_VALUE)));
@@ -83,14 +76,9 @@ public class SettingsUser extends JPanel {
         startGameBtn.setBackground(Color.darkGray);
         startGameBtn.setForeground(Color.WHITE); // culoare text
 
-        viewScoresBtn.setFont(newFont);
-        viewScoresBtn.setPreferredSize(new Dimension(250, 75));
-        viewScoresBtn.setBackground(Color.darkGray);
-        viewScoresBtn.setForeground(Color.WHITE); // culoare text
-
         // configure listeners for all buttons
         startGameBtn.addActionListener(this::listenerAddStartGameBtn);
-        viewScoresBtn.addActionListener(this::listenerAddViewTableBtn);
+
     }
 
     private void listenerAddStartGameBtn(ActionEvent e)  {
@@ -114,11 +102,6 @@ public class SettingsUser extends JPanel {
 
             JOptionPane.showMessageDialog(frame, "An error occurred: " + ex.getMessage());
         }
-    }
-
-    private void listenerAddViewTableBtn(ActionEvent e) {
-        new LeaderboardFrame(frame.client).setVisible(true);// apare urmatoarea fereastra
-        frame.setVisible(false); // inchide fereastra
     }
 
     public void addUsernameInDB(){
