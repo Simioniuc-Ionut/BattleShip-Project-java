@@ -1,6 +1,6 @@
 package finishMatch;
 
-import createOrJoinGame.MainFrameTwo;
+import mainMenu.MainFrameTwo;
 import org.example.GameClient;
 
 import javax.swing.*;
@@ -15,17 +15,20 @@ public class SettingsGameOver extends JPanel {
     JButton exitBtn = new JButton("Exit");
     JButton playAgainBtn = new JButton("Play Again");
 
-    public SettingsGameOver(MainFrameFive frame, GameClient client) {
+
+    public SettingsGameOver(MainFrameFive frame, GameClient client,String gameOverMessage) {
         this.frame = frame;
         this.client = client;
-        init();
+
+        init(gameOverMessage);
+
     }
 
-    public void init(){
+    public void init(String gameOverMessage){
         // pozitie verticala
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        title = new JLabel("Game Over");
+        title = new JLabel(gameOverMessage);
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(title);
 

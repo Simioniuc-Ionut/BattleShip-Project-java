@@ -1,4 +1,4 @@
-package createOrJoinGame;
+package mainMenu;
 
 import org.example.GameClient;
 
@@ -9,7 +9,7 @@ public class MainFrameTwo extends JFrame {
     public GameClient client;
     Settings settingsCreate;
     public MainFrameTwo(GameClient client) {
-        super("createOrJoinGame");
+        super("mainMenu");
         this.client = client;
         initCreateGame();
     }

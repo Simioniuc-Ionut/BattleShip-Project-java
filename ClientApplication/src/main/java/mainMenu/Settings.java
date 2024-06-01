@@ -1,4 +1,4 @@
-package createOrJoinGame;
+package mainMenu;
 
 import org.example.GameClient;
 import prepareShips.MainFrameThree;

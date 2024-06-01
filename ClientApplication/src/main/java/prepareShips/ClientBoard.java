@@ -9,7 +9,7 @@ public class ClientBoard extends JPanel {
     int startX = 40; // pozitie start pe axa x a ferestrei
     int startY = 110; // pozitie start pe axa y a ferestrei
     Color[][] cellColorsShips = new Color[10][10];// pentru a stii starea fiecarei celule din matrice
-
+    private JLabel playerIdNameLabel;
     public ClientBoard(MainFrameThree frame) {
         this.frame = frame;
 
@@ -21,8 +21,19 @@ public class ClientBoard extends JPanel {
         init();
     }
 
-    final void init() {
+    void updatePlayerInfoLabel() {
+        playerIdNameLabel.setText("Team ID: " + frame.client.getPlayerTeamId() + " | Username: " + frame.client.getPlayerUsername());
+    }
 
+    final void init() {
+        this.setLayout(null);
+        playerIdNameLabel = new JLabel("Player id Name", SwingConstants.LEFT);
+        playerIdNameLabel.setBounds(10, 10, 430, 30);
+        Font newFont = new Font("default", Font.BOLD, 20);
+        playerIdNameLabel.setFont(newFont);
+        playerIdNameLabel.setOpaque(true);
+        playerIdNameLabel.setBackground(Color.LIGHT_GRAY);
+        this.add(playerIdNameLabel);
     }
 
     @Override

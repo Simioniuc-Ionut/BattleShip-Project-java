@@ -1,11 +1,10 @@
 package firstFrame;
 
-import createOrJoinGame.MainFrameTwo;
+import mainMenu.MainFrameTwo;
 import leaderboard.LeaderboardFrame;
 import org.example.GameClient;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import org.example.connection.HttpClient;
@@ -93,18 +92,26 @@ public class SettingsUser extends JPanel {
     }
 
     private void listenerAddStartGameBtn(ActionEvent e)  {
-        //adaug usernameul in bd
-        addUsernameInDB();
 
-        //iau id ul unic din bd , corespunzator numelui introdus
+        String username = writeUsername.getText();
+        frame.client.setPlayerUsername(username);
 
-       takeUniqIDFromDB();
+        try {
+            // Adaug username-ul în BD
+            addUsernameInDB();
+            // Iau ID-ul unic din BD, corespunzator numelui introdus
+            takeUniqIDFromDB();
+            // Adaug teamId în BD
+            addTeamId();
 
-        //Add teamId in DB
-        addTeamId();
+            //daca operatiile au reusit, deschid fereastra
+            new MainFrameTwo(client).setVisible(true);
+            frame.setVisible(false);
 
-        new MainFrameTwo(client).setVisible(true); // apare urmatoarea fereastra
-        frame.setVisible(false); // inchide fereastra
+        } catch (Exception ex) {
+
+            JOptionPane.showMessageDialog(frame, "An error occurred: " + ex.getMessage());
+        }
     }
 
     private void listenerAddViewTableBtn(ActionEvent e) {
@@ -126,6 +133,7 @@ public class SettingsUser extends JPanel {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(frame, "Player already exist ");
         }
+
     }
 
     public void takeUniqIDFromDB(){
@@ -142,7 +150,7 @@ public class SettingsUser extends JPanel {
     }
 
     public void addTeamId(){
-        Integer playerTeamId = frame.client.getPlayerID();
+        Integer playerTeamId = frame.client.getPlayerTeamId();
         Integer playerDBId = frame.client.getPlayerIDFromDB();
 
 
@@ -172,5 +180,8 @@ public class SettingsUser extends JPanel {
 
             System.out.println("Failed to send request: " + ex.getMessage());
         }
+
+
+
     }
 }

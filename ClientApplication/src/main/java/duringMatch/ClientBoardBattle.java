@@ -10,6 +10,8 @@ public class ClientBoardBattle extends JPanel {
     int startY = 110; // pozitie start pe axa y a ferestrei
     Color[][] cellColorsShips = new Color[10][10];// pentru a stii starea fiecarei celule din matrice
     boolean[][] hitCells = new boolean[10][10];
+    private JLabel playerIdNameLabel;
+
     public ClientBoardBattle(MainFrameFour frame, Color[][] initialCellColors) {
         this.frame = frame;
         //preiau tabela colorata (cu navele plasate) din MainFrame->ClientBoard
@@ -19,7 +21,17 @@ public class ClientBoardBattle extends JPanel {
     }
 
     final void init() {
-
+        this.setLayout(null);
+        playerIdNameLabel = new JLabel("Player id Name", SwingConstants.LEFT);
+        playerIdNameLabel.setBounds(10, 10, 430, 30);
+        Font newFont = new Font("default", Font.BOLD, 20);
+        playerIdNameLabel.setFont(newFont);
+        playerIdNameLabel.setOpaque(true);
+        playerIdNameLabel.setBackground(Color.LIGHT_GRAY);
+        this.add(playerIdNameLabel);
+    }
+    void updatePlayerInfoLabel() {
+        playerIdNameLabel.setText("Team ID: " + frame.client.getPlayerTeamId() + " | Username: " + frame.client.getPlayerUsername());
     }
 
     @Override

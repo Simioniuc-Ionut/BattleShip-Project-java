@@ -1,7 +1,5 @@
 package org.example;
 
-import createOrJoinGame.MainFrameTwo;
-
 import firstFrame.MainFrameOne;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,9 +24,9 @@ public class GameClient {
     private boolean positionConfirmed = true;
     private String message;
     private Semaphore messageLock = new Semaphore(0);
-    private int playerID;
+    private int playerTeamId;
     private int playerIDFromDB;
-
+    private String playerUsername;
 
     public GameClient(String serverAddress, int serverPort) {
         this.serverAddress = serverAddress;
@@ -127,8 +125,8 @@ public class GameClient {
     private void takeIDOfPlayer(String serverResponse) {
         if(serverResponse.startsWith("ID: ")){
             String[] split = serverResponse.split(": ");
-            playerID = Integer.parseInt(split[1]);//pun idiul
-            System.out.println("ID din GameClient " + playerID);
+            playerTeamId = Integer.parseInt(split[1]);//pun idiul
+            System.out.println("ID din GameClient " + playerTeamId);
         }
     }
 
@@ -161,4 +159,6 @@ public class GameClient {
             positionIsCorrectlock.release();
         }
     }
+
+
 }

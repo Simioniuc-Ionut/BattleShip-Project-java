@@ -34,7 +34,7 @@ public class ClientThread extends Thread {
 
     private final GameServer gameServer;
     private static GameState playerTurn;
-    private int playerId;
+    private int playerTeamId;
     private boolean shipsPlaced;
 
     private boolean playerFinishStatus;
@@ -47,17 +47,17 @@ public class ClientThread extends Thread {
 
 
 
-    public ClientThread(Socket clientSocket, GameServer gameServer,Integer playerId) {
+    public ClientThread(Socket clientSocket, GameServer gameServer,Integer playerTeamId) {
         this.clientSocket = clientSocket;
         this.gameServer = gameServer;
-        this.playerId = playerId;
+        this.playerTeamId = playerTeamId;
 
         this.shipsPlaced = false;
         playerFinishStatus=false;
 
 
 
-        this.timer = new TimerThread(timerPlayer,playerId);
+        this.timer = new TimerThread(timerPlayer,playerTeamId);
         timer.start();
         //timer.startTimer();
     }
@@ -82,7 +82,7 @@ public class ClientThread extends Thread {
             this.out = out;
             String inputLine;
 
-            out.println("ID: " + playerId); //trimit idiul
+            out.println("ID: " + playerTeamId); //trimit idiul
 
             while ((inputLine = in.readLine()) != null) {
                 System.out.println("Server received: " + inputLine);
@@ -111,13 +111,13 @@ public class ClientThread extends Thread {
                     }
                 } else if(gameServer.getCurrentState() == GameState.GAME_READY_TO_MOVE/*inputLine.startsWith("submit move")*/){
                     System.out.println("Player turn " + playerTurn);
-                        if(playerId == playerTurn.getStateCode()) {
+                        if(playerTeamId == playerTurn.getStateCode()) {
 
-                            gameServer.startTimer(playerId);
+                            gameServer.startTimer(playerTeamId);
 
                             submitMove(inputLine);//fac mutarea
 
-                            System.out.println("Player " + playerId + " moved " + inputLine + " status timer " + this.timer.isStart() + " TIMPUL > " + timerPlayer);
+                            System.out.println("Player " + playerTeamId + " moved " + inputLine + " status timer " + this.timer.isStart() + " TIMPUL > " + timerPlayer);
 
                             switchTurn();//schimb turul
 
@@ -159,16 +159,16 @@ public class ClientThread extends Thread {
 
         checkReadyToStart();
 
-        gameServer.startTimer(playerId);
+        gameServer.startTimer(playerTeamId);
         //instantiam timerul;
-//        this.timer = new TimerThread(timerPlayer,playerId);
+//        this.timer = new TimerThread(timerPlayer,playerTeamId);
 //        timer.start();
     }
 
 
 
     private void waitingPlayersToFinishPlacingShips() {
-      if(playerId == 1) {
+      if(playerTeamId == 1) {
 
         gameServer.setPlayer1IsReadyToStartGame(true);
         sendMessage("Waiting player 2");
@@ -186,8 +186,8 @@ public class ClientThread extends Thread {
 
     private  void makePlayerReadyToPlaceShip(boolean b) {
 
-       // System.out.println("makePlayerReady " + b + " playerid " + playerId);
-        if(playerId == 1){
+       // System.out.println("makePlayerReady " + b + " playerTeamId " + playerTeamId);
+        if(playerTeamId == 1){
             gameServer.setPlayer1IsReadyToPlaceShips(b);
         }else {
             gameServer.setPlayer2IsReadyToPlaceShips(b);
@@ -202,7 +202,7 @@ public class ClientThread extends Thread {
             try {
 
                 String inputLine = in.readLine();
-                placed = gameServer.validateShipPosition(playerId, inputLine, ship);
+                placed = gameServer.validateShipPosition(playerTeamId, inputLine, ship);
 
                 sendMessage("Cor:" + "Ship is correctly placed");
             } catch (GameException | StringIndexOutOfBoundsException | NullPointerException e) {
@@ -218,14 +218,14 @@ public class ClientThread extends Thread {
     private void submitMove(String inputLine) {
         if(isReadyToMove()) {
             String move = inputLine.trim();
-            gameServer.handleMove(playerId, move);
+            gameServer.handleMove(playerTeamId, move);
            // sendMessage("Move submitted: " + move + ". Waiting for opponent's move.");
             if(gameServer.getCurrentState() != GameState.GAME_OVER){
             opponent.sendMessage("Opponent moved: " + move + ". Your turn.");}
         }
     }
     private boolean isReadyToMove(){
-        if ( gameServer.getCurrentState() == GameState.GAME_READY_TO_MOVE && playerId != playerTurn.getStateCode()) {
+        if ( gameServer.getCurrentState() == GameState.GAME_READY_TO_MOVE && playerTeamId != playerTurn.getStateCode()) {
             sendMessage("It's not your turn or game is not ready yet.");
             return false;
         }else {
@@ -274,7 +274,7 @@ public class ClientThread extends Thread {
             System.out.println("mesajul din listenReadyFromClient " + ready + " isReadyplayer1 " + gameServer.isPlayer1IsReadyToStartGame() + " isReadyplayer2 " + gameServer.isPlayer2IsReadyToStartGame());
 
             if(ready.equals("READY")){
-                sendMessage("Player " + playerId + " is ready");
+                sendMessage("Player " + playerTeamId + " is ready");
 
             }else{
                 sendMessage("Player is not ready");
@@ -285,7 +285,7 @@ public class ClientThread extends Thread {
     }
 
     private void waititngPlayersForJoining(){
-        if (playerId == 1){
+        if (playerTeamId == 1){
             gameServer.setPlayer1IsReadyToPlaceShips(true);
             while(!gameServer.isPlayer2IsReadyToPlaceShips()){
                 waitingThread();
@@ -322,7 +322,7 @@ public class ClientThread extends Thread {
 
     private void closeClientSocket() {
         try {
-            System.out.println("Socket was closed for player " + playerId);
+            System.out.println("Socket was closed for player " + playerTeamId);
             gameServer.playerLeft(this);
             clientSocket.close();
 
@@ -337,18 +337,18 @@ public class ClientThread extends Thread {
         sendMessage("You missed at position: " + move + ". Waiting for opponent's move");
     }
     public void setOpponent() {
-        if(playerId == 1) {
-            int player2 = playerId + 1;
+        if(playerTeamId == 1) {
+            int player2 = playerTeamId + 1;
             this.opponent = gameServer.getPlayer(player2);
 
         } else {
-            int player1 = playerId - 1;
+            int player1 = playerTeamId - 1;
             this.opponent = gameServer.getPlayer(player1);
         }
     }
 
 //    public void setPlayerId(int id) {
-//        this.playerId = id;
+//        this.playerTeamId = id;
 //    }
 //
 //    public ClientThread getOpponent() {
@@ -384,7 +384,7 @@ public class ClientThread extends Thread {
         //remainingTimePlayer2 = 30;
         finishTimerThread();
         //Redeschidem timerul
-        this.timer = new TimerThread(timerPlayer,playerId);
+        this.timer = new TimerThread(timerPlayer,playerTeamId);
         timer.start();
 
         timerPlayer =30;

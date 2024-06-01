@@ -1,4 +1,5 @@
 package prepareShips;
+import firstFrame.SettingsUser;
 import org.example.GameClient;
 
 import javax.swing.*;
@@ -13,6 +14,8 @@ public class MainFrameThree extends JFrame {
     public GameClient client;
     private ImageIcon img;
     private JLabel background;
+    private JLabel playerInfoLabel;
+    SettingsUser settingsUser;
 
     public MainFrameThree(GameClient client) {
         super("prepareShips");
@@ -28,7 +31,7 @@ public class MainFrameThree extends JFrame {
 //        background.setSize(800,500);
 //        add(background);
 
-        //componente pentru fereastra de plasare nave
+        //componente pentru fereastra de plasare navegames
         settingsPlaceShip = new SettingsPlaceShip(this);
         clientBoard = new ClientBoard(this);
         controlPanelBottom = new ControlPanelBottom(this, settingsPlaceShip,clientBoard);
@@ -38,8 +41,8 @@ public class MainFrameThree extends JFrame {
         add(controlPanelBottom, BorderLayout.SOUTH);
         add(clientBoard, BorderLayout.CENTER);
 
-        //fundal
-
+        // Setarea teamId și username
+        clientBoard.updatePlayerInfoLabel();
 
         pack();
         setSize(new Dimension(1000, 700));
@@ -47,5 +50,6 @@ public class MainFrameThree extends JFrame {
         setVisible(false);
 
     }
+
 
 }
