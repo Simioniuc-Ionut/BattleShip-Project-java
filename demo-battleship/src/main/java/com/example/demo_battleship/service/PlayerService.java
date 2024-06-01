@@ -80,7 +80,7 @@ public class PlayerService {
                 player.incrementHitsShots();
             }else if(Hit.equals("MISS")){
                 player.incrementMissesShots();
-            }else if
+            }
 
             // Salvează modificările în baza de date
             playerRepository.save(player);
