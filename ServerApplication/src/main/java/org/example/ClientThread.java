@@ -363,8 +363,14 @@ public class ClientThread extends Thread {
 //        }
 //    }
     public void notifyGameOver() {
-           sendMessage("Game over. You won!");
-            opponent.sendMessage("Game over. You lost!");
+
+                System.out.println("DE CATE ORI SE APELEAZa ?");
+                sendMessage("Game over. You won!");
+                gameServer.updateInPlayersDb(this,"WIN");
+                gameServer.updateInPlayersDb(this,"MATCH");
+                opponent.sendMessage("Game over. You lost!");
+                gameServer.updateInPlayersDb(opponent,"LOSE");
+                gameServer.updateInPlayersDb(opponent,"MATCH");
 
     }
 
