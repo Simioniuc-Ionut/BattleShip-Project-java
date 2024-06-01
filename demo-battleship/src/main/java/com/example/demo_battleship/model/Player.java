@@ -39,6 +39,20 @@ public class Player {
         this.playerName=player2;
     }
 
-
+    public void incrementHitsShots(){
+        this.hitsCount++;
+    }
+    public void incrementMissesShots(){
+        this.missesCount++;
+    }
+    public void incrementWins(){
+        this.winsCount++;
+    }
+    public void incrementLosses(){
+        this.lossesCount++;
+    }
+    public void incrementMatches(){
+        this.matchesCount++;
+    }
     // Getters and setters
 }

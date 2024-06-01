@@ -42,4 +42,9 @@ public class PlayerController {
        // System.out.println("Received request to delete teamId for playerTeamId: " + playerTeamId);
         playerService.deletePlayerTeamId(playerTeamId);
     }
+    @PostMapping("/update/hitCounts/{playerTeamId}")
+    public void incrementHitCount(@PathVariable Integer playerTeamId){
+        playerService.increment(playerTeamId,"HIT");
+    }
+
 }
