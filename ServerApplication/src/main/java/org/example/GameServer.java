@@ -366,7 +366,41 @@ public class GameServer {
         resetGame();
 
     }
+
     //partea de relationare cu bd
+    public void updateInGameDb(ClientThread player,String command){
+        if(command.equals("WINNER")) {
+            System.out.println("Sa apelat updateInGameDb");
+            try {
+                int playerIdFromDb = HttpClient.getPlayerIdWithPlayerTeamId(player.getPlayerTeamId());
+                setWinner(playerIdFromDb);
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("error in updateInGameDb WINNER");
+            }
+        }
+
+    }
+    public void setWinner(Integer playerIdFromDb){
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("playerTeamId", playerIdFromDb);
+        } catch (JSONException ex) {
+            System.out.println("Erro to jsonObject put values " + ex.getMessage());
+            throw new RuntimeException(ex);
+        }
+
+        String urlString = "http://localhost:8080/api/games/update/winnerId/" + playerIdFromDb;
+        String jsonInputString = jsonObject.toString();
+        try {
+            String response = HttpClient.sendPostRequest(urlString,jsonInputString);
+            System.out.println("Response: " + response);
+        } catch (Exception e) {
+           System.out.println("Error in setWinner in Game db");
+        }
+
+    }
+
 
     public void updateInPlayersDb(ClientThread player,String command){
         JSONObject jsonObject = new JSONObject();
@@ -392,7 +426,6 @@ public class GameServer {
         }else if(command.equals("MATCH")){
             matchCountMethode(playerTeamId,jsonInputString);
         }
-
 
     }
     //endpoint uri

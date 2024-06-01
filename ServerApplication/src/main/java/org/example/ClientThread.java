@@ -42,7 +42,7 @@ public class ClientThread extends Thread {
     private PrintWriter timerOut;
     //timer
     private int minutesTimerPlayer = 0;
-    private int secondsTimerPlayer = 10;
+    private int secondsTimerPlayer = 5;
 
     private boolean isTimerThreadRunning=false;
 
@@ -364,6 +364,8 @@ public class ClientThread extends Thread {
                 sendMessage("Game over. You won!");
                 gameServer.updateInPlayersDb(this,"WIN");
                 gameServer.updateInPlayersDb(this,"MATCH");
+
+                gameServer.updateInGameDb(this,"WINNER");
                 opponent.sendMessage("Game over. You lost!");
                 gameServer.updateInPlayersDb(opponent,"LOSE");
                 gameServer.updateInPlayersDb(opponent,"MATCH");

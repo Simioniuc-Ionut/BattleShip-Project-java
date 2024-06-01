@@ -62,5 +62,8 @@ public class PlayerController {
     public void incrementMatches(@PathVariable Integer playerTeamId){
         playerService.increment(playerTeamId,"MATCH");
     }
-
+    @GetMapping("take_id_by_playerTeamId/{playerTeamId}")
+    public int getPlayerId(@PathVariable Integer playerTeamId){
+        return playerService.getPlayerIdByPlayerTeamId(playerTeamId);
+    }
 }

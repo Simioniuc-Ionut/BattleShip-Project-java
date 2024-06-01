@@ -99,7 +99,6 @@ public class SettingsUser extends JPanel {
         addUsernameInDB();
 
         //iau id ul unic din bd , corespunzator numelui introdus
-
        takeUniqIDFromDB();
 
         //Add teamId in DB

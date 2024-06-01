@@ -176,7 +176,6 @@ public class GameClient {
         }
     }
 
-
     public void setAnswer(String answer) {
         System.out.println("Client response: " + answer);
         this.answer = answer;
