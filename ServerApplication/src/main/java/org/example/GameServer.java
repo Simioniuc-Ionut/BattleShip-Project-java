@@ -166,12 +166,9 @@ public class GameServer {
             player.notifyMiss(move);
             updateInPlayersDb(player,"MISS");
         }
-       // Ships ship = new PatrolBoat();
-
+        //Ships ship = new PatrolBoat();
         //System.out.println("BARCA NOU " + ship.getShipSize());
         //displayServerBoard();
-
-
 
     }
 
