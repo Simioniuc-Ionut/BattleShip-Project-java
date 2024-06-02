@@ -9,6 +9,8 @@ import com.example.demo_battleship.repository.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class MoveService {
 
@@ -26,11 +28,14 @@ public class MoveService {
         Player player = playerRepository.findById(playerId).orElseThrow(() -> new RuntimeException("Player not found"));
 
         Move newMove = new Move();
-        newMove.setGame(game);
-        newMove.setPlayer(player);
+        newMove.setGameId(game);
+        newMove.setPlayerId(player);
         newMove.setMove(move);
         newMove.setIsHit(isHit);
 
-        moveRepository.save(newMove);
+
+    }
+    public List<Move> listMoves() {
+        return moveRepository.findAll();
     }
 }

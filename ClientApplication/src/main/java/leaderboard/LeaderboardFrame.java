@@ -12,7 +12,7 @@ import java.net.Socket;
 public class LeaderboardFrame extends JFrame {
     JButton leaderboard = new JButton("Leaderboard");
     JButton history = new JButton("Match History");
-    JButton treiBtn = new JButton("View Statistic");
+    JButton statistic = new JButton("View Statistic");
     JButton back = new JButton("Back");
     JLabel title;
    GameClient client;
@@ -36,7 +36,7 @@ public class LeaderboardFrame extends JFrame {
 
         initButton(leaderboard, panel);
         initButton(history, panel);
-        initButton(treiBtn, panel);
+        initButton(statistic, panel);
         initButton(back,panel);
 
 
@@ -54,6 +54,14 @@ public class LeaderboardFrame extends JFrame {
 
                 LeaderboardFrame.this.setVisible(false);
                 new MatchHistoryFrame(client).setVisible(true);
+            }
+        });
+        statistic.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                LeaderboardFrame.this.setVisible(false);
+                new ViewStatisticFrame(client).setVisible(true);
             }
         });
         back.addActionListener(new ActionListener() {

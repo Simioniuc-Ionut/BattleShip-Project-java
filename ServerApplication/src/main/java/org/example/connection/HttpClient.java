@@ -3,6 +3,8 @@ package org.example.connection;
 
 import com.example.demo_battleship.model.Game;
 import org.json.JSONObject;
+import com.example.demo_battleship.model.Move;
+import com.example.demo_battleship.model.Ship;
 import org.springframework.web.client.RestTemplate;
 import com.example.demo_battleship.model.Player;
 import java.io.BufferedReader;
@@ -65,6 +67,7 @@ public class HttpClient {
         String response = sendGetRequest(urlString);
         return Integer.parseInt(response);
     }
+
     public static Iterable<Player> getPlayersList() {
         RestTemplate restTemplate = new RestTemplate();
         Player[] playersArray = restTemplate.getForObject("http://localhost:8080/api/players" + "/list", Player[].class);
@@ -102,5 +105,17 @@ public class HttpClient {
     }
 
 
+
+    public static Iterable<Move> getMoveList() {
+        RestTemplate restTemplate = new RestTemplate();
+        Move[] movesArray = restTemplate.getForObject("http://localhost:8080/api/moves" + "/list", Move[].class);
+        return Arrays.asList(movesArray);
+    }
+
+    public static Iterable<Ship> getShipList() {
+        RestTemplate restTemplate = new RestTemplate();
+        Ship[] shipsArray = restTemplate.getForObject("http://localhost:8080/api/ships" + "/list", Ship[].class);
+        return Arrays.asList(shipsArray);
+    }
 
 }

@@ -368,6 +368,7 @@ public class ClientThread extends Thread {
                 sendMessage("Game over. You won!");
                 gameServer.updateInPlayersDb(this,"WIN");
                 gameServer.updateInPlayersDb(this,"MATCH");
+
                 gameServer.updateInGameDb(this,"WINNER");
 
                 opponent.sendMessage("Game over. You lost!");
