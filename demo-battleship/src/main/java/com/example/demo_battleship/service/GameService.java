@@ -25,11 +25,6 @@ public class GameService {
         return gameRepository.findAll();
     }
 
-
-    public List<Game> getAllGames() {
-        return gameRepository.findAll();
-    }
-
     public Game getGameById(Integer gameId) {
         return gameRepository.findById(gameId).orElseThrow(() -> new IllegalArgumentException("Game not found"));
     }

@@ -19,11 +19,6 @@ public class GameController {
         return gameService.listGames();
     }
 
-    @GetMapping
-    public List<Game> getAllGames() {
-        return gameService.getAllGames();
-    }
-
     @GetMapping("/{gameId}")
     public ResponseEntity<Game> getGameById(@PathVariable Integer gameId) {
         Game game = gameService.getGameById(gameId);

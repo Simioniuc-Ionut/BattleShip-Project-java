@@ -182,4 +182,7 @@ public class GameClient {
     }
 
 
+    public int getPlayerIdByUsername(String playerUsername) {
+        return getPlayerIDFromDB();
+    }
 }

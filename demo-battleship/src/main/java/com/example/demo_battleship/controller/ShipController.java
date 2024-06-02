@@ -7,6 +7,8 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @RestController
@@ -16,14 +18,19 @@ public class ShipController {
     @Autowired
     private ShipService shipService;
 
-    @PostMapping("/addShip/{gameId}/{playerId}")
-    public void addShip(@PathVariable Integer gameId, @PathVariable Integer playerId, @RequestBody Ship ship) {
-        shipService.addShip(gameId, playerId, ship);
+    @GetMapping("/list")
+        public List<Ship> listShips(){
+        return shipService.listShips();
     }
 
 
     @PostMapping("/sinkShip/{gameId}/{playerId}/{shipType}")
     public void sinkShip(@PathVariable Integer gameId, @PathVariable Integer playerId, @PathVariable String shipType) {
         shipService.sinkShip(gameId, playerId, shipType);
+    }
+
+    @PostMapping("/addShip/{gameId}/{playerId}")
+    public void addShip(@PathVariable Integer gameId, @PathVariable Integer playerId, @RequestBody Ship ship) {
+        shipService.addShip(gameId, playerId, ship);
     }
 }

@@ -9,6 +9,8 @@ import com.example.demo_battleship.repository.ShipRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ShipService {
 
@@ -25,8 +27,8 @@ public class ShipService {
         Game game = gameRepository.findById(gameId).orElseThrow(() -> new RuntimeException("Game not found"));
         Player player = playerRepository.findById(playerId).orElseThrow(() -> new RuntimeException("Player not found"));
 
-        ship.setGame(game);
-        ship.setPlayer(player);
+        ship.setGameId(game);
+        ship.setPlayerId(player);
         shipRepository.save(ship);
     }
 
@@ -40,5 +42,8 @@ public class ShipService {
         } else {
             throw new RuntimeException("Ship not found");
         }
+    }
+    public List<Ship> listShips() {
+        return shipRepository.findAll();
     }
 }
