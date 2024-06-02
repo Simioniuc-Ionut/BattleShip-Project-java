@@ -88,11 +88,11 @@ public class PlayerService {
                 player.incrementMatches();
             }
 
-            // Salvează modificările în baza de date
+            // Salveaza modificarile in baza de date
             playerRepository.save(player);
             //System.out.println("Player teamId updated successfully for playerId: " + player.getPlayerId());
         } else {
-            // Tratează cazul în care nu există jucătorul cu playerId-ul dat
+            // Tratez cazul în care nu exista jucatorul cu playerId-ul dat
             throw new IllegalArgumentException("Player with id " + player.getPlayerId() + " does not exist");
         }
 

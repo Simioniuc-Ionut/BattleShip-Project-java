@@ -19,7 +19,7 @@ public class Move {
 
     @ManyToOne
     @JoinColumn(name = "game_id", nullable = false)
-    private Game game;
+    private Game gameId;
 
     @Column(nullable = false)
     private String move;
@@ -32,7 +32,7 @@ public class Move {
 
     @ManyToOne
     @JoinColumn(name = "player_id", nullable = false)
-    private Player player;
+    private Player playerId;
 
     // Getters and setters
 }
