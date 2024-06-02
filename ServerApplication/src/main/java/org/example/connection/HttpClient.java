@@ -1,6 +1,7 @@
 package org.example.connection;
 
 
+import com.example.demo_battleship.model.Game;
 import org.springframework.web.client.RestTemplate;
 import com.example.demo_battleship.model.Player;
 import java.io.BufferedReader;

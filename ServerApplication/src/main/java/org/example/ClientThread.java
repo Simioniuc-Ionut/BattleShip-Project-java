@@ -42,7 +42,7 @@ public class ClientThread extends Thread {
     private PrintWriter timerOut;
     //timer
     private int minutesTimerPlayer = 0;
-    private int secondsTimerPlayer = 5;
+    private int secondsTimerPlayer = 10;
 
     private boolean isTimerThreadRunning=false;
 

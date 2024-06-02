@@ -1,6 +1,6 @@
 package firstFrame;
 
-import createOrJoinGame.MainFrameTwo;
+import mainMenu.MainFrameTwo;
 import leaderboard.LeaderboardFrame;
 import org.example.GameClient;
 
@@ -23,7 +23,6 @@ public class SettingsUser extends JPanel {
 
     JTextField writeUsername = new JTextField(20);
     JButton startGameBtn = new JButton("Start");
-    JButton viewScoresBtn = new JButton("Check the leaderboard");
 
     public SettingsUser(MainFrameOne frame, GameClient client) {
         this.frame = frame;
@@ -66,9 +65,6 @@ public class SettingsUser extends JPanel {
         startGameBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(startGameBtn);
         add(Box.createRigidArea(new Dimension(0, 20)));
-
-        viewScoresBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
-        add(viewScoresBtn);
 
         // box filler pt spatiere sub
         add(new Box.Filler(new Dimension(0, 0), new Dimension(0, Integer.MAX_VALUE), new Dimension(0, Integer.MAX_VALUE)));
