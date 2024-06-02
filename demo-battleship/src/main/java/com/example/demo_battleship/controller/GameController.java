@@ -24,11 +24,6 @@ public class GameController {
         Game game = gameService.getGameById(gameId);
         return ResponseEntity.ok(game);
     }
-    @DeleteMapping("/{gameId}")
-    public ResponseEntity<Void> deleteGame(@PathVariable Integer gameId) {
-        gameService.deleteGame(gameId);
-        return ResponseEntity.noContent().build();
-    }
 
     @GetMapping("/player/{playerId}")
     public ResponseEntity<List<Game>> getGamesByPlayerId(@PathVariable Integer playerId) {

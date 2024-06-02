@@ -154,7 +154,7 @@ public class GameServer {
             board[rowMove][colMove] = '?';
             System.out.println("Player " + playerId + " missed at position: " + move);
             player.notifyMiss(move);
-            updateInPlayersDb(player,"MIS");
+            updateInPlayersDb(player,"MISS");
         }
         Ships ship = new PatrolBoat();
 
@@ -426,7 +426,6 @@ public class GameServer {
         }else if(command.equals("MATCH")){
             matchCountMethode(playerTeamId,jsonInputString);
         }
-
     }
     //endpoint uri
     public void hitCountMethode(Integer playerTeamId,String jsonInputString){
