@@ -41,8 +41,8 @@ public class ClientThread extends Thread {
     private TimerThread timer;
     private PrintWriter timerOut;
     //timer
-    private int minutesTimerPlayer = 0;
-    private int secondsTimerPlayer = 10;
+    private int minutesTimerPlayer = 3;
+    private int secondsTimerPlayer = 5;
 
     private boolean isTimerThreadRunning=false;
 
@@ -156,10 +156,10 @@ public class ClientThread extends Thread {
 
         gameServer.setCurrentState(GameState.GAME_READY_TO_MOVE);
         //trebuiesc modificate
-//        placeShip(in, CARRIER_LENGTH);
-//        placeShip(in, BATTLESHIP_LENGTH);
-//        placeShip(in, DESTROYER_LENGTH);
-        //placeShip(in, SUBMARINE_LENGTH);
+        placeShip(in, CARRIER_LENGTH);
+        placeShip(in, BATTLESHIP_LENGTH);
+        placeShip(in, DESTROYER_LENGTH);
+        placeShip(in, SUBMARINE_LENGTH);
         placeShip(in, PATROL_BOAT_LENGTH);
         shipsPlaced = true;
 

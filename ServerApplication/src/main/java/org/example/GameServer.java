@@ -114,6 +114,10 @@ public class GameServer {
             char shipTypeFromBoard = board[rowMove][colMove];
             board[rowMove][colMove] = 'X';
             isHit=true;
+
+            // Record the move in the database
+            updateInMovesDb(player,move,isHit);
+
             //We chose the list of ships of the opponent
             List<Ships> ships = playerId == 1 ? player2Ships : player1Ships;
 
@@ -160,15 +164,14 @@ public class GameServer {
             board[rowMove][colMove] = '?';
             System.out.println("Player " + playerId + " missed at position: " + move);
             player.notifyMiss(move);
-            updateInPlayersDb(player,"MIS");
+            updateInPlayersDb(player,"MISS");
         }
        // Ships ship = new PatrolBoat();
 
         //System.out.println("BARCA NOU " + ship.getShipSize());
         //displayServerBoard();
 
-        // Record the move in the database
-        updateInMovesDb(player,move,isHit);
+
 
     }
 

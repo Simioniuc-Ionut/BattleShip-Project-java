@@ -18,7 +18,7 @@ public class Move {
     private Integer moveId;
 
     @ManyToOne
-    @JoinColumn(name = "game_id")
+    @JoinColumn(name = "game_id", nullable = false)
     private Game gameId;
 
     @Column(nullable = false)
@@ -31,9 +31,8 @@ public class Move {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @ManyToOne
-    @JoinColumn(name = "player_id")
+    @JoinColumn(name = "player_id", nullable = false)
     private Player playerId;
-
 
     // Getters and setters
 }
