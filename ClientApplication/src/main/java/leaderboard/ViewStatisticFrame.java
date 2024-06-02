@@ -93,15 +93,16 @@ public class ViewStatisticFrame extends JFrame {
                         tableModel.addRow(new Object[]{
                                 gameId, game.getPlayer1Id(), game.getPlayer2Id(), game.getWinnerId(), game.getCreatedAt(),
                                 move.getMoveId(), move.getMove(), move.getIsHit(), move.getCreatedAt(),
-
+                                "", "", "", "", ""
                         });
                     }
                 }
 
                 for (Ship ship : ships) {
-                    if (ship.getGameId().getGameId() == gameId && ship.getPlayerId().getPlayerId() == playerId) {
+                    if (ship.getGame().getGameId() == gameId && ship.getPlayer().getPlayerId() == playerId) {
                         tableModel.addRow(new Object[]{
                                 gameId, game.getPlayer1Id(), game.getPlayer2Id(), game.getWinnerId(), game.getCreatedAt(),
+                                "", "", "", "",
                                 ship.getShipId(), ship.getShipType(), ship.getStartPosition(), ship.getEndPosition(), ship.isSunk()
                         });
                     }

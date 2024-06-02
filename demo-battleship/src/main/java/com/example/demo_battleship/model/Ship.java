@@ -16,11 +16,11 @@ public class Ship {
 
     @ManyToOne
     @JoinColumn(name = "game_id")
-    private Game gameId;
+    private Game game;
 
     @ManyToOne
     @JoinColumn(name = "player_id")
-    private Player playerId;
+    private Player player;
 
     private String shipType;
     private String startPosition;

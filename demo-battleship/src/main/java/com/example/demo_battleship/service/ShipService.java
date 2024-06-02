@@ -27,8 +27,8 @@ public class ShipService {
         Game game = gameRepository.findById(gameId).orElseThrow(() -> new RuntimeException("Game not found"));
         Player player = playerRepository.findById(playerId).orElseThrow(() -> new RuntimeException("Player not found"));
 
-        ship.setGameId(game);
-        ship.setPlayerId(player);
+        ship.setGame(game);
+        ship.setPlayer(player);
         shipRepository.save(ship);
     }
 
