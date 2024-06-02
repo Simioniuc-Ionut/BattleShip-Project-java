@@ -18,6 +18,9 @@ public class Ship {
     @JoinColumn(name = "game_id")
     private Game game;
 
+    @ManyToOne
+    @JoinColumn(name = "player_id")
+    private Player player;
     private String shipType;
     private String startPosition;
     private String endPosition;

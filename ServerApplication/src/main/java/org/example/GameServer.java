@@ -87,6 +87,7 @@ public class GameServer {
         }
     }
     public synchronized void startTimer(int playerId){
+
         if(playerId == 1){
             clientThreads.get(2).startTimerThread();
             clientThreads.get(1).stopTimerThread();
@@ -106,15 +107,17 @@ public class GameServer {
         char[][] board = playerId == 1 ? serverBoardPlayer2 : serverBoardPlayer1;
         ClientThread player = clientThreads.get(playerId);
 
+        boolean isHit = false;
+
         if (board[rowMove][colMove] == '5' || board[rowMove][colMove] == '4' || board[rowMove][colMove] == '3' || board[rowMove][colMove] == '2' || board[rowMove][colMove] == '1') {
             //you hit
             char shipTypeFromBoard = board[rowMove][colMove];
             board[rowMove][colMove] = 'X';
-
+            isHit=true;
             //We chose the list of ships of the opponent
             List<Ships> ships = playerId == 1 ? player2Ships : player1Ships;
 
-          //  System.out.println("||||||| ships SIZE ||| " + ships.size() + " For playerID " + playerId + " ships " + ships);
+            //  System.out.println("||||||| ships SIZE ||| " + ships.size() + " For playerID " + playerId + " ships " + ships);
             Iterator<Ships> iterator = ships.iterator();
 
             //we iterate throught the list of ships and we decrease the size of the ship that was hit .
@@ -137,9 +140,12 @@ public class GameServer {
                         iterator.remove();
                         //debug
                         //System.out.println("Player id : " + playerId + " SHIP SIZE " + ship.getShipSize() +" fro, if ship size == " + ships.size());
+                      // System.out.println("SUNTEM IN HANDEL ,TREBUIE SA SCUFUNDAM BARCA");
+                       updateInShipsDb(player,"SUNK",null,ship);
+
 
                         if (ships.isEmpty()) {
-                            System.out.println("ships is empty  : player id is " + playerId);
+                            //System.out.println("ships is empty  : player id is " + playerId);
 
                             makeGameOver(player);
                         }
@@ -154,12 +160,15 @@ public class GameServer {
             board[rowMove][colMove] = '?';
             System.out.println("Player " + playerId + " missed at position: " + move);
             player.notifyMiss(move);
-            updateInPlayersDb(player,"MISS");
+            updateInPlayersDb(player,"MIS");
         }
-        Ships ship = new PatrolBoat();
+       // Ships ship = new PatrolBoat();
 
         //System.out.println("BARCA NOU " + ship.getShipSize());
         //displayServerBoard();
+
+        // Record the move in the database
+        updateInMovesDb(player,move,isHit);
 
     }
 
@@ -171,7 +180,6 @@ public class GameServer {
         player1IsReadyToStartGame = false;
         player2IsReadyToStartGame = false;
 
-        //waitingPlayers = new LinkedList<>();
         this.serverBoardPlayer1 = new char[BOARD_SIZE][BOARD_SIZE];
         this.serverBoardPlayer2 = new char[BOARD_SIZE][BOARD_SIZE];
         initializeBoard(serverBoardPlayer1);
@@ -234,9 +242,10 @@ public class GameServer {
         //afisez doar ca sa vad eu mai bine; o sa sterg
         setShipOnBoard(playerId,board, shipLengthRows, shipLengthCols,ship);
         //displayServerBoard();
+        //validarea in acest punct este corecta
+        updateInShipsDb(clientThreads.get(playerId),"ADD",positions,ship);
         return 0;
     }
-
 
     public void displayServerBoard() {
         System.out.println("Server Board Player 1:");
@@ -361,8 +370,11 @@ public class GameServer {
     }
 
     public void makeGameOver(ClientThread player) {
+        player.getTimer().setIsOver(true);
+        player.getOpponent().getTimer().setIsOver(true);
         player.notifyGameOver();
         currentState = GameState.GAME_OVER;
+
         resetGame();
 
     }
@@ -381,27 +393,6 @@ public class GameServer {
         }
 
     }
-    public void setWinner(Integer playerIdFromDb){
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("playerTeamId", playerIdFromDb);
-        } catch (JSONException ex) {
-            System.out.println("Erro to jsonObject put values " + ex.getMessage());
-            throw new RuntimeException(ex);
-        }
-
-        String urlString = "http://localhost:8080/api/games/update/winnerId/" + playerIdFromDb;
-        String jsonInputString = jsonObject.toString();
-        try {
-            String response = HttpClient.sendPostRequest(urlString,jsonInputString);
-            System.out.println("Response: " + response);
-        } catch (Exception e) {
-           System.out.println("Error in setWinner in Game db");
-        }
-
-    }
-
-
     public void updateInPlayersDb(ClientThread player,String command){
         JSONObject jsonObject = new JSONObject();
         Integer playerTeamId = player.getPlayerTeamId();
@@ -427,7 +418,48 @@ public class GameServer {
             matchCountMethode(playerTeamId,jsonInputString);
         }
     }
+    public void updateInShipsDb(ClientThread player,String command,String[] positions,Ships ship){
+
+        if(command.equals("ADD")) {
+            //addShip(Integer gameId,Integer playerId,String[] positions,Ships ship)
+            System.out.println("Sa apelat updateInShipsDb cu comanda ADD");
+            int gameId ;
+            int playerIdFromDb;
+            try {
+                 gameId = getGameId();
+                 playerIdFromDb = HttpClient.getPlayerIdWithPlayerTeamId(player.getPlayerTeamId());
+                 addShip(gameId, playerIdFromDb, positions, ship);
+            } catch (Exception e) {
+                System.out.println("error in updateInShipsDb ADD ,no player id in db ");
+            }
+
+        }
+        else if(command.equals("SUNK")){
+            //System.out.println("SUNT IN SUNK");
+            //sinkShip(Integer gameId,Integer playerId,String shipType)
+            int gameId ;
+            int playerIdFromDb;
+            try {
+                gameId = getGameId();
+                playerIdFromDb = HttpClient.getPlayerIdWithPlayerTeamId(player.getOpponent().getPlayerTeamId());
+                sinkShip(gameId, playerIdFromDb, ship);
+            } catch (Exception e) {
+                System.out.println("error in updateInShipsDb SUNK ,no player id in db ");
+            }
+        }
+    }
+    public void updateInMovesDb(ClientThread player,String move,boolean isHit){
+        try {
+            int gameId = getGameId();
+            int playerIdFromDb = HttpClient.getPlayerIdWithPlayerTeamId(player.getPlayerTeamId());
+            HttpClient.recordMove(gameId, playerIdFromDb, move, isHit);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Failed to record move in DB: " + e.getMessage());
+        }
+    }
     //endpoint uri
+    //players
     public void hitCountMethode(Integer playerTeamId,String jsonInputString){
 
         // Construim URL-ul pentru a trimite cererea
@@ -507,4 +539,55 @@ public class GameServer {
             System.out.println("Failed to send request: " + ex.getMessage() + " in matchCountMethode from GameServer");
         }
     }
+    //games
+    public void setWinner(Integer playerIdFromDb){
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("playerTeamId", playerIdFromDb);
+        } catch (JSONException ex) {
+            System.out.println("Erro to jsonObject put values " + ex.getMessage());
+            throw new RuntimeException(ex);
+        }
+
+        String urlString = "http://localhost:8080/api/games/update/winnerId/" + playerIdFromDb;
+        String jsonInputString = jsonObject.toString();
+        try {
+            String response = HttpClient.sendPostRequest(urlString,jsonInputString);
+            System.out.println("Response: " + response);
+        } catch (Exception e) {
+            System.out.println("Error in setWinner in Game db");
+        }
+
+    }
+    public int getGameId() throws Exception {
+        String urlString = "http://localhost:8080/api/games/take_game_id";
+        try {
+            String response = HttpClient.sendGetRequest(urlString);
+            return Integer.parseInt(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception("Failed to get gameId from db " + e);
+        }
+
+    }
+    //ships
+    public void addShip(Integer gameId,Integer playerId,String[] positions,Ships ship){
+        try {
+            HttpClient.addShip(gameId, playerId, ship.getShipName(), positions[0], positions[positions.length - 1], false);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Failed to add ship to database " + e + " in addShip from GameServer");
+        }
+    }
+    public void sinkShip(Integer gameId, Integer playerIdFromDb, Ships ship){
+    try {
+      //  System.out.println("Attempting to sink ship: " + ship.getShipName() + " for gameId: " + gameId + ", playerId: " + playerIdFromDb);
+            HttpClient.sinkShip(gameId, playerIdFromDb, ship.getShipName());
+        } catch (Exception e) {
+            e.printStackTrace();
+          //  System.out.println("Failed to update ship as sunk in DB: " + e.getMessage());
+
+        }
+    }
+
 }

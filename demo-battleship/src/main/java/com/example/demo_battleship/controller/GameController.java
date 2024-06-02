@@ -36,7 +36,6 @@ public class GameController {
         return ResponseEntity.ok(games);
     }
 
-
     @GetMapping("/checkGameExists")
     public boolean checkIfGameExists() {
         return gameService.checkIfGameExists();
@@ -57,9 +56,15 @@ public class GameController {
             return ResponseEntity.notFound().build();
         }
     }
+
     @PostMapping("/update/winnerId/{playerId}")
     public void updateWinner(@PathVariable Integer playerId){
         gameService.updateWinner(playerId);
+    }
+
+    @GetMapping("/take_game_id")
+    public int takeGameIdByInProgreesTrue() {
+        return gameService.takeGameIdByInProgreesTrue();
     }
 
 }

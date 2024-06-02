@@ -168,9 +168,13 @@ public class ClientThread extends Thread {
 
 
         checkReadyToStart();
-
-        gameServer.startTimer(gameServer.getClientThreads().get(playerTeamId).getOpponent().playerTeamId);
-
+        if(playerTeamId == 1) {
+          //  System.out.println("AM INTRAT PE IF  " + playerTeamId);
+            gameServer.startTimer(gameServer.getClientThreads().get(playerTeamId).getOpponent().playerTeamId);
+        }else{
+           // System.out.println("AM INTRAT PE ELSE " + playerTeamId);
+            gameServer.startTimer(gameServer.getClientThreads().get(playerTeamId).playerTeamId);
+        }
     }
 
     private void waitingPlayersToFinishPlacingShips() {
@@ -364,8 +368,8 @@ public class ClientThread extends Thread {
                 sendMessage("Game over. You won!");
                 gameServer.updateInPlayersDb(this,"WIN");
                 gameServer.updateInPlayersDb(this,"MATCH");
-
                 gameServer.updateInGameDb(this,"WINNER");
+
                 opponent.sendMessage("Game over. You lost!");
                 gameServer.updateInPlayersDb(opponent,"LOSE");
                 gameServer.updateInPlayersDb(opponent,"MATCH");

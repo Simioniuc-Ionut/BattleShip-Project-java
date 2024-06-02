@@ -12,17 +12,27 @@ import lombok.Setter;
 @Entity
 @Table(name = "moves")
 public class Move {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long moveId;
+    private Integer moveId;
 
     @ManyToOne
-    @JoinColumn(name = "game_id")
+    @JoinColumn(name = "game_id", nullable = false)
     private Game game;
 
-    private String movePosition;
-    private String isHit;
-    private LocalDateTime moveTimestamp;
+    @Column(nullable = false)
+    private String move;
+
+    @Column(nullable = false)
+    private Boolean isHit = false;
+
+    @Column(nullable = false, columnDefinition = "timestamp default CURRENT_TIMESTAMP")
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    @ManyToOne
+    @JoinColumn(name = "player_id", nullable = false)
+    private Player player;
 
     // Getters and setters
 }

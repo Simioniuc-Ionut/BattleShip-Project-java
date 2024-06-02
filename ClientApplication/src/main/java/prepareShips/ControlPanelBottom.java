@@ -55,7 +55,8 @@ public class ControlPanelBottom extends JPanel {
         addShipBtn.addActionListener(this::listenerAddShipOnBoard);
         readyForGameBtn.addActionListener(this::listenerReadyForGame);
 
-
+        //cream jocul odata cu crearea noii ferestre
+        createGameInDb();
     }
 
     private void listenerAddShipOnBoard(ActionEvent e) {
@@ -183,7 +184,8 @@ public class ControlPanelBottom extends JPanel {
         //aici sunt sigur ca s ambii playeri conectati
         //pot crea meciul in bd
 
-        createGameInDb();
+        //cel vechi, am nevoie sa creez jocul inainte sa pun piesele pe tabla
+        // createGameInDb();
 
         new MainFrameFour(frame.client, clientBoard.cellColorsShips).setVisible(true); //apare urmatoarea fereastra
         String serverMessage = getMessage();
@@ -220,6 +222,7 @@ public class ControlPanelBottom extends JPanel {
             }
         }
     }
+
     private synchronized void createGameInDb() {
         try {
             int playerId = frame.client.getPlayerIDFromDB();
@@ -243,13 +246,19 @@ public class ControlPanelBottom extends JPanel {
         if (create) {
             // Creăm un nou joc
             String createGameUrl = "http://localhost:8080/api/games/create";
+
             String jsonInputString = "{\"player1Id\" : " + playerId + "}";
+
+
             String gameCreationResponse = HttpClient.sendPostRequest(createGameUrl, jsonInputString);
             System.out.println("Game creation response: " + gameCreationResponse);
         } else {
             // Actualizăm jocul existent cu player2Id
             String updateGameUrl = "http://localhost:8080/api/games/update/player2Id/" + playerId;
-            String jsonInputString = "{\"player2Id\": " + playerId + "}";
+
+
+            String   jsonInputString = "{\"player2Id\" : " + playerId + "}";
+
             String gameUpdateResponse = HttpClient.sendPostRequest(updateGameUrl, jsonInputString);
             System.out.println("Update player2Id response: " + gameUpdateResponse);
         }

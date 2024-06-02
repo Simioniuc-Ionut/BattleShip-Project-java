@@ -92,4 +92,14 @@ public class GameService {
             throw new IllegalArgumentException("No game in progress");
         }
     }
+
+    public int takeGameIdByInProgreesTrue() {
+        Optional<Game> gameOptional = gameRepository.findByInProgressTrue();
+        if (gameOptional.isPresent()) {
+            Game game = gameOptional.get();
+            return game.getGameId();
+        } else {
+            throw new IllegalArgumentException("No game in progress");
+        }
+    }
 }
