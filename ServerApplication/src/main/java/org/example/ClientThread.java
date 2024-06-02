@@ -156,10 +156,10 @@ public class ClientThread extends Thread {
 
         gameServer.setCurrentState(GameState.GAME_READY_TO_MOVE);
         //trebuiesc modificate
-        placeShip(in, CARRIER_LENGTH);
-        placeShip(in, BATTLESHIP_LENGTH);
-        placeShip(in, DESTROYER_LENGTH);
-        placeShip(in, SUBMARINE_LENGTH);
+//        placeShip(in, CARRIER_LENGTH);
+//        placeShip(in, BATTLESHIP_LENGTH);
+//        placeShip(in, DESTROYER_LENGTH);
+//        placeShip(in, SUBMARINE_LENGTH);
         placeShip(in, PATROL_BOAT_LENGTH);
         shipsPlaced = true;
 

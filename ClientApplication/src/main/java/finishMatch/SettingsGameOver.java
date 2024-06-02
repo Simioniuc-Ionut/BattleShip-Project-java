@@ -76,8 +76,8 @@ public class SettingsGameOver extends JPanel {
 
     private void listenerAddExitBtn(ActionEvent e) {
 
-        String messageToClient = "exit";
-        frame.client.setAnswer(messageToClient);
+//        String messageToClient = "exit";
+//        frame.client.setAnswer(messageToClient);
         frame.setVisible(false);//inchide fereastra
 
     }

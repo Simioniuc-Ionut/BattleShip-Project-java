@@ -33,8 +33,9 @@ public class MoveService {
         newMove.setMove(move);
         newMove.setIsHit(isHit);
 
-
+        moveRepository.save(newMove);//salvare in bd
     }
+
     public List<Move> listMoves() {
         return moveRepository.findAll();
     }

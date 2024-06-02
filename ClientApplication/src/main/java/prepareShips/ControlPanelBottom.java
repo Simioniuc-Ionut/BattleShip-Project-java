@@ -118,7 +118,7 @@ public class ControlPanelBottom extends JPanel {
         displayMessageFromServer();
 
         //dupa ce plaseaza utlima nava va aparea butonul de ready
-        if (currentShipIndex == 5) { // trebuie SCHIMBAT la 5 dupa pt joc
+        if (currentShipIndex == 1) { // trebuie SCHIMBAT la 5 dupa pt joc
             addShipBtn.setVisible(false);//dispare btn add ship
             readyForGameBtn.setVisible(true);
         }
