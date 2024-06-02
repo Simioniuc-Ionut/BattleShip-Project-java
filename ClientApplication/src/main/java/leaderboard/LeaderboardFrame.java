@@ -25,11 +25,11 @@ public class LeaderboardFrame extends JFrame {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        title = new JLabel("Table");
+        title = new JLabel("Scoreboards");
         title.setAlignmentX(Component.CENTER_ALIGNMENT); // Centrare
         title.setFont(new Font("default", Font.BOLD, 20));
         panel.add(title);
-
+        panel.add(Box.createRigidArea(new Dimension(0, 40)));
 
       //  panel.add(Box.createRigidArea(new Dimension(0, 20)));
 
