@@ -87,7 +87,7 @@ public class SettingsPlaceShip extends JPanel {
         fromPanel.add(placeShipFrom);
         fromPanel.add(fromRow);
         fromPanel.add(fromColumn);
-        fromPanel.setBorder(new EmptyBorder(0, 0, 0, 100));
+        fromPanel.setBorder(new EmptyBorder(0, 0, 0, 90));
 
         add(fromPanel);
         add(Box.createVerticalStrut(4));
@@ -110,7 +110,7 @@ public class SettingsPlaceShip extends JPanel {
         toPanel.add(placeShipTo);
         toPanel.add(toRow);
         toPanel.add(toColumn);
-        toPanel.setBorder(new EmptyBorder(0,0,0,100));
+        toPanel.setBorder(new EmptyBorder(0,0,0,90));
 
         add(toPanel);
         add(Box.createVerticalStrut(80));
