@@ -122,7 +122,7 @@ public class OpponentBoard extends JPanel {
             board.drawLine(startX + i * cellSize, startY, startX + i * cellSize, startY + 10 * cellSize);
         }
     }
-    void colorPositionHit(String position,Color x,boolean hitOrNotYourTurn) {
+    void colorPositionHit(String position, Color x, boolean hitOrNotYourTurn) {
         // Decodificare
         char rowChar = position.charAt(0);
         int column = Integer.parseInt(position.substring(1)) - 1;
@@ -131,10 +131,19 @@ public class OpponentBoard extends JPanel {
         if(row >= 0 && row < 10 && column >= 0 && column < 10) {
             // Daca este un hit, coloram si adaug in permanentCells
             hitCells[row][column] = hitOrNotYourTurn;
-            permanentCells.add(row + "," + column);
+            String cellKey = row + "," + column;
+
+            if (hitOrNotYourTurn) {
+                permanentCells.add(cellKey);
+            } else {
+                // Daca hitOrNotYourTurn este false, stergem pozitia din permanentCells
+                permanentCells.remove(cellKey);
+            }
+
             cellColorsShips[row][column] = x;
             repaint();
         }
     }
+
 
 }

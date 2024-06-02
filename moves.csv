@@ -1,63 +1,63 @@
-1,39,A2,true,2024-06-02 14:46:44.769811,1
-2,39,B2,false,2024-06-02 14:46:48.258673,2
-3,40,A2,true,2024-06-02 14:49:46.144771,96
-4,40,C3,false,2024-06-02 14:49:48.964061,95
-5,41,A2,true,2024-06-02 15:07:56.297773,30
-6,41,B3,false,2024-06-02 15:07:58.695470,29
-7,42,A2,true,2024-06-02 15:12:01.133473,97
-8,42,B2,false,2024-06-02 15:12:05.200355,98
-9,43,A2,true,2024-06-02 15:14:59.574527,100
-10,43,B2,false,2024-06-02 15:15:02.442184,99
-11,44,A2,true,2024-06-02 15:16:50.035616,101
-12,44,B2,false,2024-06-02 15:16:52.736697,102
-13,45,A1,true,2024-06-02 15:21:47.424016,106
-14,46,A2,true,2024-06-02 15:23:15.017513,108
-15,47,A2,true,2024-06-02 15:24:41.443719,108
-16,48,A2,true,2024-06-02 15:25:53.739076,108
-17,49,A2,true,2024-06-02 15:26:57.054973,108
-18,50,A2,true,2024-06-02 15:28:06.755393,109
-19,51,A2,true,2024-06-02 15:31:00.704799,112
-20,52,A2,true,2024-06-02 15:33:35.374622,114
-21,53,A2,true,2024-06-02 15:35:48.995575,116
-22,53,B2,false,2024-06-02 15:35:52.270263,115
-23,54,B2,false,2024-06-02 17:35:18.570768,117
-24,54,C2,false,2024-06-02 17:35:21.552089,118
-25,54,A2,true,2024-06-02 17:35:24.873170,117
-26,54,B4,false,2024-06-02 17:35:27.242706,118
-27,55,A2,true,2024-06-02 17:47:21.008117,121
-28,56,A2,true,2024-06-02 17:54:45.584162,123
-29,56,A1,true,2024-06-02 17:54:51.456906,123
-30,57,A9,true,2024-06-02 18:15:29.363404,125
-31,57,B9,true,2024-06-02 18:15:47.576102,125
-32,57,C9,true,2024-06-02 18:15:54.287787,125
-33,57,D9,true,2024-06-02 18:15:59.954748,125
-34,57,H6,true,2024-06-02 18:16:07.005442,126
-35,57,A2,true,2024-06-02 18:16:13.899596,125
-36,57,H7,true,2024-06-02 18:16:17.808668,126
-37,57,A3,true,2024-06-02 18:16:20.904145,125
-38,57,H8,true,2024-06-02 18:16:25.049024,126
-39,57,A4,true,2024-06-02 18:16:29.455682,125
-40,57,H9,true,2024-06-02 18:16:34.918648,126
-41,57,A5,true,2024-06-02 18:16:39.673368,125
-42,57,A1,true,2024-06-02 18:16:51.373212,125
-43,57,B1,true,2024-06-02 18:16:57.492603,125
-44,57,F6,true,2024-06-02 18:17:02.514629,126
-45,57,J10,true,2024-06-02 18:17:07.624144,125
-46,57,F7,true,2024-06-02 18:17:10.486674,126
-47,57,J9,true,2024-06-02 18:17:14.887564,125
-48,57,F8,true,2024-06-02 18:17:17.962946,126
-49,57,J8,true,2024-06-02 18:17:23.271061,125
-50,57,J7,true,2024-06-02 18:17:33.399279,125
-51,57,J6,true,2024-06-02 18:17:45.457702,125
-52,57,J5,true,2024-06-02 18:17:54.874675,125
-53,57,F5,true,2024-06-02 18:18:01.365199,126
-54,57,A6,true,2024-06-02 18:18:22.447532,125
-55,58,A2,true,2024-06-02 18:42:19.350641,128
-56,58,C3,true,2024-06-02 18:42:32.241022,127
-57,58,B2,true,2024-06-02 18:42:36.882262,128
-58,58,A3,true,2024-06-02 18:42:58.873127,127
-59,58,A4,true,2024-06-02 18:43:07.259648,127
-60,58,A4,true,2024-06-02 18:43:53.606982,128
-61,58,A1,true,2024-06-02 18:44:13.230489,127
-62,58,A3,true,2024-06-02 18:44:31.263721,128
-63,58,A5,true,2024-06-02 18:44:40.908390,127
+1:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(39) is not present in table "games".
+2:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(39) is not present in table "games".
+3:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(40) is not present in table "games".
+4:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(40) is not present in table "games".
+5:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(41) is not present in table "games".
+6:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(41) is not present in table "games".
+7:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(42) is not present in table "games".
+8:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(42) is not present in table "games".
+9:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(43) is not present in table "games".
+10:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(43) is not present in table "games".
+11:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(44) is not present in table "games".
+12:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(44) is not present in table "games".
+13:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(45) is not present in table "games".
+14:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(46) is not present in table "games".
+15:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(47) is not present in table "games".
+16:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(48) is not present in table "games".
+17:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(49) is not present in table "games".
+18:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(50) is not present in table "games".
+19:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(51) is not present in table "games".
+20:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(52) is not present in table "games".
+21:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(53) is not present in table "games".
+22:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(53) is not present in table "games".
+23:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(54) is not present in table "games".
+24:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(54) is not present in table "games".
+25:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(54) is not present in table "games".
+26:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(54) is not present in table "games".
+27:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(55) is not present in table "games".
+28:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(56) is not present in table "games".
+29:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(56) is not present in table "games".
+30:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(57) is not present in table "games".
+31:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(57) is not present in table "games".
+32:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(57) is not present in table "games".
+33:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(57) is not present in table "games".
+34:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(57) is not present in table "games".
+35:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(57) is not present in table "games".
+36:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(57) is not present in table "games".
+37:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(57) is not present in table "games".
+38:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(57) is not present in table "games".
+39:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(57) is not present in table "games".
+40:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(57) is not present in table "games".
+41:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(57) is not present in table "games".
+42:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(57) is not present in table "games".
+43:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(57) is not present in table "games".
+44:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(57) is not present in table "games".
+45:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(57) is not present in table "games".
+46:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(57) is not present in table "games".
+47:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(57) is not present in table "games".
+48:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(57) is not present in table "games".
+49:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(57) is not present in table "games".
+50:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(57) is not present in table "games".
+51:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(57) is not present in table "games".
+52:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(57) is not present in table "games".
+53:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(57) is not present in table "games".
+54:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(57) is not present in table "games".
+55:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(58) is not present in table "games".
+56:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(58) is not present in table "games".
+57:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(58) is not present in table "games".
+58:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(58) is not present in table "games".
+59:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(58) is not present in table "games".
+60:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(58) is not present in table "games".
+61:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(58) is not present in table "games".
+62:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(58) is not present in table "games".
+63:1: ERROR: insert or update on table "moves" violates foreign key constraint "moves_gamesfk"   Detail: Key (game_id)=(58) is not present in table "games".

@@ -108,6 +108,8 @@ public class GameServer {
         ClientThread player = clientThreads.get(playerId);
 
         boolean isHit = false;
+        // Record the move in the database
+        updateInMovesDb(player,move,isHit);
 
         if (board[rowMove][colMove] == '5' || board[rowMove][colMove] == '4' || board[rowMove][colMove] == '3' || board[rowMove][colMove] == '2' || board[rowMove][colMove] == '1') {
             //you hit
@@ -115,8 +117,6 @@ public class GameServer {
             board[rowMove][colMove] = 'X';
             isHit=true;
 
-            // Record the move in the database
-            updateInMovesDb(player,move,isHit);
 
             //We chose the list of ships of the opponent
             List<Ships> ships = playerId == 1 ? player2Ships : player1Ships;
