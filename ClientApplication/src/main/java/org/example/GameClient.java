@@ -1,8 +1,5 @@
 package org.example;
 
-import createOrJoinGame.MainFrameTwo;
-
-import duringMatch.MainFrameFour;
 import firstFrame.MainFrameOne;
 import lombok.Getter;
 import lombok.Setter;
@@ -36,6 +33,8 @@ public class GameClient {
     private boolean positionConfirmed = true;
     private boolean isYourTurnToMakeAMove = false;
     private boolean isTimerThreadRunning = false;
+
+   private String playerUsername;
 
 
     public GameClient(String serverAddress, int serverPort,int timerPort) {
@@ -181,4 +180,6 @@ public class GameClient {
         this.answer = answer;
         ansewerSemaphore.release();
     }
+
+
 }

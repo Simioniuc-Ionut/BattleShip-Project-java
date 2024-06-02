@@ -32,7 +32,7 @@ public class MainFrameFour extends JFrame {
         }
         initStartGameBattleShip(initialCellColors);
     }
-    public TimeGame getTimeGamePanel() {
+    public TimeGame getTimeGamePanel(){
         return timeGame;
     }
 
@@ -67,6 +67,10 @@ public class MainFrameFour extends JFrame {
         add(timeGame, BorderLayout.NORTH);
         add(mainPanel, BorderLayout.CENTER);
         add(submitMove, BorderLayout.SOUTH);
+
+
+        // Setarea teamId și username
+        clientBoardBattle.updatePlayerInfoLabel();
 
         pack();
         setSize(new Dimension(1400, 700));

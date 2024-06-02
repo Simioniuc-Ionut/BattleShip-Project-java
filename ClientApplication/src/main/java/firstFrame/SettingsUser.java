@@ -1,6 +1,6 @@
 package firstFrame;
 
-import createOrJoinGame.MainFrameTwo;
+import mainMenu.MainFrameTwo;
 import leaderboard.LeaderboardFrame;
 import org.example.GameClient;
 
@@ -23,7 +23,6 @@ public class SettingsUser extends JPanel {
 
     JTextField writeUsername = new JTextField(20);
     JButton startGameBtn = new JButton("Start");
-    JButton viewScoresBtn = new JButton("Check the leaderboard");
 
     public SettingsUser(MainFrameOne frame, GameClient client) {
         this.frame = frame;
@@ -67,9 +66,6 @@ public class SettingsUser extends JPanel {
         add(startGameBtn);
         add(Box.createRigidArea(new Dimension(0, 20)));
 
-        viewScoresBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
-        add(viewScoresBtn);
-
         // box filler pt spatiere sub
         add(new Box.Filler(new Dimension(0, 0), new Dimension(0, Integer.MAX_VALUE), new Dimension(0, Integer.MAX_VALUE)));
 
@@ -84,33 +80,32 @@ public class SettingsUser extends JPanel {
         startGameBtn.setBackground(Color.darkGray);
         startGameBtn.setForeground(Color.WHITE); // culoare text
 
-        viewScoresBtn.setFont(newFont);
-        viewScoresBtn.setPreferredSize(new Dimension(250, 75));
-        viewScoresBtn.setBackground(Color.darkGray);
-        viewScoresBtn.setForeground(Color.WHITE); // culoare text
-
         // configure listeners for all buttons
         startGameBtn.addActionListener(this::listenerAddStartGameBtn);
-        viewScoresBtn.addActionListener(this::listenerAddViewTableBtn);
+
     }
 
     private void listenerAddStartGameBtn(ActionEvent e)  {
-        //adaug usernameul in bd
-        addUsernameInDB();
 
-        //iau id ul unic din bd , corespunzator numelui introdus
-       takeUniqIDFromDB();
+        String username = writeUsername.getText();
+        frame.client.setPlayerUsername(username);
 
-        //Add teamId in DB
-        addTeamId();
+        try {
+            // Adaug username-ul în BD
+            addUsernameInDB();
+            // Iau ID-ul unic din BD, corespunzator numelui introdus
+            takeUniqIDFromDB();
+            // Adaug teamId în BD
+            addTeamId();
 
-        new MainFrameTwo(client).setVisible(true); // apare urmatoarea fereastra
-        frame.setVisible(false); // inchide fereastra
-    }
+            //daca operatiile au reusit, deschid fereastra
+            new MainFrameTwo(client).setVisible(true);
+            frame.setVisible(false);
 
-    private void listenerAddViewTableBtn(ActionEvent e) {
-        new LeaderboardFrame(frame.client).setVisible(true);// apare urmatoarea fereastra
-        frame.setVisible(false); // inchide fereastra
+        } catch (Exception ex) {
+
+            JOptionPane.showMessageDialog(frame, "An error occurred: " + ex.getMessage());
+        }
     }
 
     public void addUsernameInDB(){

@@ -14,6 +14,11 @@ public class GameController {
     @Autowired
     private GameService gameService;
 
+    @GetMapping("/list")
+    public List<Game> listGames() {
+        return gameService.listGames();
+    }
+
     @GetMapping
     public List<Game> getAllGames() {
         return gameService.getAllGames();

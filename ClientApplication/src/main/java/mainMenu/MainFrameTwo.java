@@ -1,4 +1,4 @@
-package createOrJoinGame;
+package mainMenu;
 
 import org.example.GameClient;
 
@@ -10,7 +10,7 @@ public class MainFrameTwo extends JFrame {
     public GameClient client;
     Settings settingsCreate;
     public MainFrameTwo(GameClient client) {
-        super("createOrJoinGame");
+        super("mainMenu");
         this.client = client;
         initCreateGame();
     }
@@ -23,7 +23,7 @@ public class MainFrameTwo extends JFrame {
         add(settingsCreate, BorderLayout.CENTER);
 
         pack();
-        setSize(new Dimension(600, 200));
+        setSize(new Dimension(600, 250));
         setLocationRelativeTo(null);
         setVisible(false);
     }

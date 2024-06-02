@@ -117,7 +117,7 @@ public class SettingsPlaceShip extends JPanel {
 
     }
     public void setMessageFromServer(){
-        //title for jPanel
+        // Title for JPanel
         serverResponse = new JLabel("Message : ");
 
         Font newFont = new Font("default", Font.BOLD, 25);
@@ -125,34 +125,41 @@ public class SettingsPlaceShip extends JPanel {
 
         JPanel serverResponsePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         serverResponsePanel.add(serverResponse);
-        serverResponsePanel.setBorder(new EmptyBorder(0, 0, 0, 100)); // Add padding to the left
 
         add(serverResponsePanel);
         add(Box.createVerticalStrut(4));
 
-        //jPanel for display message from server
+        // JPanel
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         messagePanel.setBorder(new EmptyBorder(0,0,0,100));
 
         messageTextArea = new JTextArea();
-        messageTextArea.setWrapStyleWord(true); //la sfarsitul cuv daca e nevoie trece la randul urm
-        messageTextArea.setLineWrap(true); //cand ajunge la capat trece la urm rand
-        messageTextArea.setEditable(false); //nu poate fi modificat
+        messageTextArea.setWrapStyleWord(true); // Wrap at word boundaries
+        messageTextArea.setLineWrap(true); // Wrap lines at the edge of the JTextArea
+        messageTextArea.setEditable(false); // Non-editable
         messageTextArea.setForeground(Color.WHITE);
         messageTextArea.setBackground(new Color(0, 0, 0, 123));
         messageTextArea.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        String text = "Response from Server";
-        messageTextArea.setText(text);
+        //TextArea
+        messageTextArea.setPreferredSize(new Dimension(300, 100));
+        messageTextArea.setMinimumSize(new Dimension(300, 100));
+        messageTextArea.setMaximumSize(new Dimension(300, 200));
 
-        //adaug JTextArea la JPanel
-        messagePanel.add(messageTextArea, BorderLayout.CENTER);
+        // messageTextArea
+        JScrollPane scrollPane = new JScrollPane(messageTextArea);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-        //add
+        //JScrollPane
+        scrollPane.setPreferredSize(new Dimension(300, 100));
+        scrollPane.setMinimumSize(new Dimension(300, 100));
+        scrollPane.setMaximumSize(new Dimension(300, 200));
+
+        messagePanel.add(scrollPane, BorderLayout.CENTER);
+
         add(messagePanel);
         add(Box.createVerticalStrut(70));
-
-
     }
 
 
