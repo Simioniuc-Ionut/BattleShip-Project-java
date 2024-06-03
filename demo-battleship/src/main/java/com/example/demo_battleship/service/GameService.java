@@ -21,6 +21,7 @@ public class GameService {
 
     @Autowired
     private PlayerRepository playerRepository;
+
     public List<Game> listGames() {
         return gameRepository.findAll();
     }
@@ -32,7 +33,6 @@ public class GameService {
     public Game updateGame(Game game) {
         return gameRepository.save(game);
     }
-
 
 
     @Transactional
@@ -68,7 +68,7 @@ public class GameService {
         if (gameOptional.isPresent()) {
             Game game = gameOptional.get();
             game.setPlayer2Id(player2Id);
-           // game.setInProgress(false);
+            // game.setInProgress(false);
             return gameRepository.save(game);
         } else {
             throw new IllegalArgumentException("No game in progress");
@@ -83,7 +83,7 @@ public class GameService {
             //dupa ce am stabilit winnerul
             game.setInProgress(false);
             gameRepository.save(game);
-        }else{
+        } else {
             throw new IllegalArgumentException("No game in progress");
         }
     }

@@ -24,9 +24,9 @@ public class PlayerService {
 
     public int takeId(String playerName) {
         Player player = playerRepository.findByPlayerName(playerName);
-        if(player == null) {
+        if (player == null) {
             throw new IllegalArgumentException("Player with this username does not exist");
-        }else {
+        } else {
             return player.getPlayerId();
         }
     }
@@ -38,16 +38,16 @@ public class PlayerService {
     public void addTeamId(Integer playerId, Integer teamId) {
         // Ia jucătorul din baza de date folosind playerId-ul
         Player player = playerRepository.findById(playerId).orElse(null);
-        System.out.println("addTeamId " + player.getPlayerName() + " " + player.getPlayerId() );
+        System.out.println("addTeamId " + player.getPlayerName() + " " + player.getPlayerId());
 
         if (player != null) {
             // Actualizează teamId-ul jucătorului
             player.setPlayerTeamId(teamId);
-            // Salvează modificările în baza de date
+            // Salveaza modificarile în baza de date
             playerRepository.save(player);
         } else {
-            // Tratează cazul în care nu există jucătorul cu playerId-ul dat
-           throw new IllegalArgumentException("Player with this id does not exist");
+            // Trateaza cazul în care nu exista jucătorul cu playerId-ul dat
+            throw new IllegalArgumentException("Player with this id does not exist");
         }
     }
 
@@ -55,36 +55,36 @@ public class PlayerService {
         return playerRepository.findAll();
     }
 
-    public void deletePlayerTeamId(Integer playerTeamId){
+    public void deletePlayerTeamId(Integer playerTeamId) {
         Player player = playerRepository.findByPlayerTeamId(playerTeamId);
         //System.out.println("PLayer team id  ,with playerId" + player.getPlayerId() + " will be deleted");
-        if(player != null){
-            // Actualizează teamId-ul jucătorului
+        if (player != null) {
+            // Actualizeaza teamId-ul jucatorului
             player.setPlayerTeamId(0);
-            // Salvează modificările în baza de date
+            // Salveaza modificarile in baza de date
             playerRepository.save(player);
             //System.out.println("Player teamId updated successfully for playerId: " + player.getPlayerId());
         } else {
-            // Tratează cazul în care nu există jucătorul cu playerId-ul dat
+            // Trateaza cazul in care nu exista jucatorul cu playerId-ul dat
             throw new IllegalArgumentException("Player with id " + player.getPlayerId() + " does not exist");
         }
     }
 
-    public void increment(Integer playerTeamId,String Hit){
+    public void increment(Integer playerTeamId, String Hit) {
         Player player = playerRepository.findByPlayerTeamId(playerTeamId);
 
-        if(player != null){
+        if (player != null) {
 
-            if(Hit.equals("HIT")) {
+            if (Hit.equals("HIT")) {
                 //incrementez hiturile
                 player.incrementHitsShots();
-            }else if(Hit.equals("MISS")){
+            } else if (Hit.equals("MISS")) {
                 player.incrementMissesShots();
-            }else if(Hit.equals("WIN")){
+            } else if (Hit.equals("WIN")) {
                 player.incrementWins();
-            }else if(Hit.equals("LOSE")){
+            } else if (Hit.equals("LOSE")) {
                 player.incrementLosses();
-            }else if(Hit.equals("MATCH")){
+            } else if (Hit.equals("MATCH")) {
                 player.incrementMatches();
             }
 
@@ -92,17 +92,18 @@ public class PlayerService {
             playerRepository.save(player);
             //System.out.println("Player teamId updated successfully for playerId: " + player.getPlayerId());
         } else {
-            // Tratez cazul în care nu exista jucatorul cu playerId-ul dat
+            // Tratez cazul in care nu exista jucatorul cu playerId-ul dat
             throw new IllegalArgumentException("Player with id " + player.getPlayerId() + " does not exist");
         }
 
     }
-    public int getPlayerIdByPlayerTeamId(Integer playerTeamId){
+
+    public int getPlayerIdByPlayerTeamId(Integer playerTeamId) {
         Player player = playerRepository.findByPlayerTeamId(playerTeamId);
-        if(player!=null){
+        if (player != null) {
             //l am gasit
             return player.getPlayerId();
-        }else{
+        } else {
             throw new IllegalArgumentException("PLayer with playerTeamId " + playerTeamId + " not found");
         }
     }

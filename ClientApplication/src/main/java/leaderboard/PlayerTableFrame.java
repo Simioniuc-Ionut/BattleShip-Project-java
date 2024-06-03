@@ -15,8 +15,9 @@ import java.util.List;
 
 public class PlayerTableFrame extends JFrame {
     private final DefaultTableModel tableModel;
-    private JTable table;
+    private final JTable table;
     GameClient client;
+
     public PlayerTableFrame(GameClient client) {
         this.client = client;
 
@@ -92,7 +93,6 @@ public class PlayerTableFrame extends JFrame {
         // Aplicarea sortarii pe baza coloanei "Wins"
         sorter.toggleSortOrder(4);
     }
-
 
 
 }

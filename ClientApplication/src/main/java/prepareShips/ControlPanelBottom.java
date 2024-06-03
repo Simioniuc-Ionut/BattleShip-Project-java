@@ -19,18 +19,20 @@ public class ControlPanelBottom extends JPanel {
     ClientBoard clientBoard;
     ArrayList<Ship> shipsList = new ArrayList<>();// o lista cu cele 5 nave
     int currentShipIndex = 0;// numararea navelor, pentru a sti nava curenta
+
     public ControlPanelBottom(MainFrameThree frame, SettingsPlaceShip settingsPlaceShip, ClientBoard clientBoard) { // Modificați constructorul pentru a include ClientBoard
         this.frame = frame;
         this.settingsPlaceShip = settingsPlaceShip;
         this.clientBoard = clientBoard;
-        shipsList.add(new Ship("Carrier",5,Color.BLUE));
-        shipsList.add(new Ship("Battleship",4, Color.CYAN));
-        shipsList.add(new Ship("Destroyer",3, Color.ORANGE));
-        shipsList.add(new Ship("Submarine",3, Color.YELLOW));
-        shipsList.add(new Ship("Patrol Boat",2, Color.PINK));
+        shipsList.add(new Ship("Carrier", 5, Color.BLUE));
+        shipsList.add(new Ship("Battleship", 4, Color.CYAN));
+        shipsList.add(new Ship("Destroyer", 3, Color.ORANGE));
+        shipsList.add(new Ship("Submarine", 3, Color.YELLOW));
+        shipsList.add(new Ship("Patrol Boat", 2, Color.PINK));
 
         init();
     }
+
     private void init() {
 
         //adaug butonul de adaugare nava
@@ -90,29 +92,28 @@ public class ControlPanelBottom extends JPanel {
         frame.client.setAnswer(messageToClient.toString().trim());
 
         // validare pozitie nava plasata
-        if(validationPositionOfShip()) {
-                // Obtine culoarea navei curente
-                Color shipColor = shipsList.get(currentShipIndex).colorShip;
+        if (validationPositionOfShip()) {
+            // Obtine culoarea navei curente
+            Color shipColor = shipsList.get(currentShipIndex).colorShip;
 
-                // Seteaza culoarea celulelor pe baza culorii navei
-                for (int i = fromRow; i <= toRow; i++) {
-                    for (int j = fromCol; j <= toCol; j++) {
-                        clientBoard.cellColorsShips[i][j] = shipColor;
-                    }
-                }
-
-                // Trece la urmatoarea nava
-                currentShipIndex++;
-                if (currentShipIndex < shipsList.size()) {
-                    Ship nextShip = shipsList.get(currentShipIndex);
-                    // Actualizeaza numele si lungimea afisate cu setText
-                    settingsPlaceShip.textNameShip.setText(nextShip.name);
-                    settingsPlaceShip.textSizeShip.setText(Integer.toString(nextShip.size));
+            // Seteaza culoarea celulelor pe baza culorii navei
+            for (int i = fromRow; i <= toRow; i++) {
+                for (int j = fromCol; j <= toCol; j++) {
+                    clientBoard.cellColorsShips[i][j] = shipColor;
                 }
             }
-        else {
-                System.out.println("Pozitie invalida ,am intrat pe validare fals");
+
+            // Trece la urmatoarea nava
+            currentShipIndex++;
+            if (currentShipIndex < shipsList.size()) {
+                Ship nextShip = shipsList.get(currentShipIndex);
+                // Actualizeaza numele si lungimea afisate cu setText
+                settingsPlaceShip.textNameShip.setText(nextShip.name);
+                settingsPlaceShip.textSizeShip.setText(Integer.toString(nextShip.size));
             }
+        } else {
+            System.out.println("Pozitie invalida ,am intrat pe validare fals");
+        }
 
         //afisare mesaj SERVER
         displayMessageFromServer();
@@ -127,9 +128,10 @@ public class ControlPanelBottom extends JPanel {
         clientBoard.repaint();
 
     }
+
     private void displayMessageFromServer() {
         String serverMessage = getMessage();
-        System.out.println("SERVER message in GUI:"+serverMessage);
+        System.out.println("SERVER message in GUI:" + serverMessage);
 
         if (serverMessage != null) {
             // Actualizarea componentei Swing
@@ -144,6 +146,7 @@ public class ControlPanelBottom extends JPanel {
         }
 
     }
+
     private String getMessage() {
         Semaphore lock = frame.client.getMessageLock();
         synchronized (lock) {
@@ -157,6 +160,7 @@ public class ControlPanelBottom extends JPanel {
             }
         }
     }
+
     private boolean validationPositionOfShip() {
         Semaphore lock = frame.client.getLock();
         synchronized (lock) {
@@ -170,6 +174,7 @@ public class ControlPanelBottom extends JPanel {
             }
         }
     }
+
     private void listenerReadyForGame(ActionEvent e) {
 
         System.out.println("Am apasat butronul READY");
@@ -189,7 +194,7 @@ public class ControlPanelBottom extends JPanel {
 
         new MainFrameFour(frame.client, clientBoard.cellColorsShips).setVisible(true); //apare urmatoarea fereastra
         String serverMessage = getMessage();
-        System.out.println("SERVER message in GUI:"+serverMessage);
+        System.out.println("SERVER message in GUI:" + serverMessage);
 
         if (serverMessage != null) {
             // Actualizarea componentei Swing
@@ -208,7 +213,8 @@ public class ControlPanelBottom extends JPanel {
         frame.setVisible(false);//inchide fereastra
 
     }
-    private void waitToStart(){
+
+    private void waitToStart() {
         System.out.println("Am intrat in waitToStart()");
         Semaphore lock = frame.client.getGameCouldStartlock();
         synchronized (lock) {
@@ -244,7 +250,7 @@ public class ControlPanelBottom extends JPanel {
 
     private void createOrUpdateGame(int playerId, boolean create) throws Exception {
         if (create) {
-            // Creăm un nou joc
+            // Cream un nou joc
             String createGameUrl = "http://localhost:8080/api/games/create";
 
             String jsonInputString = "{\"player1Id\" : " + playerId + "}";
@@ -253,11 +259,11 @@ public class ControlPanelBottom extends JPanel {
             String gameCreationResponse = HttpClient.sendPostRequest(createGameUrl, jsonInputString);
             System.out.println("Game creation response: " + gameCreationResponse);
         } else {
-            // Actualizăm jocul existent cu player2Id
+            // Actualizam jocul existent cu player2Id
             String updateGameUrl = "http://localhost:8080/api/games/update/player2Id/" + playerId;
 
 
-            String   jsonInputString = "{\"player2Id\" : " + playerId + "}";
+            String jsonInputString = "{\"player2Id\" : " + playerId + "}";
 
             String gameUpdateResponse = HttpClient.sendPostRequest(updateGameUrl, jsonInputString);
             System.out.println("Update player2Id response: " + gameUpdateResponse);
@@ -265,4 +271,4 @@ public class ControlPanelBottom extends JPanel {
     }
 
 
-    }
+}

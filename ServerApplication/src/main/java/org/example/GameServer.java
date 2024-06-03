@@ -31,44 +31,37 @@ public class GameServer {
     private ServerSocket serverSocket;
     private ServerSocket timerServerSocket;
 
-    //private LinkedList<ClientThread> waitingPlayers;
     private char[][] serverBoardPlayer1;
     private char[][] serverBoardPlayer2;
 
-    private Map<Integer,ClientThread> clientThreads;
+    private Map<Integer, ClientThread> clientThreads;
 
-    private AtomicInteger numberOfPlayers ;
+    private AtomicInteger numberOfPlayers;
 
     private GameState currentState;
     private boolean player1IsReadyToPlaceShips;
     private boolean player2IsReadyToPlaceShips;
-    private  boolean player1IsReadyToStartGame;
-    private  boolean player2IsReadyToStartGame;
-
+    private boolean player1IsReadyToStartGame;
+    private boolean player2IsReadyToStartGame;
 
     private List<Ships> player1Ships;
     private List<Ships> player2Ships;
 
 
-    //ships
-
-    public GameServer(int port ,int timerPort) {
+    public GameServer(int port, int timerPort) {
         this.port = port;
-        this.timerPort=timerPort;
+        this.timerPort = timerPort;
         this.isRunning = false;
-
 
         clientThreads = new HashMap<>();
         numberOfPlayers = new AtomicInteger(0);
 
         currentState = GameState.GAME_NOT_CREATED;
-        player1IsReadyToPlaceShips=false;
-        player2IsReadyToPlaceShips=false;
+        player1IsReadyToPlaceShips = false;
+        player2IsReadyToPlaceShips = false;
         player1IsReadyToStartGame = false;
         player2IsReadyToStartGame = false;
 
-
-        //waitingPlayers = new LinkedList<>();
         this.serverBoardPlayer1 = new char[BOARD_SIZE][BOARD_SIZE];
         this.serverBoardPlayer2 = new char[BOARD_SIZE][BOARD_SIZE];
         initializeBoard(serverBoardPlayer1);
@@ -86,13 +79,13 @@ public class GameServer {
             }
         }
     }
-    public synchronized void startTimer(int playerId){
 
-        if(playerId == 1){
+    public synchronized void startTimer(int playerId) {
+
+        if (playerId == 1) {
             clientThreads.get(2).startTimerThread();
             clientThreads.get(1).stopTimerThread();
-        }
-        else {
+        } else {
             clientThreads.get(1).startTimerThread();
             clientThreads.get(2).stopTimerThread();
         }
@@ -103,21 +96,19 @@ public class GameServer {
         int rowMove = move.charAt(0) - 'A';
         int colMove = Integer.parseInt(move.substring(1)) - 1;
 
-
         char[][] board = playerId == 1 ? serverBoardPlayer2 : serverBoardPlayer1;
         ClientThread player = clientThreads.get(playerId);
 
         boolean isHit = false;
 
 
-
         if (board[rowMove][colMove] == '5' || board[rowMove][colMove] == '4' || board[rowMove][colMove] == '3' || board[rowMove][colMove] == '2' || board[rowMove][colMove] == '1') {
             //you hit
             char shipTypeFromBoard = board[rowMove][colMove];
             board[rowMove][colMove] = 'X';
-            isHit=true;
+            isHit = true;
             // Record the move in the database
-            updateInMovesDb(player,move,isHit);
+            updateInMovesDb(player, move, isHit);
 
 
             //We chose the list of ships of the opponent
@@ -140,36 +131,32 @@ public class GameServer {
                     //debug
                     //System.out.println("||||||| AICI " + ship.getShipSize());
                     player.notifyHit(move);
-                    updateInPlayersDb(player,"HIT");
+                    updateInPlayersDb(player, "HIT");
 
                     if (ship.getShipSize() == 0) {
                         iterator.remove();
                         //debug
                         //System.out.println("Player id : " + playerId + " SHIP SIZE " + ship.getShipSize() +" fro, if ship size == " + ships.size());
-                      // System.out.println("SUNTEM IN HANDEL ,TREBUIE SA SCUFUNDAM BARCA");
-                       updateInShipsDb(player,"SUNK",null,ship);
-
+                        // System.out.println("SUNTEM IN HANDEL ,TREBUIE SA SCUFUNDAM BARCA");
+                        updateInShipsDb(player, "SUNK", null, ship);
 
                         if (ships.isEmpty()) {
                             //System.out.println("ships is empty  : player id is " + playerId);
-
                             makeGameOver(player);
                         }
                     }
-                }else{
-                    //ratezi ?
                 }
-
             }
+
             System.out.println("Player " + playerId + " hit at position: " + move);
         } else {
             // Record the move in the database
-            updateInMovesDb(player,move,isHit);
+            updateInMovesDb(player, move, isHit);
 
             board[rowMove][colMove] = '?';
             System.out.println("Player " + playerId + " missed at position: " + move);
             player.notifyMiss(move);
-            updateInPlayersDb(player,"MISS");
+            updateInPlayersDb(player, "MISS");
         }
         //Ships ship = new PatrolBoat();
         //System.out.println("BARCA NOU " + ship.getShipSize());
@@ -180,8 +167,8 @@ public class GameServer {
     private void resetGame() {
         System.out.println("Server is reseted");
         currentState = GameState.GAME_NOT_CREATED;
-        player1IsReadyToPlaceShips=false;
-        player2IsReadyToPlaceShips=false;
+        player1IsReadyToPlaceShips = false;
+        player2IsReadyToPlaceShips = false;
         player1IsReadyToStartGame = false;
         player2IsReadyToStartGame = false;
 
@@ -193,13 +180,13 @@ public class GameServer {
         player1Ships = new ArrayList<>();
         player2Ships = new ArrayList<>();
 
-        clientThreads.get(1).gameReset();
-        clientThreads.get(2).gameReset();
+//        clientThreads.get(1).gameReset();
+//        clientThreads.get(2).gameReset();
 
     }
 
 
-    public synchronized int validateShipPosition(int playerId, String move, Ships ship) throws GameException,StringIndexOutOfBoundsException,NullPointerException{
+    public synchronized int validateShipPosition(int playerId, String move, Ships ship) throws GameException, StringIndexOutOfBoundsException, NullPointerException {
         char[][] board = playerId == 1 ? serverBoardPlayer1 : serverBoardPlayer2;
         String[] positions = move.split(" ");
 
@@ -245,10 +232,10 @@ public class GameServer {
 
 
         //afisez doar ca sa vad eu mai bine; o sa sterg
-        setShipOnBoard(playerId,board, shipLengthRows, shipLengthCols,ship);
+        setShipOnBoard(playerId, board, shipLengthRows, shipLengthCols, ship);
         //displayServerBoard();
         //validarea in acest punct este corecta
-        updateInShipsDb(clientThreads.get(playerId),"ADD",positions,ship);
+        updateInShipsDb(clientThreads.get(playerId), "ADD", positions, ship);
         return 0;
     }
 
@@ -258,16 +245,18 @@ public class GameServer {
         System.out.println("Server Board Player 2:");
         displayBoard(serverBoardPlayer2);
     }
+
     private void displayBoard(char[][] board) {
         System.out.println("      1 2 3 4 5 6 7 8 9 BOARD_SIZE");
         for (int i = 0; i < BOARD_SIZE; i++) {
-            System.out.print((char)('A' + i) + "    ");
+            System.out.print((char) ('A' + i) + "    ");
             for (int j = 0; j < BOARD_SIZE; j++) {
                 System.out.print(board[i][j] + " ");
             }
             System.out.println();
         }
     }
+
     public void start() {
         try {
             serverSocket = new ServerSocket(port);
@@ -277,7 +266,7 @@ public class GameServer {
 
             while (isRunning) {
                 try {
-                      if(clientThreads.size() < 2) {
+                    if (clientThreads.size() < 2) {
                         Socket clientSocket = serverSocket.accept();
                         Socket timerSocket = timerServerSocket.accept();
                         System.out.println("New client connected");
@@ -285,13 +274,13 @@ public class GameServer {
                         out.println("Connection Completed");
                         numberOfPlayers.incrementAndGet();
 
-                        ClientThread client = new ClientThread(clientSocket,timerSocket, this,numberOfPlayers.get());
-                        clientThreads.put(numberOfPlayers.get(),client);
+                        ClientThread client = new ClientThread(clientSocket, timerSocket, this, numberOfPlayers.get());
+                        clientThreads.put(numberOfPlayers.get(), client);
 
 
                         client.start();
 
-                    }else{
+                    } else {
                         Socket clientSocket = serverSocket.accept();
                         System.out.println("Cannot connect");
 
@@ -338,36 +327,37 @@ public class GameServer {
             e.printStackTrace();
         }
     }
-    private void setShipOnBoard(int playerId,char[][] board, int[] rows, int[] cols,Ships ship) {
+
+    private void setShipOnBoard(int playerId, char[][] board, int[] rows, int[] cols, Ships ship) {
         for (int i = 0; i < rows.length; i++) {
             board[rows[i]][cols[i]] = Integer.toString(ship.getShipCode()).charAt(0);
         }
-        if(playerId == 1){
+        if (playerId == 1) {
             player1Ships.add(ship);
-        }else{
+        } else {
             player2Ships.add(ship);
         }
     }
 
-    public void playerLeft(ClientThread t){
+    public void playerLeft(ClientThread t) {
         clientThreads.remove(t.getPlayerTeamId());
         numberOfPlayers.decrementAndGet();
 
         //dupa ce se deconectaza playerul ,ii stergem teamid ul din db
-       // System.out.println("Sunt in playerLeft ,team id :" + t.getPlayerTeamId());
-        updateInPlayersDb(t,"DELETE-TEAMID");
-      //  System.out.println("reset : team id :" + t.getPlayerTeamId());
+        // System.out.println("Sunt in playerLeft ,team id :" + t.getPlayerTeamId());
+        updateInPlayersDb(t, "DELETE-TEAMID");
+        //  System.out.println("reset : team id :" + t.getPlayerTeamId());
     }
 
     public static void main(String[] args) {
         int serverPort = 12345;
-        int serverTimerPort= 12346;
-        GameServer server = new GameServer(serverPort,serverTimerPort);
+        int serverTimerPort = 12346;
+        GameServer server = new GameServer(serverPort, serverTimerPort);
         server.start();
     }
 
     public void setClientThreads(int i, ClientThread mockClient) {
-        clientThreads.put(i,mockClient);
+        clientThreads.put(i, mockClient);
     }
 
     public ClientThread getPlayer(int i) {
@@ -380,13 +370,13 @@ public class GameServer {
         player.notifyGameOver();
         currentState = GameState.GAME_OVER;
 
-        resetGame();
+        //resetGame();
 
     }
 
     //partea de relationare cu bd
-    public void updateInGameDb(ClientThread player,String command){
-        if(command.equals("WINNER")) {
+    public void updateInGameDb(ClientThread player, String command) {
+        if (command.equals("WINNER")) {
             System.out.println("Sa apelat updateInGameDb");
             try {
                 int playerIdFromDb = HttpClient.getPlayerIdWithPlayerTeamId(player.getPlayerTeamId());
@@ -398,7 +388,8 @@ public class GameServer {
         }
 
     }
-    public void updateInPlayersDb(ClientThread player,String command){
+
+    public void updateInPlayersDb(ClientThread player, String command) {
         JSONObject jsonObject = new JSONObject();
         Integer playerTeamId = player.getPlayerTeamId();
 
@@ -409,40 +400,40 @@ public class GameServer {
             throw new RuntimeException(ex);
         }
         String jsonInputString = jsonObject.toString();
-        if(command.equals("HIT")){
-            hitCountMethode(playerTeamId,jsonInputString);
-        }else if(command.equals("DELETE-TEAMID")){
-            deleteTeamIdFromDbMethode(playerTeamId,jsonInputString);
-        }else if(command.equals("MISS")){
-            missCountMethode(playerTeamId,jsonInputString);
-        }else if(command.equals("WIN")){
-            winCountMethode(playerTeamId,jsonInputString);
-        }else if(command.equals("LOSE")){
-            loseCountMethode(playerTeamId,jsonInputString);
-        }else if(command.equals("MATCH")){
-            matchCountMethode(playerTeamId,jsonInputString);
+        if (command.equals("HIT")) {
+            hitCountMethode(playerTeamId, jsonInputString);
+        } else if (command.equals("DELETE-TEAMID")) {
+            deleteTeamIdFromDbMethode(playerTeamId, jsonInputString);
+        } else if (command.equals("MISS")) {
+            missCountMethode(playerTeamId, jsonInputString);
+        } else if (command.equals("WIN")) {
+            winCountMethode(playerTeamId, jsonInputString);
+        } else if (command.equals("LOSE")) {
+            loseCountMethode(playerTeamId, jsonInputString);
+        } else if (command.equals("MATCH")) {
+            matchCountMethode(playerTeamId, jsonInputString);
         }
     }
-    public void updateInShipsDb(ClientThread player,String command,String[] positions,Ships ship){
 
-        if(command.equals("ADD")) {
+    public void updateInShipsDb(ClientThread player, String command, String[] positions, Ships ship) {
+
+        if (command.equals("ADD")) {
             //addShip(Integer gameId,Integer playerId,String[] positions,Ships ship)
             System.out.println("Sa apelat updateInShipsDb cu comanda ADD");
-            int gameId ;
+            int gameId;
             int playerIdFromDb;
             try {
-                 gameId = getGameId();
-                 playerIdFromDb = HttpClient.getPlayerIdWithPlayerTeamId(player.getPlayerTeamId());
-                 addShip(gameId, playerIdFromDb, positions, ship);
+                gameId = getGameId();
+                playerIdFromDb = HttpClient.getPlayerIdWithPlayerTeamId(player.getPlayerTeamId());
+                addShip(gameId, playerIdFromDb, positions, ship);
             } catch (Exception e) {
                 System.out.println("error in updateInShipsDb ADD ,no player id in db ");
             }
 
-        }
-        else if(command.equals("SUNK")){
+        } else if (command.equals("SUNK")) {
             //System.out.println("SUNT IN SUNK");
             //sinkShip(Integer gameId,Integer playerId,String shipType)
-            int gameId ;
+            int gameId;
             int playerIdFromDb;
             try {
                 gameId = getGameId();
@@ -453,7 +444,8 @@ public class GameServer {
             }
         }
     }
-    public void updateInMovesDb(ClientThread player,String move,boolean isHit){
+
+    public void updateInMovesDb(ClientThread player, String move, boolean isHit) {
         try {
             int gameId = getGameId();
             int playerIdFromDb = HttpClient.getPlayerIdWithPlayerTeamId(player.getPlayerTeamId());
@@ -463,9 +455,10 @@ public class GameServer {
             System.out.println("Failed to record move in DB: " + e.getMessage());
         }
     }
+
     //endpoint uri
     //players
-    public void hitCountMethode(Integer playerTeamId,String jsonInputString){
+    public void hitCountMethode(Integer playerTeamId, String jsonInputString) {
 
         // Construim URL-ul pentru a trimite cererea
         String urlString = "http://localhost:8080/api/players/update/hitCounts/" + playerTeamId;
@@ -473,79 +466,85 @@ public class GameServer {
             String response = HttpClient.sendPostRequest(urlString, jsonInputString);
             System.out.println("Response: " + response);
 
-        }catch (Exception ex){
+        } catch (Exception ex) {
 
             ex.printStackTrace();
             System.out.println("Failed to send request: " + ex.getMessage() + " in deleteTeamIdFrommDb from GameServer");
         }
     }
-    public void deleteTeamIdFromDbMethode(Integer playerTeamId,String jsonInputString){
+
+    public void deleteTeamIdFromDbMethode(Integer playerTeamId, String jsonInputString) {
         // Construim URL-ul pentru a trimite cererea
         String urlString = "http://localhost:8080/api/players/delete/playerTeamId/" + playerTeamId;
         try {
             String response = HttpClient.sendPostRequest(urlString, jsonInputString);
             System.out.println("Response: " + response);
 
-        }catch (Exception ex){
+        } catch (Exception ex) {
 
             ex.printStackTrace();
             System.out.println("Failed to send request: " + ex.getMessage() + " in deleteTeamIdFrommDb from GameServer");
         }
     }
-    public void missCountMethode(Integer playerTeamId,String jsonInputString){
+
+    public void missCountMethode(Integer playerTeamId, String jsonInputString) {
         // Construim URL-ul pentru a trimite cererea
         String urlString = "http://localhost:8080/api/players/update/missCounts/" + playerTeamId;
         try {
             String response = HttpClient.sendPostRequest(urlString, jsonInputString);
             System.out.println("Response: " + response);
 
-        }catch (Exception ex){
+        } catch (Exception ex) {
 
             ex.printStackTrace();
             System.out.println("Failed to send request: " + ex.getMessage() + " in missCountMethode from GameServer");
         }
     }
-    public void winCountMethode(Integer playerTeamId,String jsonInputString){
+
+    public void winCountMethode(Integer playerTeamId, String jsonInputString) {
         // Construim URL-ul pentru a trimite cererea
         String urlString = "http://localhost:8080/api/players/update/wins/" + playerTeamId;
         try {
             String response = HttpClient.sendPostRequest(urlString, jsonInputString);
             System.out.println("Response: " + response);
 
-        }catch (Exception ex){
+        } catch (Exception ex) {
 
             ex.printStackTrace();
             System.out.println("Failed to send request: " + ex.getMessage() + " in winCountMethode from GameServer");
         }
     }
-    public void loseCountMethode(Integer playerTeamId,String jsonInputString){
+
+    public void loseCountMethode(Integer playerTeamId, String jsonInputString) {
         // Construim URL-ul pentru a trimite cererea
         String urlString = "http://localhost:8080/api/players/update/loses/" + playerTeamId;
         try {
             String response = HttpClient.sendPostRequest(urlString, jsonInputString);
             System.out.println("Response: " + response);
 
-        }catch (Exception ex){
+        } catch (Exception ex) {
 
             ex.printStackTrace();
             System.out.println("Failed to send request: " + ex.getMessage() + " in loseCountMethode from GameServer");
         }
     }
-    public void matchCountMethode(Integer playerTeamId,String jsonInputString){
+
+    public void matchCountMethode(Integer playerTeamId, String jsonInputString) {
         // Construim URL-ul pentru a trimite cererea
         String urlString = "http://localhost:8080/api/players/update/matches/" + playerTeamId;
         try {
             String response = HttpClient.sendPostRequest(urlString, jsonInputString);
             System.out.println("Response: " + response);
 
-        }catch (Exception ex){
+        } catch (Exception ex) {
 
             ex.printStackTrace();
             System.out.println("Failed to send request: " + ex.getMessage() + " in matchCountMethode from GameServer");
         }
     }
+
     //games
-    public void setWinner(Integer playerIdFromDb){
+    public void setWinner(Integer playerIdFromDb) {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("playerTeamId", playerIdFromDb);
@@ -557,13 +556,14 @@ public class GameServer {
         String urlString = "http://localhost:8080/api/games/update/winnerId/" + playerIdFromDb;
         String jsonInputString = jsonObject.toString();
         try {
-            String response = HttpClient.sendPostRequest(urlString,jsonInputString);
+            String response = HttpClient.sendPostRequest(urlString, jsonInputString);
             System.out.println("Response: " + response);
         } catch (Exception e) {
             System.out.println("Error in setWinner in Game db");
         }
 
     }
+
     public int getGameId() throws Exception {
         String urlString = "http://localhost:8080/api/games/take_game_id";
         try {
@@ -575,8 +575,9 @@ public class GameServer {
         }
 
     }
+
     //ships
-    public void addShip(Integer gameId,Integer playerId,String[] positions,Ships ship){
+    public void addShip(Integer gameId, Integer playerId, String[] positions, Ships ship) {
         try {
             HttpClient.addShip(gameId, playerId, ship.getShipName(), positions[0], positions[positions.length - 1], false);
         } catch (Exception e) {
@@ -584,13 +585,14 @@ public class GameServer {
             System.out.println("Failed to add ship to database " + e + " in addShip from GameServer");
         }
     }
-    public void sinkShip(Integer gameId, Integer playerIdFromDb, Ships ship){
-    try {
-      //  System.out.println("Attempting to sink ship: " + ship.getShipName() + " for gameId: " + gameId + ", playerId: " + playerIdFromDb);
+
+    public void sinkShip(Integer gameId, Integer playerIdFromDb, Ships ship) {
+        try {
+            //  System.out.println("Attempting to sink ship: " + ship.getShipName() + " for gameId: " + gameId + ", playerId: " + playerIdFromDb);
             HttpClient.sinkShip(gameId, playerIdFromDb, ship.getShipName());
         } catch (Exception e) {
             e.printStackTrace();
-          //  System.out.println("Failed to update ship as sunk in DB: " + e.getMessage());
+            //  System.out.println("Failed to update ship as sunk in DB: " + e.getMessage());
 
         }
     }

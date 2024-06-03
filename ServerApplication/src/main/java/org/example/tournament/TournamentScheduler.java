@@ -3,11 +3,11 @@ package org.example.tournament;
 import java.util.*;
 
 public class TournamentScheduler {
-    private int n; // numar de jucatori
-    private int p; // numar maxim de meciuri pe zi
-    private int d; // numar maxim de zile
+    private final int n; // numar de jucatori
+    private final int p; // numar maxim de meciuri pe zi
+    private final int d; // numar maxim de zile
     private List<Player> players; // lista de jucatori
-    private Map<String, Integer> matchResults; // rezultatele meciurilor
+    private final Map<String, Integer> matchResults; // rezultatele meciurilor
 
     public TournamentScheduler(int n, int p, int d) {
         this.n = n;
@@ -151,7 +151,7 @@ public class TournamentScheduler {
         // caut secventa
         boolean[] visited = new boolean[n];
         List<Integer> sequence = new ArrayList<>();
-        //parcurf fiecare nod pt a gasi o secv castigatoare
+        //parcurg fiecare nod pt a gasi o secv castigatoare
         for (int i = 0; i < n; i++) {
             if (!visited[i]) {
                 List<Integer> result = findSequenceUtil(i, victoryGraph, visited, sequence);

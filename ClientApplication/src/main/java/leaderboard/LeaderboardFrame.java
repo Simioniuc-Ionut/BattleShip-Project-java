@@ -15,13 +15,15 @@ public class LeaderboardFrame extends JFrame {
     JButton statistic = new JButton("View Statistic");
     JButton back = new JButton("Back");
     JLabel title;
-   GameClient client;
+    GameClient client;
+
     public LeaderboardFrame(GameClient client) {
 
         this.client = client;
         init();
     }
-    public void init(){
+
+    public void init() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
@@ -31,13 +33,10 @@ public class LeaderboardFrame extends JFrame {
         panel.add(title);
         panel.add(Box.createRigidArea(new Dimension(0, 40)));
 
-      //  panel.add(Box.createRigidArea(new Dimension(0, 20)));
-
-
         initButton(leaderboard, panel);
         initButton(history, panel);
         initButton(statistic, panel);
-        initButton(back,panel);
+        initButton(back, panel);
 
 
         leaderboard.addActionListener(new ActionListener() {
@@ -91,7 +90,6 @@ public class LeaderboardFrame extends JFrame {
         panel.add(button);
         panel.add(Box.createRigidArea(new Dimension(0, 20)));
     }
-
 
 
 }

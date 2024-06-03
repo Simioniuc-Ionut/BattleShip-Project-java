@@ -1,6 +1,5 @@
 package org.example;
 
-
 import java.io.PrintWriter;
 
 
@@ -8,20 +7,21 @@ public class TimerThread extends Thread {
     private int minutes;
     private int seconds;
 
-    private  boolean running;
+    private boolean running;
     private final int playerId;
-    private PrintWriter out;
-    private boolean isOver=false;
+    private final PrintWriter out;
+    private boolean isOver = false;
 
-    private GameServer gameServer;
-    private ClientThread player;
-    public TimerThread(int minutes, int seconds, int id,  PrintWriter out,GameServer gameServer,ClientThread player) {
+    private final GameServer gameServer;
+    private final ClientThread player;
+
+    public TimerThread(int minutes, int seconds, int id, PrintWriter out, GameServer gameServer, ClientThread player) {
         this.minutes = minutes;
         this.seconds = seconds;
         this.playerId = id;
         this.out = out;
-        this.player=player;
-        this.gameServer=gameServer;
+        this.player = player;
+        this.gameServer = gameServer;
 
     }
 
@@ -43,27 +43,27 @@ public class TimerThread extends Thread {
                 if (running) {
 
                     System.out.println("Time remaining for player " + playerId + ": " + getTimeRemaining());
-                    printTime(); // Trimite timpul rămas către client
+                    printTime(); // Trimite timpul ramas catre client
                     decrementTime();
                 }
-                if(isOver){
-
+                if (isOver) {
                     break;
                 }
 
             }
-            running=false;
-                System.out.println("Time over for player " + playerId);
-                out.println("TIME_OVER");
+            running = false;
+            System.out.println("Time over for player " + playerId);
+            out.println("TIME_OVER");
 
-                //Notificam serverul ca jocul a luat sfarsit
-                gameServer.makeGameOver(player.getOpponent());
+            //Notificam serverul ca jocul a luat sfarsit
+            gameServer.makeGameOver(player.getOpponent());
 
 
         } catch (InterruptedException e) {
             System.out.println("Timer was interrupted for player " + playerId);
         }
     }
+
     private void decrementTime() {
         if (seconds > 0) {
             seconds--;
@@ -74,16 +74,20 @@ public class TimerThread extends Thread {
             }
         }
     }
+
     public String getTimeRemaining() {
         return String.format("%02d:%02d", minutes, seconds);
     }
+
     private void printTime() {
         out.println(getTimeRemaining());
-        // Trimite timpul rămas către clientul grafic
+        // Trimite timpul ramas catre clientul grafic
     }
+
     public synchronized boolean isStart() {
         return running;
     }
+
     public void setIsOver(boolean isOver) {
         this.isOver = isOver;
     }

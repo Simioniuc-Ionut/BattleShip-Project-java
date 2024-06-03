@@ -20,10 +20,12 @@ public class SettingsPlaceShip extends JPanel {
     JLabel serverResponse;
     JPanel messagePanel = new JPanel(new BorderLayout());// afisarea mesajului de la server dupa apasarea butonului
     JTextArea messageTextArea;
+
     public SettingsPlaceShip(MainFrameThree frame) {
         this.frame = frame;
         init();
     }
+
     private void init() {
         //Ship name+size
         setNameAndSizeShip();
@@ -36,7 +38,7 @@ public class SettingsPlaceShip extends JPanel {
         setMessageFromServer();
     }
 
-    public void setNameAndSizeShip(){
+    public void setNameAndSizeShip() {
         nameShip = new JLabel("Name Ship:");
         textNameShip = new JLabel("Carrier");
 
@@ -54,13 +56,13 @@ public class SettingsPlaceShip extends JPanel {
         namePanel.setLayout(new FlowLayout());
         namePanel.add(nameShip);
         namePanel.add(textNameShip);
-        namePanel.setBorder(new EmptyBorder(0,0,0,100));
+        namePanel.setBorder(new EmptyBorder(0, 0, 0, 100));
 
         JPanel sizePanel = new JPanel();
         sizePanel.setLayout(new FlowLayout());
         sizePanel.add(sizeShip);
         sizePanel.add(textSizeShip);
-        sizePanel.setBorder(new EmptyBorder(0,0,0,100));
+        sizePanel.setBorder(new EmptyBorder(0, 0, 0, 100));
 
         //add
         add(Box.createVerticalStrut(20));
@@ -70,11 +72,12 @@ public class SettingsPlaceShip extends JPanel {
         add(Box.createVerticalStrut(40));
 
     }
-    public void setFromShip(){
+
+    public void setFromShip() {
         String[] letters = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"};
 
         placeShipFrom = new JLabel("From:");
-        fromRow= new JSpinner(new SpinnerListModel(letters));
+        fromRow = new JSpinner(new SpinnerListModel(letters));
         fromColumn = new JSpinner(new SpinnerNumberModel(1, 1, 10, 1));
 
         Font newFont = new Font("default", Font.BOLD, 25);
@@ -93,7 +96,8 @@ public class SettingsPlaceShip extends JPanel {
         add(Box.createVerticalStrut(4));
 
     }
-    public  void setToShip(){
+
+    public void setToShip() {
         String[] letters = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"};
 
         placeShipTo = new JLabel("To:");
@@ -110,13 +114,14 @@ public class SettingsPlaceShip extends JPanel {
         toPanel.add(placeShipTo);
         toPanel.add(toRow);
         toPanel.add(toColumn);
-        toPanel.setBorder(new EmptyBorder(0,0,0,90));
+        toPanel.setBorder(new EmptyBorder(0, 0, 0, 90));
 
         add(toPanel);
         add(Box.createVerticalStrut(80));
 
     }
-    public void setMessageFromServer(){
+
+    public void setMessageFromServer() {
         // Title for JPanel
         serverResponse = new JLabel("Message : ");
 
@@ -131,7 +136,7 @@ public class SettingsPlaceShip extends JPanel {
 
         // JPanel
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        messagePanel.setBorder(new EmptyBorder(0,0,0,100));
+        messagePanel.setBorder(new EmptyBorder(0, 0, 0, 100));
 
         messageTextArea = new JTextArea();
         messageTextArea.setWrapStyleWord(true); // Wrap at word boundaries

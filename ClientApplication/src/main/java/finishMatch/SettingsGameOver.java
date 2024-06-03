@@ -1,11 +1,13 @@
 package finishMatch;
 
+import leaderboard.LeaderboardFrame;
 import mainMenu.MainFrameTwo;
 import org.example.GameClient;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 
 public class SettingsGameOver extends JPanel {
     final MainFrameFive frame;
@@ -13,22 +15,23 @@ public class SettingsGameOver extends JPanel {
 
     JLabel title;
     JButton exitBtn = new JButton("Exit");
-    JButton playAgainBtn = new JButton("Play Again");
+//    JButton playAgainBtn = new JButton("Play Again");
     private JLabel playerIdNameLabel;
 
-    public SettingsGameOver(MainFrameFive frame, GameClient client,String gameOverMessage) {
+    public SettingsGameOver(MainFrameFive frame, GameClient client, String gameOverMessage) {
         this.frame = frame;
         this.client = client;
 
         init(gameOverMessage);
 
     }
+
     void updatePlayerInfoLabel() {
         playerIdNameLabel.setText("Team ID: " + frame.client.getPlayerTeamId() + " | Username: " + frame.client.getPlayerUsername());
 
     }
 
-    public void init(String gameOverMessage){
+    public void init(String gameOverMessage) {
         // pozitie verticala
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -47,10 +50,6 @@ public class SettingsGameOver extends JPanel {
         exitBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(exitBtn);
 
-        add(Box.createRigidArea(new Dimension(0, 20)));
-
-        playAgainBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
-        add(playAgainBtn);
 
         // box filler pt spatiere sub
         add(new Box.Filler(new Dimension(0, 0), new Dimension(0, Integer.MAX_VALUE), new Dimension(0, Integer.MAX_VALUE)));
@@ -64,29 +63,26 @@ public class SettingsGameOver extends JPanel {
         exitBtn.setBackground(Color.darkGray);
         exitBtn.setForeground(Color.WHITE);//culoare text
 
-        playAgainBtn.setFont(newFont);
-        playAgainBtn.setPreferredSize(new Dimension(250, 70));
-        playAgainBtn.setBackground(Color.darkGray);
-        playAgainBtn.setForeground(Color.WHITE);
-
         //listeners
         exitBtn.addActionListener(this::listenerAddExitBtn);
-        playAgainBtn.addActionListener(this::listenerAddPlayAgainBtn);
+
     }
 
     private void listenerAddExitBtn(ActionEvent e) {
-
-//        String messageToClient = "exit";
-//        frame.client.setAnswer(messageToClient);
+        if (client.getSocketTimer() != null && !client.getSocketTimer().isClosed()) {
+            try {
+                client.getSocketTimer().close();
+                System.out.println("Socket closed successfully.");
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                System.out.println("Error closing the socket.");
+            }
+        }
+        String messageToClient = "exit";
+        frame.client.setAnswer(messageToClient);
         frame.setVisible(false);//inchide fereastra
 
     }
-    private void listenerAddPlayAgainBtn(ActionEvent e) {
 
-//        String messageToClient = "again";
-//        frame.client.setAnswer(messageToClient);
-        new MainFrameTwo(client).setVisible(true); //apare pagina de inceput
-        frame.setVisible(false);//inchide fereastra
 
-    }
 }

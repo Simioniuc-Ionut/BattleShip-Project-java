@@ -23,16 +23,17 @@ public class MainFrameFour extends JFrame {
         super("startGameBattleShip");
         this.client = client;
         this.timeGame = new TimeGame(this);
-        this.socketTimer=client.getSocketTimer();
+        this.socketTimer = client.getSocketTimer();
 
         //aici creez tredul de timer
-        if(!client.isTimerThreadRunning()) {
+        if (!client.isTimerThreadRunning()) {
             new TimerUpdateThread(socketTimer, this).start();
             client.setTimerThreadRunning(true); //deja a fost creat un thread set timer
         }
         initStartGameBattleShip(initialCellColors);
     }
-    public TimeGame getTimeGamePanel(){
+
+    public TimeGame getTimeGamePanel() {
         return timeGame;
     }
 
@@ -44,7 +45,7 @@ public class MainFrameFour extends JFrame {
         opponentBoard = new OpponentBoard(this);
         settingsBattle = new SettingsBattle(this);
         timeGame = new TimeGame(this);
-        submitMove = new SubmitMove(this,opponentBoard,clientBoardBattle,settingsBattle);
+        submitMove = new SubmitMove(this, opponentBoard, clientBoardBattle, settingsBattle);
 
 
         // grupare oe axa x

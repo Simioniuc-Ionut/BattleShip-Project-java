@@ -10,6 +10,7 @@ public class ClientBoard extends JPanel {
     int startY = 110; // pozitie start pe axa y a ferestrei
     Color[][] cellColorsShips = new Color[10][10];// pentru a stii starea fiecarei celule din matrice
     private JLabel playerIdNameLabel;
+
     public ClientBoard(MainFrameThree frame) {
         this.frame = frame;
 

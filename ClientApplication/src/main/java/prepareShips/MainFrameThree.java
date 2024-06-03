@@ -1,4 +1,5 @@
 package prepareShips;
+
 import firstFrame.SettingsUser;
 import org.example.GameClient;
 
@@ -13,10 +14,6 @@ public class MainFrameThree extends JFrame {
     ClientBoard clientBoard;
 
     public GameClient client;
-    private ImageIcon img;
-    private JLabel background;
-    private JLabel playerInfoLabel;
-    SettingsUser settingsUser;
 
     public MainFrameThree(GameClient client) {
         super("prepareShips");
@@ -27,15 +24,10 @@ public class MainFrameThree extends JFrame {
     private void initPrepareShips() {
         setDefaultCloseOperation(EXIT_ON_CLOSE);//inchidere fereastra
 
-//        img = new ImageIcon(this.getClass().getResource("/battleship.jpg"));
-//        background = new JLabel(img);
-//        background.setSize(800,500);
-//        add(background);
-
         //componente pentru fereastra de plasare navegames
         settingsPlaceShip = new SettingsPlaceShip(this);
         clientBoard = new ClientBoard(this);
-        controlPanelBottom = new ControlPanelBottom(this, settingsPlaceShip,clientBoard);
+        controlPanelBottom = new ControlPanelBottom(this, settingsPlaceShip, clientBoard);
 
         //adaugare componente pe anumiote pozitii ale ferestrei
         add(settingsPlaceShip, BorderLayout.EAST);

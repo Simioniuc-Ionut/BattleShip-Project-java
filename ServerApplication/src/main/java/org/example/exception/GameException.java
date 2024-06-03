@@ -8,11 +8,6 @@ public class GameException extends Exception {
         this.errorCode = errorCode;
     }
 
-    public ErrorCode getErrorCode() {
-        return errorCode;
-    }
-
-
     //diferite tipuri de erori
     public enum ErrorCode {
         INCORRECT_POSITIONS("Incorrect number of positions."),

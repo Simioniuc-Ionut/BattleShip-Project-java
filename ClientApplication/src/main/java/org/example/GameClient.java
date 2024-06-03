@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.concurrent.Semaphore;
+
 @Getter
 @Setter
 public class GameClient {
@@ -34,14 +35,13 @@ public class GameClient {
     private boolean isYourTurnToMakeAMove = false;
     private boolean isTimerThreadRunning = false;
 
-   private String playerUsername;
+    private String playerUsername;
 
-
-    public GameClient(String serverAddress, int serverPort,int timerPort) {
+    public GameClient(String serverAddress, int serverPort, int timerPort) {
         this.serverAddress = serverAddress;
         this.serverPort = serverPort;
-        this.timerPort =timerPort;
-        new MainFrameOne(this,socketTimer).setVisible(true);
+        this.timerPort = timerPort;
+        new MainFrameOne(this, socketTimer).setVisible(true);
 
     }
 
@@ -54,16 +54,11 @@ public class GameClient {
                 Socket socket = new Socket(serverAddress, serverPort);
                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
+                BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in))
         ) {
 
             //nou
             socketTimer = new Socket(serverAddress, timerPort);
-
-            //aici nu vine mainFrame care este detim MainFrameFour,gpt ul nu a luat de seama ca mai sunt alte ferestre care se deschid pana la cea cu timer.'
-            //trebuie de vazut
-            //new TimerUpdateThread(socketTimer, mainFrame).start();
-
 
             // Verifică mesajul de stare inițial
             String StatusResponse = in.readLine();
@@ -76,6 +71,7 @@ public class GameClient {
                 Thread serverListener = createServerListenerThread(in);
                 serverListener.start();
 
+                //Citire comenzi din terminal
 //                String userInputLine;
 //                while ((userInputLine = userInput.readLine()) != null) {
 //                    out.println(userInputLine);
@@ -86,7 +82,7 @@ public class GameClient {
 //                    }
 //                }
 
-                while (true){
+                while (true) {
                     ansewerSemaphore.acquire();
                     out.println(answer);
                     if (answer.equalsIgnoreCase("exit")) {
@@ -138,38 +134,38 @@ public class GameClient {
     }
 
     private void takeIDOfPlayer(String serverResponse) {
-        if(serverResponse.startsWith("ID: ")){
+        if (serverResponse.startsWith("ID: ")) {
             String[] split = serverResponse.split(": ");
-            playerTeamId = Integer.parseInt(split[1]);//pun idiul
+            playerTeamId = Integer.parseInt(split[1]);//pun id-ul
             System.out.println("ID din GameClient " + playerTeamId);
         }
     }
 
     private void verifyIsYourTurnToMove(String serverResponse) {
-        if(serverResponse.startsWith("NOT_YOUR_TURN")){
+        if (serverResponse.startsWith("NOT_YOUR_TURN")) {
             System.out.println("Not your turn");
-            isYourTurnToMakeAMove=false;
+            isYourTurnToMakeAMove = false;
             moveTurnLock.release();
-        }else{
-            isYourTurnToMakeAMove=true;
+        } else {
+            isYourTurnToMakeAMove = true;
             moveTurnLock.release();
         }
     }
 
     private void verifyIfTheGameCouldStartToMove(String serverResponse) {
-        if(serverResponse.startsWith("START-MOVE")){
+        if (serverResponse.startsWith("START-MOVE")) {
             gameCouldStartlock.release();
         }
     }
 
-    private void verifyPositionMove(String serverResponse){
-        if (serverResponse.startsWith("Err:")){
-            positionConfirmed=false;
+    private void verifyPositionMove(String serverResponse) {
+        if (serverResponse.startsWith("Err:")) {
+            positionConfirmed = false;
             //putem notifica
             positionIsCorrectlock.release();
 
-        }else if(serverResponse.startsWith("Cor:")){
-            positionConfirmed=true;
+        } else if (serverResponse.startsWith("Cor:")) {
+            positionConfirmed = true;
             //putem notifica
             positionIsCorrectlock.release();
         }
@@ -182,7 +178,6 @@ public class GameClient {
     }
 
 
-    public int getPlayerIdByUsername(String playerUsername) {
-        return getPlayerIDFromDB();
-    }
+
+
 }

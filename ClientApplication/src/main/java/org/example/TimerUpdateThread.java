@@ -8,8 +8,8 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 
 public class TimerUpdateThread extends Thread {
-    private Socket timeSocket;
-    private MainFrameFour mainFrame;
+    private final Socket timeSocket;
+    private final MainFrameFour mainFrame;
     private BufferedReader in;
 
     public TimerUpdateThread(Socket timeSocket, MainFrameFour mainFrame) {
@@ -27,7 +27,7 @@ public class TimerUpdateThread extends Thread {
     public void run() {
         String message;
         try {
-            while ((message = in.   readLine()) != null) {
+            while ((message = in.readLine()) != null) {
                 if (message.equals("TIME_OVER")) {
                     // Timer is over, handle accordingly
                     mainFrame.getTimeGamePanel().updateTime("00:00");
@@ -42,7 +42,7 @@ public class TimerUpdateThread extends Thread {
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             try {
                 if (timeSocket != null) {
                     timeSocket.close();
