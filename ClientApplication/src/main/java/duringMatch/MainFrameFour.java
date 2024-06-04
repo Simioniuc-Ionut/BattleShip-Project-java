@@ -22,7 +22,7 @@ public class MainFrameFour extends JFrame {
     public MainFrameFour(GameClient client, Color[][] initialCellColors) {
         super("startGameBattleShip");
         this.client = client;
-        this.timeGame = new TimeGame(this);
+        this.timeGame = new TimeGame();
         this.socketTimer=client.getSocketTimer();
 
         //aici creez tredul de timer
@@ -43,7 +43,7 @@ public class MainFrameFour extends JFrame {
         clientBoardBattle = new ClientBoardBattle(this, initialCellColors);
         opponentBoard = new OpponentBoard(this);
         settingsBattle = new SettingsBattle(this);
-        timeGame = new TimeGame(this);
+        timeGame = new TimeGame();
         submitMove = new SubmitMove(this,opponentBoard,clientBoardBattle,settingsBattle);
 
 

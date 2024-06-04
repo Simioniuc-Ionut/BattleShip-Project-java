@@ -28,8 +28,8 @@ public class MoveService {
         Player player = playerRepository.findById(playerId).orElseThrow(() -> new RuntimeException("Player not found"));
 
         Move newMove = new Move();
-        newMove.setGameId(game);
-        newMove.setPlayerId(player);
+        newMove.setGame(game);
+        newMove.setPlayer(player);
         newMove.setMove(move);
         newMove.setIsHit(isHit);
 

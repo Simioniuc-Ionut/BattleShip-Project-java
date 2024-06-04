@@ -37,15 +37,13 @@
 
 package duringMatch.timer;
 
-import duringMatch.MainFrameFour;
-
 import javax.swing.*;
 import java.awt.*;
 
 public class TimeGame extends JPanel {
     private JLabel timerLabel;
 
-    public TimeGame(MainFrameFour mainFrame) {
+    public TimeGame() {
         timerLabel = new JLabel("Time remaining: 00:00");
         timerLabel.setFont(new Font("Arial", Font.BOLD, 40));
         add(timerLabel, BorderLayout.CENTER);

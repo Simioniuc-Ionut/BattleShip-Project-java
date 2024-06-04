@@ -56,9 +56,11 @@ public class TimerThread extends Thread {
                 System.out.println("Time over for player " + playerId);
                 out.println("TIME_OVER");
 
-                //Notificam serverul ca jocul a luat sfarsit
-                gameServer.makeGameOver(player.getOpponent());
-
+                if(!isOver) {
+                //daca s a terminat din cauza timpului
+                    //Notificam serverul ca jocul a luat sfarsit
+                    gameServer.makeGameOver(player.getOpponent());
+                }
 
         } catch (InterruptedException e) {
             System.out.println("Timer was interrupted for player " + playerId);

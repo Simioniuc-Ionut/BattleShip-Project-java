@@ -89,11 +89,11 @@ public class ViewStatisticFrame extends JFrame {
             if (game.getPlayer1Id() == playerId || game.getPlayer2Id() == playerId) {
                 int gameId = game.getGameId();
                 for (Move move : moves) {
-                    if (move.getGameId().getGameId() == gameId && move.getPlayerId().getPlayerId() == playerId) {
+                    if (move.getGame().getGameId() == gameId && move.getPlayer().getPlayerId() == playerId) {
                         tableModel.addRow(new Object[]{
                                 gameId, game.getPlayer1Id(), game.getPlayer2Id(), game.getWinnerId(), game.getCreatedAt(),
                                 move.getMoveId(), move.getMove(), move.getIsHit(), move.getCreatedAt(),
-                                "", "", "", "", ""
+
                         });
                     }
                 }
@@ -102,7 +102,6 @@ public class ViewStatisticFrame extends JFrame {
                     if (ship.getGame().getGameId() == gameId && ship.getPlayer().getPlayerId() == playerId) {
                         tableModel.addRow(new Object[]{
                                 gameId, game.getPlayer1Id(), game.getPlayer2Id(), game.getWinnerId(), game.getCreatedAt(),
-                                "", "", "", "",
                                 ship.getShipId(), ship.getShipType(), ship.getStartPosition(), ship.getEndPosition(), ship.isSunk()
                         });
                     }

@@ -27,13 +27,13 @@ public class TimerUpdateThread extends Thread {
     public void run() {
         String message;
         try {
-            while ((message = in.   readLine()) != null) {
+            while ((message = in.readLine()) != null) {
                 if (message.equals("TIME_OVER")) {
                     // Timer is over, handle accordingly
                     mainFrame.getTimeGamePanel().updateTime("00:00");
-
+                   // System.out.println("sunt in time over in timerUpdatThread");
                     //oprim jocul
-
+                    break;
                 } else {
                     //int timeRemaining = Integer.parseInt(message);
                     System.out.println("timer is " + message);

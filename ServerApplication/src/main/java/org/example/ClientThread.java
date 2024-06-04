@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 import lombok.Getter;
@@ -26,7 +27,6 @@ public class ClientThread extends Thread {
     public Ships SUBMARINE_LENGTH = new Submarine();
     public Ships PATROL_BOAT_LENGTH = new PatrolBoat();
 
-
     private final Socket clientSocket;
     private final Socket timerSocket;
     private PrintWriter out;
@@ -35,17 +35,14 @@ public class ClientThread extends Thread {
     private final GameServer gameServer;
     private static GameState playerTurn;
     private int playerTeamId;
-    private boolean shipsPlaced;
 
-    private boolean playerFinishStatus;
     private TimerThread timer;
     private PrintWriter timerOut;
     //timer
-    private int minutesTimerPlayer = 3;
-    private int secondsTimerPlayer = 5;
+    private int minutesTimerPlayer = 0;
+    private int secondsTimerPlayer = 15;
 
     private boolean isTimerThreadRunning=false;
-
 
 
 
@@ -55,10 +52,6 @@ public class ClientThread extends Thread {
 
         this.gameServer = gameServer;
         this.playerTeamId = playerTeamId;
-
-        this.shipsPlaced = false;
-        playerFinishStatus=false;
-
 
         try {
             this.timerOut = new PrintWriter(timerSocket.getOutputStream(), true);
@@ -73,7 +66,6 @@ public class ClientThread extends Thread {
             timer.start();
             setTimerThreadRunning(true);
         }
-        //timer.startTimer();
     }
     public void startTimerThread()
     {
@@ -156,12 +148,11 @@ public class ClientThread extends Thread {
 
         gameServer.setCurrentState(GameState.GAME_READY_TO_MOVE);
         //trebuiesc modificate
-//        placeShip(in, CARRIER_LENGTH);
-//        placeShip(in, BATTLESHIP_LENGTH);
-//        placeShip(in, DESTROYER_LENGTH);
-//        placeShip(in, SUBMARINE_LENGTH);
+       // placeShip(in, CARRIER_LENGTH);
+      //  placeShip(in, BATTLESHIP_LENGTH);
+     //    placeShip(in, DESTROYER_LENGTH);
+     //   placeShip(in, SUBMARINE_LENGTH);
         placeShip(in, PATROL_BOAT_LENGTH);
-        shipsPlaced = true;
 
         listenReadyFromClient(in);
         waitingPlayersToFinishPlacingShips();
@@ -351,42 +342,30 @@ public class ClientThread extends Thread {
         }
 
     }
+    public  void notifyGameOver() {
 
-//    public void gameIsFinished(){
-//        System.out.println("func : gameIsFinished() was accessed");
-//        if(playerTurn == GameState.PLAYER1_TURN){
-//            gameServer.displayServerBoard();
-//            gameServer.setCurrentState(GameState.GAME_NOT_CREATED);
-//        }else{
-//            gameServer.displayServerBoard();
-//            gameServer.setCurrentState(GameState.GAME_NOT_CREATED);
-//        }
-//    }
-    public void notifyGameOver() {
+                //System.out.println("DE CATE ORI SE APELEAZa ?");
 
-                System.out.println("DE CATE ORI SE APELEAZa ?");
                 sendMessage("Game over. You won!");
-                gameServer.updateInPlayersDb(this,"WIN");
-                gameServer.updateInPlayersDb(this,"MATCH");
+                gameServer.updateInPlayersDb(this, "WIN");
+                gameServer.updateInPlayersDb(this, "MATCH");
 
-                gameServer.updateInGameDb(this,"WINNER");
+                gameServer.updateInGameDb(this, "WINNER");
 
                 opponent.sendMessage("Game over. You lost!");
-                gameServer.updateInPlayersDb(opponent,"LOSE");
-                gameServer.updateInPlayersDb(opponent,"MATCH");
+                gameServer.updateInPlayersDb(opponent, "LOSE");
+                gameServer.updateInPlayersDb(opponent, "MATCH");
+
+
+                System.out.println("Am dat notifyGameOver în ClientThread");
 
     }
 
     public void gameReset() {
-        //remainingTimePlayer1 = 30;
-        //remainingTimePlayer2 = 30;
-        //finishTimerThread();
-        //Redeschidem timerul
-        //this.timer = new TimerThread(timerPlayer,playerTeamId);
-        //timer.start();
+
 
         minutesTimerPlayer =0;
-        secondsTimerPlayer = 10;
+        secondsTimerPlayer = 15;
 
         playerTurn = GameState.PLAYER1_TURN;
         //sendMessage("Game has reseted");
