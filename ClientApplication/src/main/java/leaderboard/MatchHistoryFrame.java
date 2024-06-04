@@ -16,8 +16,9 @@ import java.util.List;
 
 public class MatchHistoryFrame extends JFrame {
     private final DefaultTableModel tableModel;
-    private JTable table;
+    private final JTable table;
     GameClient client;
+
     public MatchHistoryFrame(GameClient client) {
         this.client = client;
 

@@ -10,18 +10,18 @@ public class TimerThread extends Thread {
 
     private  boolean running;
     private final int playerId;
-    private PrintWriter out;
+    private final PrintWriter out;
     private boolean isOver=false;
 
-    private GameServer gameServer;
-    private ClientThread player;
+    private final GameServer gameServer;
+    private final ClientThread player;
     public TimerThread(int minutes, int seconds, int id,  PrintWriter out,GameServer gameServer,ClientThread player) {
         this.minutes = minutes;
         this.seconds = seconds;
         this.playerId = id;
         this.out = out;
-        this.player=player;
-        this.gameServer=gameServer;
+        this.player = player;
+        this.gameServer = gameServer;
 
     }
 

@@ -43,6 +43,7 @@ public class ShipService {
             throw new RuntimeException("Ship not found");
         }
     }
+
     public List<Ship> listShips() {
         return shipRepository.findAll();
     }

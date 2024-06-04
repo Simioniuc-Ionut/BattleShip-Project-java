@@ -15,8 +15,8 @@ import java.util.List;
 
 public class ViewStatisticFrame extends JFrame {
     private final DefaultTableModel tableModel;
-    private JTable table;
-    private GameClient client;
+    private final JTable table;
+    private final GameClient client;
 
     public ViewStatisticFrame(GameClient client) {
         this.client = client;
@@ -36,7 +36,7 @@ public class ViewStatisticFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String searchText = searchField.getText().toLowerCase();
                 try {
-                    searchAndFilterTable(searchText);
+                    searchAndFilterTable(searchText,client.getPlayerIDFromDB());
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -111,11 +111,53 @@ public class ViewStatisticFrame extends JFrame {
 
         tableModel.fireTableDataChanged();
     }
+    private void updateTableWithGamesSearch(int playerId , int playerSerch) throws Exception {
+        tableModel.setColumnIdentifiers(new String[]{
+                "Game ID", "Player1 ID", "Player2 ID", "Winner ID", "Created At",
+                "Move ID", "Move", "Is Hit", "Move Created At",
+                "Ship ID", "Ship Type", "Start Position", "End Position", "Is Sunk"
+        });
 
-    private void searchAndFilterTable(String searchText) throws Exception {
-        int playerId = HttpClient.getPlayerId(searchText); // Fetch the player ID by username
-        if (playerId != -1) { // If a valid player ID is found, update the table
-            updateTableWithGames(playerId);
+        tableModel.setRowCount(0); // Clear the table before updating
+
+        List<Game> games = (List<Game>) HttpClient.getGameList();
+        List<Move> moves = (List<Move>) HttpClient.getMoveList();
+        List<Ship> ships = (List<Ship>) HttpClient.getShipList();
+
+
+        for (Game game : games) {
+            if ((game.getPlayer1Id() == playerId && game.getPlayer2Id() == playerSerch) ||
+                    (game.getPlayer1Id() == playerSerch && game.getPlayer2Id() == playerId) ) {
+                int gameId = game.getGameId();
+                for (Move move : moves) {
+                    if (move.getGameId().getGameId() == gameId && move.getPlayerId().getPlayerId() == playerId) {
+                        tableModel.addRow(new Object[]{
+                                gameId, game.getPlayer1Id(), game.getPlayer2Id(), game.getWinnerId(), game.getCreatedAt(),
+                                move.getMoveId(), move.getMove(), move.getIsHit(), move.getCreatedAt(),
+                                "", "", "", "", ""
+                        });
+                    }
+                }
+
+                for (Ship ship : ships) {
+                    if (ship.getGame().getGameId() == gameId && ship.getPlayer().getPlayerId() == playerId) {
+                        tableModel.addRow(new Object[]{
+                                gameId, game.getPlayer1Id(), game.getPlayer2Id(), game.getWinnerId(), game.getCreatedAt(),
+                                "", "", "", "",
+                                ship.getShipId(), ship.getShipType(), ship.getStartPosition(), ship.getEndPosition(), ship.isSunk()
+                        });
+                    }
+                }
+            }
+        }
+
+        tableModel.fireTableDataChanged();
+    }
+
+    private void searchAndFilterTable(String searchText, int playerId) throws Exception {
+        int playerSerch = HttpClient.getPlayerId(searchText); // Fetch the player ID by username
+        if (playerSerch != -1) { // If a valid player ID is found, update the table
+            updateTableWithGamesSearch(playerId,playerSerch);
         }
     }
 }

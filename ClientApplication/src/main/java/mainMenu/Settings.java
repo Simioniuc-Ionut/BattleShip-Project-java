@@ -17,13 +17,14 @@ public class Settings extends JPanel {
     JButton createGameBtn = new JButton("Create Game");
     JButton joinGameBtn = new JButton("Join Game");
     JButton viewScoresBtn = new JButton("Profile");
+
     public Settings(MainFrameTwo frame, GameClient client) {
         this.frame = frame;
         this.client = client;
         init();
     }
 
-    public void init(){
+    public void init() {
         // pozitie verticala
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -81,6 +82,7 @@ public class Settings extends JPanel {
         new LeaderboardFrame(client).setVisible(true);// apare urmatoarea fereastra
         frame.setVisible(false); // inchide fereastra
     }
+
     private void listenerAddCreateGameBtn(ActionEvent e) {
 
         String messageToClient = "c";
@@ -89,6 +91,7 @@ public class Settings extends JPanel {
         frame.setVisible(false);//inchide fereastra
 
     }
+
     private void listenerAddJoinGameBtn(ActionEvent e) {
 
         String messageToClient = "j";

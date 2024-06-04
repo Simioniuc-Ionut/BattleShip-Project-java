@@ -30,7 +30,7 @@ public class SettingsUser extends JPanel {
         init();
     }
 
-    public void init()  {
+    public void init() {
         // pozitie verticala
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -55,7 +55,7 @@ public class SettingsUser extends JPanel {
         usernamePanel.add(writeUsername);
         usernamePanel.setPreferredSize(new Dimension(300, 40));
 
-       // usernamePanel.setMaximumSize(new Dimension(250, 40)); // dimensiunea
+        // usernamePanel.setMaximumSize(new Dimension(250, 40)); // dimensiunea
         usernamePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(usernamePanel);
 
@@ -85,7 +85,7 @@ public class SettingsUser extends JPanel {
 
     }
 
-    private void listenerAddStartGameBtn(ActionEvent e)  {
+    private void listenerAddStartGameBtn(ActionEvent e) {
 
         String username = writeUsername.getText();
         frame.client.setPlayerUsername(username);
@@ -108,7 +108,7 @@ public class SettingsUser extends JPanel {
         }
     }
 
-    public void addUsernameInDB(){
+    public void addUsernameInDB() {
         System.out.println("Write username is " + writeUsername.getText());
         String jsonInputString = "{\"playerName\":\"" + writeUsername.getText() + "\"}";
 
@@ -117,14 +117,14 @@ public class SettingsUser extends JPanel {
             JOptionPane.showMessageDialog(frame, "Response: " + response);
             //iau id ul unic din bd , corespunzator numelui introdus
 
-        }catch (Exception ex){
+        } catch (Exception ex) {
 
             ex.printStackTrace();
             JOptionPane.showMessageDialog(frame, "Player already exist ");
         }
     }
 
-    public void takeUniqIDFromDB(){
+    public void takeUniqIDFromDB() {
         int idFromDB = 0;
         try {
             idFromDB = HttpClient.getPlayerId(writeUsername.getText());
@@ -133,11 +133,11 @@ public class SettingsUser extends JPanel {
             JOptionPane.showMessageDialog(frame, "Player dosent exist in db  " + ex.getMessage());
         }
         frame.client.setPlayerIDFromDB(idFromDB);
-       // System.out.println("Id from DB " +idFromDB);
+        // System.out.println("Id from DB " +idFromDB);
 
     }
 
-    public void addTeamId(){
+    public void addTeamId() {
         Integer playerTeamId = frame.client.getPlayerTeamId();
         Integer playerDBId = frame.client.getPlayerIDFromDB();
 

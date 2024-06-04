@@ -32,6 +32,7 @@ public class OpponentBoard extends JPanel {
 
         init();
     }
+
     final void init() {
         //mouse listener
         addMouseListener(new MouseAdapter() {
@@ -62,7 +63,7 @@ public class OpponentBoard extends JPanel {
                 lastColClicked = colClick;
 
                 repaint();
-                    }
+            }
 
 //                sendMessageToServer();
 //            }
@@ -122,13 +123,14 @@ public class OpponentBoard extends JPanel {
             board.drawLine(startX + i * cellSize, startY, startX + i * cellSize, startY + 10 * cellSize);
         }
     }
+
     void colorPositionHit(String position, Color x, boolean hitOrNotYourTurn) {
         // Decodificare
         char rowChar = position.charAt(0);
         int column = Integer.parseInt(position.substring(1)) - 1;
         int row = rowChar - 'A';
 
-        if(row >= 0 && row < 10 && column >= 0 && column < 10) {
+        if (row >= 0 && row < 10 && column >= 0 && column < 10) {
             // Daca este un hit, coloram si adaug in permanentCells
             hitCells[row][column] = hitOrNotYourTurn;
             String cellKey = row + "," + column;

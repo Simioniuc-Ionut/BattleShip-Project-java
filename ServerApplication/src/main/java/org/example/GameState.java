@@ -10,34 +10,10 @@ public enum GameState {
     GAME_OVER(5),
     GAME_TOURNAMENT(6);
 
-    private int stateCode;
+    private final int stateCode;
 
     GameState(int stateCode) {
         this.stateCode = stateCode;
-    }
-
-    public void setGameNotCreated() {
-        this.stateCode = 0;
-    }
-
-    public void setWaitingForPlayer() {
-        this.stateCode = 3;
-    }
-
-    public void setGameReadyToMove() {
-        this.stateCode = 4;
-    }
-
-    public void setPlayer1Turn() {
-        this.stateCode = 1;
-    }
-
-    public void setPlayer2Turn() {
-        this.stateCode = 2;
-    }
-
-    public void setGameOver() {
-        this.stateCode = 5;
     }
 
     public int getStateCode() {

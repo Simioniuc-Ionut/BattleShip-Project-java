@@ -30,6 +30,7 @@ public class ClientBoardBattle extends JPanel {
         playerIdNameLabel.setBackground(Color.LIGHT_GRAY);
         this.add(playerIdNameLabel);
     }
+
     void updatePlayerInfoLabel() {
         playerIdNameLabel.setText("Team ID: " + frame.client.getPlayerTeamId() + " | Username: " + frame.client.getPlayerUsername());
     }
@@ -87,13 +88,14 @@ public class ClientBoardBattle extends JPanel {
         }
 
     }
+
     void colorPosition(String position) {
         // Decodificare
         char rowChar = position.charAt(0);
         int column = Integer.parseInt(position.substring(1)) - 1;
         int row = rowChar - 'A';
 
-        if(row >= 0 && row < 10 && column >= 0 && column < 10) {
+        if (row >= 0 && row < 10 && column >= 0 && column < 10) {
 
             hitCells[row][column] = true;
             repaint();

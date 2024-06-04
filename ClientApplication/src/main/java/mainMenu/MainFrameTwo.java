@@ -9,6 +9,7 @@ import java.net.Socket;
 public class MainFrameTwo extends JFrame {
     public GameClient client;
     Settings settingsCreate;
+
     public MainFrameTwo(GameClient client) {
         super("mainMenu");
         this.client = client;
@@ -18,7 +19,7 @@ public class MainFrameTwo extends JFrame {
     private void initCreateGame() {
         setDefaultCloseOperation(EXIT_ON_CLOSE);//inchidere fereastra
 
-        settingsCreate = new Settings(this,client);
+        settingsCreate = new Settings(this, client);
 
         add(settingsCreate, BorderLayout.CENTER);
 

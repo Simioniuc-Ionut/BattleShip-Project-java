@@ -41,7 +41,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class TimeGame extends JPanel {
-    private JLabel timerLabel;
+    private final JLabel timerLabel;
 
     public TimeGame() {
         timerLabel = new JLabel("Time remaining: 00:00");

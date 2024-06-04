@@ -31,7 +31,6 @@ public class GameServer {
     private ServerSocket serverSocket;
     private ServerSocket timerServerSocket;
 
-    //private LinkedList<ClientThread> waitingPlayers;
     private char[][] serverBoardPlayer1;
     private char[][] serverBoardPlayer2;
 
@@ -45,18 +44,14 @@ public class GameServer {
     private boolean player1IsReadyToStartGame;
     private boolean player2IsReadyToStartGame;
 
-
     private List<Ships> player1Ships;
     private List<Ships> player2Ships;
 
-
-    //ships
 
     public GameServer(int port, int timerPort) {
         this.port = port;
         this.timerPort = timerPort;
         this.isRunning = false;
-
 
         clientThreads = new HashMap<>();
         numberOfPlayers = new AtomicInteger(0);
@@ -67,8 +62,6 @@ public class GameServer {
         player1IsReadyToStartGame = false;
         player2IsReadyToStartGame = false;
 
-
-        //waitingPlayers = new LinkedList<>();
         this.serverBoardPlayer1 = new char[BOARD_SIZE][BOARD_SIZE];
         this.serverBoardPlayer2 = new char[BOARD_SIZE][BOARD_SIZE];
         initializeBoard(serverBoardPlayer1);
@@ -102,7 +95,6 @@ public class GameServer {
 
         int rowMove = move.charAt(0) - 'A';
         int colMove = Integer.parseInt(move.substring(1)) - 1;
-
 
         char[][] board = playerId == 1 ? serverBoardPlayer2 : serverBoardPlayer1;
         ClientThread player = clientThreads.get(playerId);
@@ -148,15 +140,14 @@ public class GameServer {
                         // System.out.println("SUNTEM IN HANDEL ,TREBUIE SA SCUFUNDAM BARCA");
                         updateInShipsDb(player, "SUNK", null, ship);
 
-
                         if (ships.isEmpty()) {
                             //System.out.println("ships is empty  : player id is " + playerId);
-
                             makeGameOver(player);
                         }
                     }
                 }
             }
+
             System.out.println("Player " + playerId + " hit at position: " + move);
         } else {
             // Record the move in the database
@@ -167,7 +158,10 @@ public class GameServer {
             player.notifyMiss(move);
             updateInPlayersDb(player, "MISS");
         }
+        //Ships ship = new PatrolBoat();
+        //System.out.println("BARCA NOU " + ship.getShipSize());
         //displayServerBoard();
+
     }
 
     private void resetGame() {
@@ -186,10 +180,11 @@ public class GameServer {
         player1Ships = new ArrayList<>();
         player2Ships = new ArrayList<>();
 
-        clientThreads.get(1).gameReset();
-        clientThreads.get(2).gameReset();
+//        clientThreads.get(1).gameReset();
+//        clientThreads.get(2).gameReset();
 
     }
+
 
     public synchronized int validateShipPosition(int playerId, String move, Ships ship) throws GameException, StringIndexOutOfBoundsException, NullPointerException {
         char[][] board = playerId == 1 ? serverBoardPlayer1 : serverBoardPlayer2;
@@ -370,12 +365,12 @@ public class GameServer {
     }
 
     public void makeGameOver(ClientThread player) {
-       player.getTimer().setIsOver(true);
-       player.getOpponent().getTimer().setIsOver(true);
+        player.getTimer().setIsOver(true);
+        player.getOpponent().getTimer().setIsOver(true);
         player.notifyGameOver();
         currentState = GameState.GAME_OVER;
 
-     //   resetGame();
+        //resetGame();
 
     }
 
@@ -580,6 +575,7 @@ public class GameServer {
         }
 
     }
+
     //ships
     public void addShip(Integer gameId, Integer playerId, String[] positions, Ships ship) {
         try {

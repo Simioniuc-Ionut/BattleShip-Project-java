@@ -10,17 +10,18 @@ public class MainFrameOne extends JFrame {
     public GameClient client;
     public Socket socketTimer;
     SettingsUser settingsUser;
-    public MainFrameOne(GameClient client,Socket socketTimer) {
+
+    public MainFrameOne(GameClient client, Socket socketTimer) {
         super("User");
-        this.client=client;
-        this.socketTimer=socketTimer;
+        this.client = client;
+        this.socketTimer = socketTimer;
         initUser();
     }
 
     private void initUser() {
         setDefaultCloseOperation(EXIT_ON_CLOSE);//inchidere fereastra
 
-        settingsUser = new SettingsUser(this,client);
+        settingsUser = new SettingsUser(this, client);
 
         add(settingsUser, BorderLayout.CENTER);
 
