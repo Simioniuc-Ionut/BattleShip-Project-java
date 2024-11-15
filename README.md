@@ -66,6 +66,20 @@ Logging is implemented using the SLF4J (Simple Logging Facade for Java) library.
 ### Configuration Management
 Configuration management is handled using Spring Boot's configuration properties. Configuration files such as `application.properties` are used to define various settings such as database connection details, server port, and other application-specific properties. This allows for easy customization and management of the application's configuration.
 
+### Some of the things learned:
+ - Multithreading: Handling multiple connections simultaneously.
+ - Networking: Client-server communication using sockets. 
+ - Database Integration: Storing and retrieving game data with PostgreSQL.
+ - Java Swing: Creating interactive UIs.
+ - RESTful API: CRUD operations via HTTP.
+ - Exception Handling: Custom error management.
+ - Timer Management: Player move timers.
+ - JSON Processing: Serialization and deserialization.
+ - Lombok: Simplifying code with annotations.
+ - Unit Testing: Ensuring functionality with JUnit and Mockito.
+ - Logging: Tracking events and errors with SLF4J.
+ - Configuration Management: Using Spring Boot properties.
+ - 
 ## How to Run
 1. **Clone the repository**: `git clone <repository-url>`
 2. **Navigate to the project directory**: `cd <project-directory>`
